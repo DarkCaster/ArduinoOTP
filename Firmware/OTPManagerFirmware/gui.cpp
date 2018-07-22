@@ -1,14 +1,8 @@
-#include <Arduino.h>
 #include <U8g2lib.h>
 #include <U8x8lib.h>
 #include "gui.h"
 
 static U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
-
-GuiU8G2::GuiU8G2()
-{
-  
-}
 
 void GuiU8G2::Init(uint8_t addr)
 {
