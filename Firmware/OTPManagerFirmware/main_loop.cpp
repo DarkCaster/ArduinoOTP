@@ -32,7 +32,6 @@ void send_resync()
 {
   LOG("send_resync: sending resync-pending notification");
   commHelper.SendAnswer(AnsType::Resync,nullptr,0);
-  return;
 }
 
 void resync()
