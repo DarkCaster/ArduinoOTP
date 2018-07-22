@@ -31,7 +31,7 @@ static GuiU8G2 gui;
 void send_resync()
 {
   LOG("send_resync: sending resync-pending notification");
-  commHelper.SendAnswer(AnsType::Resync,NULL,0);
+  commHelper.SendAnswer(AnsType::Resync,nullptr,0);
   return;
 }
 
@@ -60,7 +60,7 @@ void resync()
       if(request.reqType==ReqType::ResyncComplete)
       {
         //send ANS_OK
-        if(!commHelper.SendAnswer(AnsType::Ok,NULL,0))
+        if(!commHelper.SendAnswer(AnsType::Ok,nullptr,0))
         {
           LOG("resync: failed to send Ok answer to ResyncComplete request");
           send_resync();

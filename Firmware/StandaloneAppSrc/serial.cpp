@@ -9,7 +9,7 @@ HardwareSerial Serial;
 
 void HardwareSerial::begin(unsigned long baud)
 {
-  hComm = CreateFile(COMPORTNAME, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+  hComm = CreateFile(COMPORTNAME, GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
   if (hComm == INVALID_HANDLE_VALUE)
   {
     printf("Error in opening serial port\n");
