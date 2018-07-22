@@ -1,0 +1,6 @@
+*.sh    text eol=lf
+bootstrap text eol=lf
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ac    text eol=lf
+*.am    text eol=lf
