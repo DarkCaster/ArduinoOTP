@@ -1,6 +1,5 @@
 #ifdef STANDALONE_APP
 
-#include <cstdint>
 #include "standalone_config.h"
 #include "arduino-defines.h"
 #include "serial.h"

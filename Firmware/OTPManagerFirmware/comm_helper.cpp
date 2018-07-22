@@ -1,18 +1,9 @@
-#ifdef STANDALONE_APP
-
-#include <cstdint>
-#include "arduino-defines.h"
-#include "serial.h"
-
-#else
-
-#include <Arduino.h>
-#define LOG(...) ({})
-
-#endif
-
 #include "comm_helper.h"
 #include "crc8.h"
+
+#ifndef STANDALONE_APP
+#define LOG(...) ({})
+#endif
 
 Request::Request()
 {

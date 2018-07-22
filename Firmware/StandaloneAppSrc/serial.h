@@ -1,6 +1,8 @@
 #ifndef SERIAL_H_INCLUDED
 #define SERIAL_H_INCLUDED
 
+#include <cstdint>
+
 #if BUILD_PLATFORM==WINDOWS
 #define COMPORTNAME "\\\\.\\COM2"
 #include<windows.h>
