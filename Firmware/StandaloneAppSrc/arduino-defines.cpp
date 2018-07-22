@@ -9,7 +9,7 @@ void LOG(const char * message, ... )
 {
   va_list args;
   va_start(args, message);
-  printf(message, args);
+  vprintf (message, args);
   printf("\n");
   fflush(stdout);
   va_end(args);
