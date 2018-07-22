@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <iostream>
-#include <signal.h>
+#include <csignal>
 #include <cstdio>
 #include <chrono>
 #include <thread>
