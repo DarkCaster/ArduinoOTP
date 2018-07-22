@@ -21,6 +21,7 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 // requests (masks)
 #define REQ_ALL_MASK 0xE0_u8
 #define REQ_INVALID 0x00_u8
+#define REQ_EMPTY 0xFF_u8
 #define REQ_RESYNC_COMPLETE 0xC0_u8
 #define REQ_RESYNC 0xE0_u8
 
@@ -32,6 +33,7 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 
 enum class ReqType : uint8_t
 {
+  Empty,
   Invalid = REQ_INVALID,
   ResyncComplete = REQ_RESYNC_COMPLETE,
   Resync = REQ_RESYNC
@@ -50,6 +52,7 @@ struct Request
     Request();
   public:
     static Request Invalid();
+    static Request Empty();
     //Request(const uint8_t* const message);
     Request(const uint8_t req, const uint8_t* const payload, const uint8_t plLen);
     ReqType reqType;

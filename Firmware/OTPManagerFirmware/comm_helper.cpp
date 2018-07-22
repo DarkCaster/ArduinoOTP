@@ -44,6 +44,13 @@ Request Request::Invalid()
   return Request();
 }
 
+Request Request::Empty()
+{
+  auto request=Request();
+  request.reqType=ReqType::Empty;
+  return request;
+}
+
 CommHelper::CommHelper(HardwareSerial * const port) : serial(port) { }
 
 void CommHelper::Init(const long speed)
@@ -69,7 +76,7 @@ Request CommHelper::ReceiveRequest()
   while(!serial->available()){}
   serial->readBytes(recvBuff,1);
   //verify header
-  auto remSz = (uint8_t)(*recvBuff & CMD_SIZE_MASK);
+  auto remSz = static_cast<uint8_t>(*recvBuff & CMD_SIZE_MASK);
   if(remSz<CMD_MIN_REMSZ||remSz>CMD_MAX_REMSZ)
   {
     LOG("CommHelper::ReceiveRequest: remaining data size is out of bounds");
