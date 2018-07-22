@@ -50,7 +50,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   #optional flags for g++ compiler
   set(OPTFLAGS "")
   #general compiler flags for g++ compiler
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -fpermissive -fno-exceptions -Wall -Wextra -Wshadow -Wstrict-overflow=5 -Wwrite-strings -Winit-self -Wmissing-include-dirs -Wcast-qual -Wcast-align -Wconversion -Wlogical-op -Wpacked -Wredundant-decls -Winline -Wdisabled-optimization -Woverlength-strings -Wfloat-equal -Wswitch-default -Wno-missing-field-initializers -Wno-gnu-statement-expression ${OPTFLAGS}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11 -fpermissive -fno-exceptions -Wall -Wextra -Wshadow -Wstrict-overflow=5 -Wwrite-strings -Winit-self -Wmissing-include-dirs -Wcast-qual -Wcast-align -Wconversion -Wlogical-op -Wpacked -Wredundant-decls -Winline -Wdisabled-optimization -Woverlength-strings -Wfloat-equal -Wswitch-default -Wno-missing-field-initializers ${OPTFLAGS}")
   #set build-type dependent additional flags
   set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
   set(CMAKE_CXX_FLAGS_DEBUG "-O0 -DDEBUG -ggdb")
@@ -80,6 +80,6 @@ if(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES)
 endif(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES)
 
 #emu util
-add_executable(otptest StandaloneAppSrc/main.cpp StandaloneAppSrc/serial.cpp StandaloneAppSrc/gui.cpp OTPManagerFirmware/main_loop.cpp OTPManagerFirmware/crc8.cpp OTPManagerFirmware/comm_helper.cpp)
+add_executable(otptest StandaloneAppSrc/main.cpp StandaloneAppSrc/serial.cpp StandaloneAppSrc/gui.cpp StandaloneAppSrc/arduino-defines.cpp OTPManagerFirmware/main_loop.cpp OTPManagerFirmware/crc8.cpp OTPManagerFirmware/comm_helper.cpp)
 ###target_link_libraries(TODO)
 install(TARGETS otptest DESTINATION "otptest")
