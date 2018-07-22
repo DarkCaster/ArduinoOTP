@@ -80,6 +80,6 @@ if(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES)
 endif(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES)
 
 #emu util
-add_executable(otptest StandaloneAppSrc/main.cpp StandaloneAppSrc/serial.cpp OTPManagerFirmware/main_loop.cpp OTPManagerFirmware/crc8.cpp OTPManagerFirmware/comm_helper.cpp)
+add_executable(otptest StandaloneAppSrc/main.cpp StandaloneAppSrc/serial.cpp StandaloneAppSrc/gui.cpp OTPManagerFirmware/main_loop.cpp OTPManagerFirmware/crc8.cpp OTPManagerFirmware/comm_helper.cpp)
 ###target_link_libraries(TODO)
 install(TARGETS otptest DESTINATION "otptest")
