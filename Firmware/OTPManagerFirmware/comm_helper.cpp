@@ -7,7 +7,6 @@
 
 Request::Request()
 {
-  reqType=ReqType::Invalid;
   plLen=0;
 }
 
@@ -29,12 +28,14 @@ Request::Request(const uint8_t req, const uint8_t* const _payload, const uint8_t
 
 Request Request::Invalid()
 {
-  return Request();
+  Request request;
+  request.reqType=ReqType::Invalid;
+  return request;
 }
 
 Request Request::Empty()
 {
-  auto request=Request();
+  Request request;
   request.reqType=ReqType::Empty;
   return request;
 }
