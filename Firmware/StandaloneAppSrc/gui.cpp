@@ -1,8 +1,6 @@
-#include <cstdio>
 #include <cstdint>
+#include "arduino-defines.h"
 #include "gui.h"
-
-#define LOG(...) ({printf(__VA_ARGS__); printf("\n"); fflush(stdout);})
 
 void GuiU8G2::Init(uint8_t addr)
 {

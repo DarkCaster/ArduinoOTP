@@ -8,9 +8,6 @@
 #error platform is not supported for now!
 #endif
 
-#include <cstddef>
-#include <cstdint>
-
 class HardwareSerial
 {
   private:

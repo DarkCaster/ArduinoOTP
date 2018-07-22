@@ -1,7 +1,7 @@
 #ifdef STANDALONE_APP
 
-#include "arduino-defines.h"
 #include <cstdint>
+#include "arduino-defines.h"
 
 #else
 

@@ -1,11 +1,8 @@
 #ifdef STANDALONE_APP
 
-#include "arduino-defines.h"
-#include <cstdio>
 #include <cstdint>
+#include "arduino-defines.h"
 #include "serial.h"
-#define LOG(...) ({printf(__VA_ARGS__); printf("\n"); fflush(stdout);})
-//#define LOG(format,...) ({})
 
 #else
 

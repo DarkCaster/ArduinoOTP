@@ -1,13 +1,10 @@
-#include "main_loop.h"
-
 #ifdef STANDALONE_APP
 
+#include <cstdint>
 #include "standalone_config.h"
 #include "arduino-defines.h"
 #include "serial.h"
-#include <cstdio>
-#define LOG(...) ({printf(__VA_ARGS__); printf("\n"); fflush(stdout);})
-//#define LOG(format,...) ({})
+
 #define SYNC_OK() ({})
 #define SYNC_ERR() ({})
 #define SYNC_LED_PREP() ({})
@@ -22,6 +19,7 @@
 
 #endif
 
+#include "main_loop.h"
 #include "comm_helper.h"
 #include "gui.h"
 
