@@ -23,10 +23,13 @@
 #endif
 
 #include "comm_helper.h"
+#include "gui.h"
 
 #define LED_SYNC LED_BUILTIN
+#define DISPLAY_ADDR 0x78
 
 static CommHelper commHelper(&Serial);
+static GuiU8G2 gui;
 
 void send_resync()
 {
@@ -90,6 +93,7 @@ void setup()
   SYNC_LED_PREP();
   SYNC_ERR();
   commHelper.Init(38400);
+  gui.Init(DISPLAY_ADDR);
   resync();
 }
 
