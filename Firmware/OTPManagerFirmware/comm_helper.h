@@ -40,7 +40,7 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 
 enum class ReqType : uint8_t
 {
-  Empty,
+  Empty = REQ_EMPTY,
   Invalid = REQ_INVALID,
   ResyncComplete = REQ_RESYNC_COMPLETE,
   Resync = REQ_RESYNC
