@@ -1,0 +1,7 @@
+#ifndef CONFIGURATION_H
+#define CONFIGURATION_H
+
+#define LED_SYNC LED_BUILTIN
+#define DISPLAY_ADDR 0x78
+
+#endif

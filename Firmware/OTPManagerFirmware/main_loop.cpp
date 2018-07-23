@@ -18,16 +18,10 @@
 
 #endif
 
+#include "configuration.h"
 #include "main_loop.h"
 #include "comm_helper.h"
 #include "gui.h"
-
-// CONFIGURATION, TODO: move to separate header file
-
-#define LED_SYNC LED_BUILTIN
-#define DISPLAY_ADDR 0x78
-
-// END OF CONFIGURATION
 
 static CommHelper commHelper(&Serial);
 static GuiU8G2 gui;
