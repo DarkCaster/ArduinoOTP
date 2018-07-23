@@ -71,6 +71,7 @@ class CommHelper
     CommHelper(HardwareSerial * const port);
     void Init(const long speed);
     void Deinit();
+    uint8_t DataAvailable();
     Request ReceiveRequest();
     uint8_t SendAnswer(const AnsType answer, const uint8_t* const payload, uint8_t plLen);
 };

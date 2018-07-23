@@ -38,6 +38,11 @@ void CommHelper::Deinit()
   serial->end();
 }
 
+uint8_t CommHelper::DataAvailable()
+{
+  return serial->available()?1:0;
+}
+
 #if STANDALONE_APP
 #pragma GCC diagnostic ignored "-Wconversion"
 #endif

@@ -22,8 +22,12 @@
 #include "comm_helper.h"
 #include "gui.h"
 
+// CONFIGURATION, TODO: move to separate header file
+
 #define LED_SYNC LED_BUILTIN
 #define DISPLAY_ADDR 0x78
+
+// END OF CONFIGURATION
 
 static CommHelper commHelper(&Serial);
 static GuiU8G2 gui;
@@ -84,32 +88,84 @@ void resync()
   }
 }
 
+void conn_loop()
+{
+  LOG("Entering connection handling loop");
+  //TODO: activate watchdog for handling connection-loss and stalled resync
+  resync();
+  while(true)
+  {
+    //read request
+    auto request=commHelper.ReceiveRequest();
+    uint8_t result=1;
+    //perform action
+    switch (request.reqType)
+    {
+      default:
+        LOG("Incorrect request type");
+      case ReqType::Invalid:
+      case ReqType::Resync:
+      case ReqType::ResyncComplete:
+        result=0;
+        //TODO: ping watchdog
+        break;
+    }
+    if(!result)
+      resync();
+  }
+}
+
+void wakeup()
+{
+  //TODO: setup power state of MCU components
+  //TODO: power-on RTC, wait for a while
+  //TODO: power-on display
+}
+
+void descend()
+{
+  //TODO: power-off RTC
+  //TODO: power-off display
+  //TODO: set MCU to sleep state
+}
+
+void update_menu()
+{
+  //TODO: reload menu items
+}
+
 void setup()
 {
+  //TODO: deactivate watchdog
   SYNC_LED_PREP();
   SYNC_ERR();
   commHelper.Init(38400);
   gui.Init(DISPLAY_ADDR);
-  resync();
+  wakeup();
+  //TODO: install button interrupts
+  update_menu();
+  if(commHelper.DataAvailable())
+  {
+    conn_loop();
+    //TODO: deactivate watchdog
+    //TODO: reset button status
+    update_menu();
+  }
+  //TODO: show main screen
 }
 
 void loop()
 {
-  //read request
-  auto request=commHelper.ReceiveRequest();
-  uint8_t result=1;
-  //perform action
-  switch (request.reqType)
+  if(commHelper.DataAvailable())
   {
-    default:
-      LOG("Incorrect request type");
-    case ReqType::Invalid:
-    case ReqType::Resync:
-    case ReqType::ResyncComplete:
-      result=0;
-      break;
+    conn_loop();
+    //TODO: deactivate watchdog
+    //TODO: reset button status
+    update_menu();
+    //TODO: show main screen
   }
-  if(!result)
-    resync();
+  //TODO: detect button event, perform action
+  //TODO: calculate time after previous button event
+  //TODO: after some idle time -> activate powersave mode (call descend)
 }
 
