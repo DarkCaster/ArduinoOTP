@@ -10,14 +10,6 @@ Request::Request()
   plLen=0;
 }
 
-/*Request::Request(const uint8_t* const message)
-{
-   reqType= static_cast<ReqType>(*message & REQ_ALL_MASK);
-   plLen=(*message & CMD_SIZE_MASK)-CMD_CRC_SIZE;
-   for(uint8_t i=0;i<plLen;++i)
-      *(payload+i)=*(message+CMD_HDR_SIZE+i);
-}*/
-
 Request::Request(const uint8_t req, const uint8_t* const _payload, const uint8_t _plLen)
 {
   reqType= static_cast<ReqType>(req);
@@ -30,13 +22,6 @@ Request Request::Invalid()
 {
   Request request;
   request.reqType=ReqType::Invalid;
-  return request;
-}
-
-Request Request::Empty()
-{
-  Request request;
-  request.reqType=ReqType::Empty;
   return request;
 }
 
