@@ -14,8 +14,4 @@ void GuiU8G2::Init(uint8_t addr)
     u8g2.setFont(u8g2_font_crox2cb_tf);
     u8g2.drawStr(0,24,"Hello World!");
   } while ( u8g2.nextPage() );
-  delay(5000);
-  u8g2.setPowerSave(1);
-  delay(5000);
-  u8g2.setPowerSave(0);
 }
