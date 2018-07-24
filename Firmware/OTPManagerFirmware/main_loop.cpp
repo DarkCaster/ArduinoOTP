@@ -40,6 +40,7 @@ void resync()
   while(true)
   {
     SYNC_ERR();
+    gui.ShowCDScr();
     //read request
     auto request=commHelper.ReceiveRequest();
     LOG("Resync in progress");
@@ -67,6 +68,7 @@ void resync()
         //resync complete!
         LOG("Resync complete!");
         SYNC_OK();
+        gui.ShowCEScr();
         return;
       }
       resyncState=0;
