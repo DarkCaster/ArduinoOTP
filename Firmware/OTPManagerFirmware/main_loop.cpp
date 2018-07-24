@@ -23,7 +23,7 @@
 #include "comm_helper.h"
 #include "gui.h"
 
-static CommHelper commHelper(&Serial);
+static CommHelper commHelper(&SERIAL_PORT);
 static GuiU8G2 gui;
 
 void send_resync()
@@ -136,6 +136,11 @@ void setup()
   SYNC_LED_PREP();
   SYNC_ERR();
   commHelper.Init(38400);
+#ifdef SERIAL_RX_PIN
+  //Enable pullup on serial rx-pin.
+  //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
+  pinMode(SERIAL_RX_PIN,INPUT_PULLUP);
+#endif
   gui.Init(DISPLAY_ADDR);
   wakeup();
   //TODO: install button interrupts

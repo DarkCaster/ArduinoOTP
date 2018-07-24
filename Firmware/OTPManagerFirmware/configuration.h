@@ -1,6 +1,8 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+#define SERIAL_PORT Serial
+#define SERIAL_RX_PIN 0
 #define LED_SYNC LED_BUILTIN
 #define DISPLAY_ADDR 0x78
 
