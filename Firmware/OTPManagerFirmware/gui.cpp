@@ -15,3 +15,23 @@ void GuiU8G2::Init(uint8_t addr)
     u8g2.drawStr(0,24,"Hello World!");
   } while ( u8g2.nextPage() );
 }
+
+//TODO:
+
+void GuiU8G2::ShowCDScr()
+{
+  u8g2.firstPage();
+  u8g2.setFont(u8g2_font_crox2cb_tf);
+  do {
+    u8g2.drawStr(0,24,"< Resync >");
+  } while ( u8g2.nextPage() );
+}
+
+void GuiU8G2::ShowCEScr()
+{
+  u8g2.firstPage();
+  u8g2.setFont(u8g2_font_crox2cb_tf);
+  do {
+    u8g2.drawStr(0,24,"< Connected >");
+  } while ( u8g2.nextPage() );
+}
