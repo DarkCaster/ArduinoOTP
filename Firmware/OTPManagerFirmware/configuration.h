@@ -3,6 +3,7 @@
 
 #define SERIAL_PORT Serial
 #define SERIAL_RX_PIN 0
+#define RTC_POWER_PIN 4
 #define LED_SYNC LED_BUILTIN
 #define DISPLAY_ADDR 0x78
 
