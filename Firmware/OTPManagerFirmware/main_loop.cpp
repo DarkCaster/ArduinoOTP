@@ -7,6 +7,10 @@
 #define SYNC_OK() ({})
 #define SYNC_ERR() ({})
 #define SYNC_LED_PREP() ({})
+#define RTC_POWER_PREP() ({})
+#define RTC_POWER_ON() ({})
+#define RTC_POWER_OFF() ({})
+#define RX_PIN_PREP() ({})
 
 #else
 
@@ -14,7 +18,18 @@
 #define LOG(...) ({})
 #define SYNC_OK() ({digitalWrite(LED_SYNC, HIGH);})
 #define SYNC_ERR() ({digitalWrite(LED_SYNC, LOW);})
-#define SYNC_LED_PREP() ({pinMode(LED_SYNC, OUTPUT);;})
+#define SYNC_LED_PREP() ({pinMode(LED_SYNC, OUTPUT);})
+#define RTC_POWER_PREP() ({pinMode(RTC_POWER_PIN, OUTPUT);})
+#define RTC_POWER_ON() ({digitalWrite(RTC_POWER_PIN, HIGH);})
+#define RTC_POWER_OFF() ({digitalWrite(RTC_POWER_PIN, LOW);})
+
+//If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
+//We need this in order to prevent false incoming connection events when device enabled and not connected to PC
+#ifdef SERIAL_RX_PIN
+#define RX_PIN_PREP() ({pinMode(SERIAL_RX_PIN,INPUT_PULLUP);})
+#else
+#define RX_PIN_PREP() ({})
+#endif
 
 #endif
 
@@ -114,14 +129,18 @@ void conn_loop()
 void wakeup()
 {
   //TODO: setup power state of MCU components
-  //TODO: power-on RTC, wait for a while
-  //TODO: power-on display
+  //power-on RTC, wait for a while
+  RTC_POWER_ON();
+  //power-on display
+  gui.Powersave(0);
 }
 
 void descend()
 {
-  //TODO: power-off RTC
+  //power-off RTC
+  RTC_POWER_OFF();
   //TODO: power-off display
+  gui.Powersave(1);
   //TODO: set MCU to sleep state
 }
 
@@ -133,14 +152,12 @@ void update_menu()
 void setup()
 {
   //TODO: deactivate watchdog
+  RTC_POWER_PREP();
+  RTC_POWER_ON();
   SYNC_LED_PREP();
   SYNC_ERR();
   commHelper.Init(38400);
-#ifdef SERIAL_RX_PIN
-  //Enable pullup on serial rx-pin.
-  //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
-  pinMode(SERIAL_RX_PIN,INPUT_PULLUP);
-#endif
+  RX_PIN_PREP(); // enable pullup on serial RX-pin
   gui.Init(DISPLAY_ADDR);
   wakeup();
   //TODO: install button interrupts
@@ -152,7 +169,7 @@ void setup()
     //TODO: reset button status
     update_menu();
   }
-  //TODO: show main screen
+  gui.ResetToMainScr();
 }
 
 void loop()
@@ -163,7 +180,7 @@ void loop()
     //TODO: deactivate watchdog
     //TODO: reset button status
     update_menu();
-    //TODO: show main screen
+    gui.ResetToMainScr();
   }
   //TODO: detect button event, perform action
   //TODO: calculate time after previous button event
