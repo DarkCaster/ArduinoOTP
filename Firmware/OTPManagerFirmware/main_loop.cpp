@@ -129,6 +129,8 @@ void conn_loop()
 void wakeup()
 {
   //TODO: setup power state of MCU components
+  //flush incoming data on the serial line
+  commHelper.FlushInput();
   //power-on RTC, wait for a while
   RTC_POWER_ON();
   //power-on display

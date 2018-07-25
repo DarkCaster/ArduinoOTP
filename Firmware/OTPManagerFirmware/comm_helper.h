@@ -72,6 +72,7 @@ class CommHelper
     void Init(const long speed);
     void Deinit();
     uint8_t DataAvailable();
+    void FlushInput();
     Request ReceiveRequest();
     uint8_t SendAnswer(const AnsType answer, const uint8_t* const payload, uint8_t plLen);
 };

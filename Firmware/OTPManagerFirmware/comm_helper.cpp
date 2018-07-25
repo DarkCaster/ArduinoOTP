@@ -43,6 +43,11 @@ uint8_t CommHelper::DataAvailable()
   return serial->available()?1:0;
 }
 
+void CommHelper::FlushInput()
+{
+  while(serial->read()>-1){};
+}
+
 #if STANDALONE_APP
 #pragma GCC diagnostic ignored "-Wconversion"
 #endif
