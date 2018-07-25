@@ -12,10 +12,6 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
 endif(NOT CMAKE_BUILD_TYPE)
 
-#set defaults
-set(EXELINKFLAGS "")
-set(OPTFLAGS "")
-
 #setup RPATH and build directories
 set(CMAKE_SKIP_BUILD_RPATH FALSE)
 set(CMAKE_USE_RELATIVE_PATHS TRUE)
@@ -41,3 +37,4 @@ if(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES)
   include_directories("${CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES}")
 endif(CMAKE_C_IMPLICIT_INCLUDE_DIRECTORIES)
 
+include("arduino-build-helper.cmake")
