@@ -1,3 +1,5 @@
+#include "configuration.h"
+
 #ifdef STANDALONE_APP
 
 #include "standalone_config.h"
@@ -33,7 +35,6 @@
 
 #endif
 
-#include "configuration.h"
 #include "main_loop.h"
 #include "comm_helper.h"
 #include "gui.h"
