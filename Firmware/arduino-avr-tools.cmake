@@ -31,6 +31,14 @@ function(probe_arduino_avr_compiler PROBEPATH)
         endforeach()
 
         set(AVR_TOOLCHAIN_PATH "${PROBEPATH}/bin" CACHE INTERNAL "AVR toolchain autodetected path")
+        set(AVR_CXX ${AVR_CXX} CACHE INTERNAL "AVR_CXX")
+        set(AVR_C ${AVR_C} CACHE INTERNAL "AVR_C")
+        set(AVR_AR ${AVR_AR} CACHE INTERNAL "AVR_AR")
+        set(AVR_STRIP ${AVR_STRIP} CACHE INTERNAL "AVR_STRIP")
+        set(AVR_OBJCOPY ${AVR_OBJCOPY} CACHE INTERNAL "AVR_OBJCOPY")
+        set(AVR_OBJDUMP ${AVR_OBJDUMP} CACHE INTERNAL "AVR_OBJDUMP")
+        set(AVR_SIZE ${AVR_SIZE} CACHE INTERNAL "AVR_SIZE")
+
         set(CMAKE_SYSTEM_NAME "Generic" CACHE INTERNAL "CMAKE_SYSTEM_NAME")
         set(CMAKE_CXX_COMPILER ${AVR_CXX} CACHE INTERNAL "CMAKE_CXX_COMPILER")
         set(CMAKE_C_COMPILER ${AVR_C} CACHE INTERNAL "CMAKE_C_COMPILER")
@@ -39,12 +47,20 @@ function(probe_arduino_avr_compiler PROBEPATH)
     endif()
 endfunction(probe_arduino_avr_compiler)
 
+set(AVR_TOOLCHAIN_SEARCH_PATH "" CACHE PATH "AVR_TOOLCHAIN_SEARCH_PATH")
+if(NOT ${AVR_TOOLCHAIN_SEARCH_PATH} STREQUAL "")
+    file(TO_CMAKE_PATH "${AVR_TOOLCHAIN_SEARCH_PATH}" CM_AVR_TOOLCHAIN_SEARCH_PATH)
+    message(STATUS "Will try custom search path at ${CM_AVR_TOOLCHAIN_SEARCH_PATH}")
+    unset(AVR_TOOLCHAIN_PATH CACHE)
+endif()
+
 if(WIN32)
     file(TO_CMAKE_PATH "$ENV{LOCALAPPDATA}" ENV_LOCALAPPDATA)
     set(PROGRAMFILES_X86 "ProgramFiles(x86)")
     file(TO_CMAKE_PATH "$ENV{${PROGRAMFILES_X86}}" ENV_PROGRAMFILES_X86)
     file(TO_CMAKE_PATH "$ENV{ProgramFiles}" ENV_PROGRAMFILES)
     file(GLOB AVR_TEST_DIRS
+        ${CM_AVR_TOOLCHAIN_SEARCH_PATH}
         ${ENV_LOCALAPPDATA}/Arduino*/packages/arduino/tools/avr-gcc/*
         ${ENV_PROGRAMFILES}/Arduino/hardware/tools/avr
         ${ENV_PROGRAMFILES_X86}/Arduino/hardware/tools/avr)
@@ -57,7 +73,9 @@ endif ()
 foreach (avr_test_dir ${AVR_TEST_DIRS})
     probe_arduino_avr_compiler ("${avr_test_dir}")
 endforeach ()
+
 if(NOT AVR_TOOLCHAIN_PATH)
     message(FATAL "Failed to detect valid AVR toolchain directory")
 endif()
+
 message(STATUS "Using AVR toolchain at ${AVR_TOOLCHAIN_PATH}")
