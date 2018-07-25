@@ -47,7 +47,7 @@ function(probe_arduino_avr_compiler PROBEPATH)
     endif()
 endfunction(probe_arduino_avr_compiler)
 
-set(AVR_TOOLCHAIN_SEARCH_PATH "" CACHE PATH "AVR_TOOLCHAIN_SEARCH_PATH")
+set(AVR_TOOLCHAIN_SEARCH_PATH "" CACHE PATH "Custom AVR toolchain search path, will be probed first")
 if(NOT ${AVR_TOOLCHAIN_SEARCH_PATH} STREQUAL "")
     file(TO_CMAKE_PATH "${AVR_TOOLCHAIN_SEARCH_PATH}" CM_AVR_TOOLCHAIN_SEARCH_PATH)
     message(STATUS "Will try custom search path at ${CM_AVR_TOOLCHAIN_SEARCH_PATH}")
