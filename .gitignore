@@ -1,0 +1,3 @@
+#cmake default build directory, when running with QT-Creator
+/build-*/
+/Build-*/
