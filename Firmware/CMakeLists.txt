@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 3.0)
 
+# you can override defaults from arduino-avr-toolchain.cmake with command line params
+# example:
+# -DARDUINO_MCU="atmega328p"
+# -DARDUINO_F_CPU="8000000"
+# -DARDUINO_MODEL="ARDUINO_AVR_PRO"
+# -DARDUINO_VARIANT="eightanaloginputs"
+# -DARDUINO_VER="10805"
+
 set(CMAKE_TOOLCHAIN_FILE ArduinoCmakeBuilder/arduino-avr-toolchain.cmake)
 
 if((${CMAKE_GENERATOR} STREQUAL "NMake Makefiles JOM") AND (NOT EXISTS "${CMAKE_MAKE_PROGRAM}"))
@@ -17,3 +25,4 @@ add_arduino_library(U8g2_Arduino ${CMAKE_SOURCE_DIR}/Libraries SPI Wire)
 
 add_arduino_sketch(OTPManagerFirmware ${CMAKE_SOURCE_DIR} U8g2_Arduino)
 add_arduino_post_target(OTPManagerFirmware)
+add_arduino_upload_target(OTPManagerFirmware)
