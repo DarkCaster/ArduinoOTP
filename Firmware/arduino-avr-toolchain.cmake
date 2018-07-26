@@ -17,7 +17,7 @@ function(probe_arduino_avr_compiler PROBEPATH)
 
         find_program(AVR_CXX avr-g++ PATHS "${PROBEPATH}/bin" NO_DEFAULT_PATH)
         find_program(AVR_C avr-gcc PATHS "${PROBEPATH}/bin" NO_DEFAULT_PATH)
-        find_program(AVR_AR avr-ar PATHS "${PROBEPATH}/bin" NO_DEFAULT_PATH)
+        find_program(AVR_AR avr-gcc-ar PATHS "${PROBEPATH}/bin" NO_DEFAULT_PATH)
         find_program(AVR_STRIP avr-strip PATHS "${PROBEPATH}/bin" NO_DEFAULT_PATH)
         find_program(AVR_OBJCOPY avr-objcopy PATHS "${PROBEPATH}/bin" NO_DEFAULT_PATH)
         find_program(AVR_OBJDUMP avr-objdump PATHS "${PROBEPATH}/bin" NO_DEFAULT_PATH)
@@ -30,7 +30,7 @@ function(probe_arduino_avr_compiler PROBEPATH)
             endif()
         endforeach()
 
-        set(AVR_TOOLCHAIN_PATH "${PROBEPATH}/bin" CACHE INTERNAL "AVR toolchain autodetected path")
+        set(AVR_TOOLCHAIN_PATH "${PROBEPATH}" CACHE INTERNAL "AVR toolchain autodetected path")
         set(AVR_CXX ${AVR_CXX} CACHE INTERNAL "AVR_CXX")
         set(AVR_C ${AVR_C} CACHE INTERNAL "AVR_C")
         set(AVR_AR ${AVR_AR} CACHE INTERNAL "AVR_AR")
@@ -54,7 +54,7 @@ if(NOT ${AVR_TOOLCHAIN_SEARCH_PATH} STREQUAL "")
     unset(AVR_TOOLCHAIN_PATH CACHE)
 endif()
 
-if(WIN32)
+if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
     file(TO_CMAKE_PATH "$ENV{LOCALAPPDATA}" ENV_LOCALAPPDATA)
     set(PROGRAMFILES_X86 "ProgramFiles(x86)")
     file(TO_CMAKE_PATH "$ENV{${PROGRAMFILES_X86}}" ENV_PROGRAMFILES_X86)
@@ -64,7 +64,7 @@ if(WIN32)
         ${ENV_LOCALAPPDATA}/Arduino*/packages/arduino/tools/avr-gcc/*
         ${ENV_PROGRAMFILES}/Arduino/hardware/tools/avr
         ${ENV_PROGRAMFILES_X86}/Arduino/hardware/tools/avr)
-elseif(LINUX)
+elseif(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Linux")
   message(FATAL_ERROR "TODO")
 else()
   message(FATAL_ERROR "This platform is not supported!")
@@ -75,7 +75,7 @@ foreach (avr_test_dir ${AVR_TEST_DIRS})
 endforeach ()
 
 if(NOT AVR_TOOLCHAIN_PATH)
-    message(FATAL "Failed to detect valid AVR toolchain directory")
+    message(FATAL_ERROR "Failed to detect valid AVR toolchain directory")
 endif()
 
 message(STATUS "Using AVR toolchain at ${AVR_TOOLCHAIN_PATH}")
@@ -94,3 +94,5 @@ set(ARDUINO_ASM_FLAGS_FULL "${ARDUINO_ASM_FLAGS} -mmcu=${ARDUINO_MCU} -DF_CPU=${
 
 set(ARDUINO_EXE_LINKER_FLAGS "-Wall -Wextra -Os -g -flto -fuse-linker-plugin -Wl,--gc-sections" CACHE STRING "Arduino AVR GCC-linker flags")
 set(ARDUINO_EXE_LINKER_FLAGS_FULL "${ARDUINO_EXE_LINKER_FLAGS} -mmcu=${ARDUINO_MCU}" CACHE INTERNAL "ARDUINO_EXE_LINKER_FLAGS_FULL")
+
+set(ARDUINO_ARCH "avr" CACHE INTERNAL "ARDUINO_ARCH")
