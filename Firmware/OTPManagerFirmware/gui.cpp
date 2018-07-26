@@ -1,4 +1,4 @@
-#include "src/U8g2_Arduino/src/U8g2lib.h"
+#include <U8g2lib.h>
 #include "gui.h"
 #include "configuration.h"
 
