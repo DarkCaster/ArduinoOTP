@@ -18,7 +18,6 @@ project(OTPManagerTestApp C CXX ASM)
 
 include(ArduinoCmakeBuilder/arduino-build-helper.cmake)
 
-add_arduino_library(EEPROM ${ARDUINO_LIBS_PATH})
 add_arduino_library(SPI ${ARDUINO_LIBS_PATH})
 add_arduino_library(Wire ${ARDUINO_LIBS_PATH})
 add_arduino_library(U8g2_Arduino ${CMAKE_SOURCE_DIR}/Libraries SPI Wire)
