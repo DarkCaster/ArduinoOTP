@@ -1,21 +1,5 @@
 #include "configuration.h"
 
-#ifdef STANDALONE_APP
-
-#include "standalone_config.h"
-#include "arduino-defines.h"
-#include "serial.h"
-
-#define SYNC_OK() ({})
-#define SYNC_ERR() ({})
-#define SYNC_LED_PREP() ({})
-#define RTC_POWER_PREP() ({})
-#define RTC_POWER_ON() ({})
-#define RTC_POWER_OFF() ({})
-#define RX_PIN_PREP() ({})
-
-#else
-
 #include <Arduino.h>
 #define LOG(...) ({})
 #define SYNC_OK() ({digitalWrite(LED_SYNC, HIGH);})
@@ -31,8 +15,6 @@
 #define RX_PIN_PREP() ({pinMode(SERIAL_RX_PIN,INPUT_PULLUP);})
 #else
 #define RX_PIN_PREP() ({})
-#endif
-
 #endif
 
 #include "main_loop.h"

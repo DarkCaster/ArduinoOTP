@@ -1,9 +1,7 @@
 #include "comm_helper.h"
 #include "crc8.h"
 
-#ifndef STANDALONE_APP
 #define LOG(...) ({})
-#endif
 
 Request::Request()
 {
@@ -47,10 +45,6 @@ void CommHelper::FlushInput()
 {
   while(serial->read()>-1){};
 }
-
-#if STANDALONE_APP
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
 
 Request CommHelper::ReceiveRequest()
 {
@@ -100,9 +94,6 @@ Request CommHelper::ReceiveRequest()
   return Request(req,recvBuff+CMD_HDR_SIZE,remSz-CMD_CRC_SIZE);
 }
 
-#if STANDALONE_APP
-#pragma GCC diagnostic pop
-#endif
 
 uint8_t CommHelper::SendAnswer(const AnsType answer, const uint8_t* const payload, uint8_t plLen)
 {
