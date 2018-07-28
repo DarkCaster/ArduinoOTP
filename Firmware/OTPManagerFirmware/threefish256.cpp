@@ -410,9 +410,19 @@ static void WriteUInt8ToUInt64(const uint8_t * const input, uint8_t inputSz, uin
 
 static void WriteUInt64ToUInt8(const uint64_t * const input, uint8_t input64Sz, uint8_t * const output)
 {
-
+  uint8_t outputPos=0;
+  for(uint8_t i=0; i<input64Sz; ++i)
+  {
+    output[outputPos++]=(input[i]&0xFF);
+    output[outputPos++]=((input[i]>>8)&0xFF);
+    output[outputPos++]=((input[i]>>16)&0xFF);
+    output[outputPos++]=((input[i]>>24)&0xFF);
+    output[outputPos++]=((input[i]>>32)&0xFF);
+    output[outputPos++]=((input[i]>>40)&0xFF);
+    output[outputPos++]=((input[i]>>48)&0xFF);
+    output[outputPos++]=((input[i]>>56)&0xFF);
+  }
 }
-
 
 void Threefish256::SetKey(const uint8_t * const newKey)
 {
