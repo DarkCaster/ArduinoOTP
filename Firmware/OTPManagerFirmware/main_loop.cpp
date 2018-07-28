@@ -38,13 +38,11 @@ static GuiU8G2 gui;
 
 void send_resync()
 {
-  LOG("send_resync: sending resync-pending notification");
   commHelper.SendAnswer(AnsType::Resync,nullptr,0);
 }
 
 void resync()
 {
-  LOG("Starting resync");
   send_resync();
   uint8_t resyncState=0;
   while(true)
@@ -53,11 +51,9 @@ void resync()
     gui.ShowCDScr();
     //read request
     auto request=commHelper.ReceiveRequest();
-    LOG("Resync in progress");
     //check header
     if(request.reqType==ReqType::Invalid)
     {
-      LOG("resync: invalid request received");
       send_resync();
       resyncState=0;
       continue;
@@ -70,13 +66,11 @@ void resync()
         //send ANS_OK
         if(!commHelper.SendAnswer(AnsType::Ok,nullptr,0))
         {
-          LOG("resync: failed to send Ok answer to ResyncComplete request");
           send_resync();
           resyncState=0;
           continue;
         }
         //resync complete!
-        LOG("Resync complete!");
         SYNC_OK();
         gui.ShowCEScr();
         return;
@@ -86,7 +80,6 @@ void resync()
     //final resync-sequence
     if(request.reqType!=ReqType::Resync || !commHelper.SendAnswer(AnsType::Resync,request.payload,request.plLen))
     {
-      LOG("resync: incorrect request type or final resync-sequence send-failure");
       send_resync();
       continue;
     }
@@ -96,7 +89,7 @@ void resync()
 
 void conn_loop()
 {
-  LOG("Entering connection handling loop");
+  LOG(F("Entering connection handling loop"));
   //TODO: activate watchdog for handling connection-loss and stalled resync
   resync();
   while(true)
@@ -108,7 +101,6 @@ void conn_loop()
     switch (request.reqType)
     {
       default:
-        LOG("Incorrect request type");
       case ReqType::Invalid:
       case ReqType::Resync:
       case ReqType::ResyncComplete:
