@@ -10,6 +10,5 @@
 #define MAIN_SCREEN_FONT u8g2_font_profont22_mn
 
 #define DEBUG_SERIAL_PORT SERIAL_PORT
-#define DEBUG_OUT_BUFFER_SIZE 128
 
 #endif

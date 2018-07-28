@@ -4,8 +4,7 @@
 #include <Arduino.h>
 
 #ifdef DEBUG
-void LOG(const char * message, ... );
-void LOG(const __FlashStringHelper* message, ... );
+void LOG(const __FlashStringHelper* message, const bool nl=true);
 #else
 #define LOG(...) ({})
 #endif
