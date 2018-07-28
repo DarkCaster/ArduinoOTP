@@ -1,13 +1,10 @@
-#include "configuration.h"
-
 #include <Arduino.h>
+#include "configuration.h"
+#include "main_loop.h"
+#include "comm_helper.h"
+#include "gui.h"
+
 #define LOG(...) ({})
-#define SYNC_OK() ({digitalWrite(LED_SYNC, HIGH);})
-#define SYNC_ERR() ({digitalWrite(LED_SYNC, LOW);})
-#define SYNC_LED_PREP() ({pinMode(LED_SYNC, OUTPUT);})
-#define RTC_POWER_PREP() ({pinMode(RTC_POWER_PIN, OUTPUT);})
-#define RTC_POWER_ON() ({digitalWrite(RTC_POWER_PIN, HIGH);})
-#define RTC_POWER_OFF() ({digitalWrite(RTC_POWER_PIN, LOW);})
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
@@ -17,9 +14,25 @@
 #define RX_PIN_PREP() ({})
 #endif
 
-#include "main_loop.h"
-#include "comm_helper.h"
-#include "gui.h"
+#ifdef RTC_POWER_PIN
+#define RTC_POWER_PREP() ({pinMode(RTC_POWER_PIN, OUTPUT);})
+#define RTC_POWER_ON() ({digitalWrite(RTC_POWER_PIN, HIGH);})
+#define RTC_POWER_OFF() ({digitalWrite(RTC_POWER_PIN, LOW);})
+#else
+#define RTC_POWER_PREP() ({})
+#define RTC_POWER_ON() ({})
+#define RTC_POWER_OFF() ({})
+#endif
+
+#ifdef LED_SYNC
+#define SYNC_OK() ({digitalWrite(LED_SYNC, HIGH);})
+#define SYNC_ERR() ({digitalWrite(LED_SYNC, LOW);})
+#define SYNC_LED_PREP() ({pinMode(LED_SYNC, OUTPUT);})
+#else
+#define SYNC_OK() ({})
+#define SYNC_ERR() ({})
+#define SYNC_LED_PREP() ({})
+#endif
 
 static CommHelper commHelper(&SERIAL_PORT);
 static GuiU8G2 gui;
