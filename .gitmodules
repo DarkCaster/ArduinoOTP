@@ -4,3 +4,6 @@
 [submodule "Firmware/ArduinoCmakeBuilder"]
 	path = Firmware/ArduinoCmakeBuilder
 	url = https://github.com/DarkCaster/ArduinoCmakeBuilder.git
+[submodule "Firmware/Libraries/Micro-AES-Arduino"]
+	path = Firmware/Libraries/Micro-AES-Arduino
+	url = https://github.com/DarkCaster/Micro-AES-Arduino.git
