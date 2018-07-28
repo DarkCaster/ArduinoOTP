@@ -153,7 +153,7 @@ void setup()
   RTC_POWER_ON();
   SYNC_LED_PREP();
   SYNC_ERR();
-  commHelper.Init(38400);
+  commHelper.Init(SERIAL_PORT_SPEED);
   RX_PIN_PREP(); // enable pullup on serial RX-pin
   gui.Init(DISPLAY_ADDR);
   wakeup();
