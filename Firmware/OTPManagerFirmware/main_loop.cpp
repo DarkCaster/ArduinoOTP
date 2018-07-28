@@ -1,10 +1,9 @@
 #include <Arduino.h>
 #include "configuration.h"
+#include "debug.h"
 #include "main_loop.h"
 #include "comm_helper.h"
 #include "gui.h"
-
-#define LOG(...) ({})
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
