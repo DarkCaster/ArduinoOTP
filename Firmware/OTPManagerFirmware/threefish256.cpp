@@ -55,11 +55,6 @@ void Threefish256::SetKey(const uint64_t * const key)
     *(ExpandedKey+i) = parity;
 }
 
-Threefish256::Threefish256()
-{
-  *(ExpandedKey+ExpandedKeySize - 1) = KeyScheduleConst;
-}
-
 void Threefish256::Encrypt(const uint64_t * const input, uint64_t * const output)
 {
   // Cache the block, key, and tweak
@@ -386,4 +381,73 @@ void Threefish256::Decrypt(const uint64_t * const input, uint64_t * const output
   output[1] = b1;
   output[2] = b2;
   output[3] = b3;
+}
+
+uint8_t Threefish256::GetKeySize()
+{
+  return (CipherSize/8);
+}
+
+uint8_t Threefish256::GetTweakSize()
+{
+  return 16;
+}
+
+uint8_t Threefish256::GetBlockSize()
+{
+  return GetKeySize();
+}
+
+static void WriteUInt8ToUInt64(const uint8_t * const input, uint8_t inputSz, uint64_t * const output)
+{
+  uint8_t outputPos=0;
+  for(uint8_t i=0; i<inputSz; i+=8)
+  {
+    *(output+outputPos)=static_cast<uint64_t>(input[i])|static_cast<uint64_t>(input[i+1])<<8|static_cast<uint64_t>(input[i+2])<<16|static_cast<uint64_t>(input[i+3])<<24|static_cast<uint64_t>(input[i+4])<<32|static_cast<uint64_t>(input[i+5])<<40|static_cast<uint64_t>(input[i+6])<<48|static_cast<uint64_t>(input[i+7])<<56;
+    outputPos++;
+  }
+}
+
+static void WriteUInt64ToUInt8(const uint64_t * const input, uint8_t input64Sz, uint8_t * const output)
+{
+
+}
+
+
+void Threefish256::SetKey(const uint8_t * const newKey)
+{
+  uint64_t key[CipherSize/64];
+  uint8_t keyBSz=GetKeySize();
+  WriteUInt8ToUInt64(newKey,keyBSz,key);
+  SetKey(key);
+}
+
+void Threefish256::SetTweak(const uint8_t * const newTweak)
+{
+  uint8_t tweakBSz=GetTweakSize();
+  uint64_t tweak[tweakBSz/8];
+  WriteUInt8ToUInt64(newTweak,tweakBSz,tweak);
+  SetTweak(tweak);
+}
+
+void Threefish256::EncryptBlock(const uint8_t * const inputBlock, uint8_t * const outputBlock)
+{
+  uint8_t blockSz=GetBlockSize();
+  uint8_t block64Sz=blockSz/8;
+  uint64_t input[block64Sz];
+  uint64_t output[block64Sz];
+  WriteUInt8ToUInt64(inputBlock,blockSz,input);
+  Encrypt(input,output);
+  WriteUInt64ToUInt8(output,block64Sz,outputBlock);
+}
+
+void Threefish256::DecryptBlock(const uint8_t * const inputBlock, uint8_t * const outputBlock)
+{
+  uint8_t blockSz=GetBlockSize();
+  uint8_t block64Sz=blockSz/8;
+  uint64_t input[block64Sz];
+  uint64_t output[block64Sz];
+  WriteUInt8ToUInt64(inputBlock,blockSz,input);
+  Decrypt(input,output);
+  WriteUInt64ToUInt8(output,block64Sz,outputBlock);
 }
