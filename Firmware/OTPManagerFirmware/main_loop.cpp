@@ -159,6 +159,7 @@ void setup()
     update_menu();
   }
   gui.ResetToMainScr();
+  LOG(F("Setup complete!"));
 }
 
 void loop()
