@@ -1,7 +1,7 @@
 #include "debug.h"
 #include "configuration.h"
 
-#if DEBUG
+#ifdef DEBUG
 
 static bool debug_serial_init_done=false;
 
