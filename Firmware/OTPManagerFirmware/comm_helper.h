@@ -1,12 +1,7 @@
 #ifndef COMM_HELPER
 #define COMM_HELPER
 
-#ifdef STANDALONE_APP
-#include "arduino-defines.h"
-#include "serial.h"
-#else
 #include <Arduino.h>
-#endif
 
 constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 {

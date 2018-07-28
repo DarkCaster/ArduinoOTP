@@ -1,11 +1,7 @@
 #ifndef GUI_H
 #define GUI_H
 
-#ifdef STANDALONE_APP
-#include "arduino-defines.h"
-#else
 #include <Arduino.h>
-#endif
 
 enum class MenuItemType : uint8_t
 {
