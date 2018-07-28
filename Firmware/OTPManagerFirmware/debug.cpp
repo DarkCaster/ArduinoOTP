@@ -14,8 +14,15 @@ void LOG(const char * message, va_list args)
   debug_serial_init_done=true;
   char out_buff[DEBUG_OUT_BUFFER_SIZE+1];
   out_buff[DEBUG_OUT_BUFFER_SIZE]=0;
+  auto milliseconds=millis();
+  auto seconds=milliseconds/1000UL;
+  //auto milli_seconds=static_cast<uint16_t>();
+  const static char timeFormat[] PROGMEM = "[%03lu.%03lu]: ";
+  snprintf_P(out_buff, DEBUG_OUT_BUFFER_SIZE, timeFormat, seconds, milliseconds%(seconds*1000UL));
+  DEBUG_SERIAL_PORT.write(out_buff);
   vsnprintf(out_buff, DEBUG_OUT_BUFFER_SIZE, message, args);
   DEBUG_SERIAL_PORT.write(out_buff);
+  DEBUG_SERIAL_PORT.write("\n");
 }
 
 void LOG(const __FlashStringHelper* message, ... )
