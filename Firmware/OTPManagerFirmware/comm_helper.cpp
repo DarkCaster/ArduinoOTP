@@ -56,10 +56,7 @@ Request CommHelper::ReceiveRequest()
   //verify header
   auto remSz = static_cast<uint8_t>(*recvBuff & CMD_SIZE_MASK);
   if(remSz<CMD_MIN_REMSZ||remSz>CMD_MAX_REMSZ)
-  {
-    LOG("CommHelper::ReceiveRequest: remaining data size is out of bounds");
     return Request::Invalid();
-  }
   //check header against supported commands list
   auto req=(uint8_t)(*recvBuff & REQ_ALL_MASK);
   switch(req)
@@ -68,7 +65,6 @@ Request CommHelper::ReceiveRequest()
     case REQ_RESYNC_COMPLETE:
       break;
     default:
-      LOG("CommHelper::ReceiveRequest: invalid request received: 0x%02X",req);
       return Request::Invalid();
   }
   //read message-body
@@ -78,19 +74,12 @@ Request CommHelper::ReceiveRequest()
   {
     rem-=static_cast<decltype(rem)>(serial->readBytes(recvBuff+CMD_HDR_SIZE+(remSz-rem),rem));
     if(millis()-startTime>CMD_TIMEOUT)
-    {
-      LOG("CommHelper::ReceiveRequest: timeout");
       return Request::Invalid();
-    }
   }
   //verify CRC
   auto testSz=(uint8_t)(CMD_HDR_SIZE+remSz-1);
   if(*(recvBuff+testSz)!=CRC8(recvBuff,testSz))
-  {
-    LOG("CommHelper::ReceiveRequest: CRC mismatch!");
     return Request::Invalid();
-  }
-  //return Request
   return Request(req,recvBuff+CMD_HDR_SIZE,remSz-CMD_CRC_SIZE);
 }
 
