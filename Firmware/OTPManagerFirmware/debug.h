@@ -1,10 +1,11 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include <Arduino.h>
+
 #ifdef DEBUG
-#define LOG(...) ({})
+void LOG(const char * message, ... );
 #else
-//TODO
 #define LOG(...) ({})
 #endif
 
