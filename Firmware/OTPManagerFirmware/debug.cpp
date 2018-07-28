@@ -22,7 +22,8 @@ void LOG(const __FlashStringHelper* message, ... )
 {
   auto P_message = reinterpret_cast<PGM_P>(message);
   auto msgSize=strlen_P(P_message);
-  char tmp[msgSize];
+  char tmp[msgSize+1];
+  tmp[msgSize]=0;
   strcpy_P(tmp,P_message);
   va_list args;
   va_start(args, message);
