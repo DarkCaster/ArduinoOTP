@@ -54,11 +54,11 @@ void print_header()
   auto seconds=milliseconds/1000UL;
   DEBUG_SERIAL_PORT.print(F("["));
   DEBUG_SERIAL_PORT.print(seconds);
-  DEBUG_SERIAL_PORT.print(F("s+"));
+  DEBUG_SERIAL_PORT.print(F("s "));
   DEBUG_SERIAL_PORT.print(milliseconds%(seconds*1000UL));
   DEBUG_SERIAL_PORT.print(F("ms "));
   DEBUG_SERIAL_PORT.print(get_free_memory());
-  DEBUG_SERIAL_PORT.print(F("free]: "));
+  DEBUG_SERIAL_PORT.print(F("mem]: "));
 }
 
 void LOG(const __FlashStringHelper* message, const bool nl)
