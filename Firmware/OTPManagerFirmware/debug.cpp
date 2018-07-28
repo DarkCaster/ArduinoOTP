@@ -3,13 +3,14 @@
 
 #if DEBUG
 
-static uint8_t debug_serial_init_done=0;
+static bool debug_serial_init_done=false;
+
 #define SERIAL_CHECK (&DEBUG_SERIAL_PORT!=&SERIAL_PORT)
 void LOG(const char * message, ... )
 {
   if(!debug_serial_init_done && SERIAL_CHECK)
     DEBUG_SERIAL_PORT.begin(SERIAL_PORT_SPEED);
-  debug_serial_init_done=1;
+  debug_serial_init_done=true;
   va_list args;
   va_start(args, message);
   char out_buff[DEBUG_OUT_BUFFER_SIZE+1];
