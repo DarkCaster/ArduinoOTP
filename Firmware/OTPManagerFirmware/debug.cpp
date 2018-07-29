@@ -69,4 +69,20 @@ void LOG(const __FlashStringHelper* message, const bool nl)
     DEBUG_SERIAL_PORT.print(F("\n"));
 }
 
+void LOG(const int32_t intNumber, const bool nl)
+{
+  print_header();
+  DEBUG_SERIAL_PORT.print(intNumber);
+  if(nl)
+    DEBUG_SERIAL_PORT.print(F("\n"));
+}
+
+void LOG(const uint32_t intNumber, const bool nl)
+{
+  print_header();
+  DEBUG_SERIAL_PORT.print(intNumber);
+  if(nl)
+    DEBUG_SERIAL_PORT.print(F("\n"));
+}
+
 #endif
