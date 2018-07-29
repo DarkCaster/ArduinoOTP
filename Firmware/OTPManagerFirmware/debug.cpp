@@ -45,7 +45,7 @@ static bool debug_serial_init_done=false;
 
 #define SERIAL_CHECK (&DEBUG_SERIAL_PORT!=&SERIAL_PORT)
 
-void print_header()
+void STATUS(const bool nl)
 {
   if(!debug_serial_init_done && SERIAL_CHECK)
     DEBUG_SERIAL_PORT.begin(SERIAL_PORT_SPEED);
@@ -58,31 +58,27 @@ void print_header()
   DEBUG_SERIAL_PORT.print(milliseconds%(seconds*1000UL));
   DEBUG_SERIAL_PORT.print(F("ms "));
   DEBUG_SERIAL_PORT.print(get_free_memory());
-  DEBUG_SERIAL_PORT.print(F("mem]: "));
+  DEBUG_SERIAL_PORT.print(F("mem] "));
+  if(nl)
+    DEBUG_SERIAL_PORT.print(F("\n"));
 }
 
-void LOG(const __FlashStringHelper* message, const bool nl, const bool hdr)
+void LOG(const __FlashStringHelper* message, const bool nl)
 {
-  if(hdr)
-    print_header();
   DEBUG_SERIAL_PORT.print(message);
   if(nl)
     DEBUG_SERIAL_PORT.print(F("\n"));
 }
 
-void LOG(const int32_t intNumber, const bool nl, const bool hdr)
+void LOG(const int32_t intNumber, const bool nl)
 {
-  if(hdr)
-    print_header();
   DEBUG_SERIAL_PORT.print(intNumber);
   if(nl)
     DEBUG_SERIAL_PORT.print(F("\n"));
 }
 
-void LOG(const uint32_t intNumber, const bool nl, const bool hdr)
+void LOG(const uint32_t intNumber, const bool nl)
 {
-  if(hdr)
-    print_header();
   DEBUG_SERIAL_PORT.print(intNumber);
   if(nl)
     DEBUG_SERIAL_PORT.print(F("\n"));
