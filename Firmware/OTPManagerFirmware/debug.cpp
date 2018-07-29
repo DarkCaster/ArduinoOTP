@@ -61,25 +61,28 @@ void print_header()
   DEBUG_SERIAL_PORT.print(F("mem]: "));
 }
 
-void LOG(const __FlashStringHelper* message, const bool nl)
+void LOG(const __FlashStringHelper* message, const bool nl, const bool hdr)
 {
-  print_header();
+  if(hdr)
+    print_header();
   DEBUG_SERIAL_PORT.print(message);
   if(nl)
     DEBUG_SERIAL_PORT.print(F("\n"));
 }
 
-void LOG(const int32_t intNumber, const bool nl)
+void LOG(const int32_t intNumber, const bool nl, const bool hdr)
 {
-  print_header();
+  if(hdr)
+    print_header();
   DEBUG_SERIAL_PORT.print(intNumber);
   if(nl)
     DEBUG_SERIAL_PORT.print(F("\n"));
 }
 
-void LOG(const uint32_t intNumber, const bool nl)
+void LOG(const uint32_t intNumber, const bool nl, const bool hdr)
 {
-  print_header();
+  if(hdr)
+    print_header();
   DEBUG_SERIAL_PORT.print(intNumber);
   if(nl)
     DEBUG_SERIAL_PORT.print(F("\n"));
