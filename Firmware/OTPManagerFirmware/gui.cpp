@@ -39,12 +39,18 @@ void GuiU8G2::Powersave(uint8_t mode)
 void GuiU8G2::ResetToMainScr()
 {
   char timeString[6];
+  char dateString[48];
   TimeHelper::WriteTimeString(timeString,6);
-  uint8_t xPos=random(MAIN_SCREEN_TIME_MIN_POS_X, MAIN_SCREEN_TIME_MAX_POS_X);
-  uint8_t yPos=random(MAIN_SCREEN_TIME_MIN_POS_Y, MAIN_SCREEN_TIME_MAX_POS_Y);
+  TimeHelper::WriteDateString(dateString,48);
+  uint8_t timeXPos=random(MAIN_SCREEN_TIME_MIN_POS_X, MAIN_SCREEN_TIME_MAX_POS_X);
+  uint8_t timeYPos=random(MAIN_SCREEN_TIME_MIN_POS_Y, MAIN_SCREEN_TIME_MAX_POS_Y);
+  uint8_t dateXPos=random(MAIN_SCREEN_DATE_MIN_POS_X, MAIN_SCREEN_DATE_MAX_POS_X);
+  uint8_t dateYPos=random(MAIN_SCREEN_DATE_MIN_POS_Y, MAIN_SCREEN_DATE_MAX_POS_Y);
   u8g2.firstPage();
-  u8g2.setFont(MAIN_SCREEN_TIME_FONT);
   do {
-    u8g2.drawStr(xPos,yPos,timeString);
+    u8g2.setFont(MAIN_SCREEN_DATE_FONT);
+    u8g2.drawStr(dateXPos,dateYPos,dateString);
+    u8g2.setFont(MAIN_SCREEN_TIME_FONT);
+    u8g2.drawStr(timeXPos,timeYPos,timeString);
   } while ( u8g2.nextPage() );
 }
