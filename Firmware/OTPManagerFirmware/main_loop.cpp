@@ -129,10 +129,10 @@ void wakeup()
 
 void descend()
 {
-  //power-off RTC
-  RTC_POWER_OFF();
   //TODO: power-off display
   gui.Powersave(1);
+  //power-off RTC
+  RTC_POWER_OFF();
   //TODO: set MCU to sleep state
 }
 
