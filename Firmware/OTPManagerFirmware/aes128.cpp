@@ -33,10 +33,10 @@ void AES128::EncryptBlock(const uint8_t * const inputBlock, uint8_t * const outp
   uint8_t tmpBlock[BLKSZ];
   for(uint8_t i=0; i<BLKSZ; ++i)
     *(tmpBlock+i)=*(inputBlock+i);
-  for (uint8_t i = 0; i < BLKSZ; i++)
+  for (uint8_t i = 0; i < BLKSZ; ++i)
      *(tmpBlock+i) ^= *(iv+i);
   aes_128_encrypt(&context, tmpBlock);
-  for (uint8_t i = 0; i < BLKSZ; i++)
+  for (uint8_t i = 0; i < BLKSZ; ++i)
      *(outputBlock+i) = *(tmpBlock+i);
 }
 
@@ -46,8 +46,8 @@ void AES128::DecryptBlock(const uint8_t * const inputBlock, uint8_t * const outp
   for(uint8_t i=0; i<BLKSZ; ++i)
     *(tmpBlock+i)=*(inputBlock+i);
   aes_128_decrypt(&context, tmpBlock);
-  for (uint8_t i = 0; i < BLKSZ; i++)
+  for (uint8_t i = 0; i < BLKSZ; ++i)
      *(tmpBlock+i) ^= *(iv+i);
-  for (uint8_t i = 0; i < BLKSZ; i++)
+  for (uint8_t i = 0; i < BLKSZ; ++i)
      *(outputBlock+i) = *(tmpBlock+i);
 }
