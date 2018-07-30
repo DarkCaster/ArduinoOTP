@@ -11,8 +11,16 @@
 #define RTC_POWER_PIN 4
 #define LED_SYNC LED_BUILTIN
 #define DISPLAY_ADDR 0x78
-#define MAIN_SCREEN_FONT u8g2_font_profont22_mn
+#define MAIN_SCREEN_DATE_FONT u8g2_font_profont22_mn
+#define MAIN_SCREEN_TIME_FONT u8g2_font_logisoso92_tn
+#define MAIN_SCREEN_TIME_MIN_POS_X 0
+#define MAIN_SCREEN_TIME_MAX_POS_X 8
+#define MAIN_SCREEN_TIME_MIN_POS_Y 32
+#define MAIN_SCREEN_TIME_MAX_POS_Y 36
+
 
 #define DEBUG_SERIAL_PORT SERIAL_PORT
+
+
 
 #endif
