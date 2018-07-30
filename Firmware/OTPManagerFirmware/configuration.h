@@ -11,12 +11,19 @@
 #define RTC_POWER_PIN 4
 #define LED_SYNC LED_BUILTIN
 #define DISPLAY_ADDR 0x78
-#define MAIN_SCREEN_DATE_FONT u8g2_font_profont22_mn
+#define MAIN_SCREEN_DATE_FONT u8g2_font_logisoso16_tr
 #define MAIN_SCREEN_TIME_FONT u8g2_font_logisoso38_tn
+
+#define MAIN_SCREEN_DATE_MIN_POS_X 0
+#define MAIN_SCREEN_DATE_MAX_POS_X 8
+#define MAIN_SCREEN_DATE_MIN_POS_Y 16
+#define MAIN_SCREEN_DATE_MAX_POS_Y 22
+
 #define MAIN_SCREEN_TIME_MIN_POS_X 0
 #define MAIN_SCREEN_TIME_MAX_POS_X 8
 #define MAIN_SCREEN_TIME_MIN_POS_Y 60
 #define MAIN_SCREEN_TIME_MAX_POS_Y 64
+
 #define MAIN_SCREEN_DAYS_OF_THE_WEEK {"mon","tue","wed","thu","fri","sat","sun"}
 
 #define DEBUG_SERIAL_PORT SERIAL_PORT
