@@ -7,6 +7,7 @@ class TimeHelper
 {
   public:
     static void WriteTimeString(char * const target, const uint8_t maxLen);
+    static void WriteDateString(char * const target, const uint8_t maxLen);
     static void Wakeup();
     static void Update();
 };
