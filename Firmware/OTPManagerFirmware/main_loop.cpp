@@ -4,6 +4,7 @@
 #include "main_loop.h"
 #include "comm_helper.h"
 #include "gui.h"
+#include "time_helper.h"
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
@@ -122,6 +123,8 @@ void wakeup()
   RTC_POWER_ON();
   //power-on display
   gui.Powersave(0);
+  //re-init RTC
+  TimeHelper::Wakeup();
 }
 
 void descend()
@@ -158,6 +161,8 @@ void setup()
     //TODO: reset button status
     update_menu();
   }
+  //update current-time
+  TimeHelper::Update();
   gui.ResetToMainScr();
   LOG(F("Setup complete!"));
 }
