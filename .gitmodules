@@ -10,3 +10,6 @@
 [submodule "Firmware/Libraries/DS3231_Simple"]
 	path = Firmware/Libraries/DS3231_Simple
 	url = https://github.com/sleemanj/DS3231_Simple.git
+[submodule "Firmware/Libraries/Low-Power"]
+	path = Firmware/Libraries/Low-Power
+	url = https://github.com/rocketscream/Low-Power.git
