@@ -7,3 +7,6 @@
 [submodule "Firmware/Libraries/Micro-AES-Arduino"]
 	path = Firmware/Libraries/Micro-AES-Arduino
 	url = https://github.com/DarkCaster/Micro-AES-Arduino.git
+[submodule "Firmware/Libraries/DS3231_Simple"]
+	path = Firmware/Libraries/DS3231_Simple
+	url = https://github.com/sleemanj/DS3231_Simple.git
