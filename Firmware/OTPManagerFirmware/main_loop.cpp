@@ -121,6 +121,7 @@ void wakeup()
   commHelper.FlushInput();
   //power-on RTC, wait for a while
   RTC_POWER_ON();
+  delay(10);
   //power-on display
   gui.Wakeup();
   //re-init RTC
