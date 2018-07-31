@@ -2,8 +2,6 @@
 #include "clock_helper_DS3231.h"
 #include <DS3231_Simple.h>
 
-ClockHelperDS3231::ClockHelperDS3231(uint8_t _rtcPowerPin) : rtcPowerPin(_rtcPowerPin), lastTime(DateTime()) { }
-
 static const char daysOfTheWeek[7][MAIN_SCREEN_DAY_LEN] PROGMEM = MAIN_SCREEN_DAYS_OF_THE_WEEK;
 
 static void WritePositiveNumber(char * const target, uint8_t &pos, const uint16_t number, const uint8_t zeros, const uint8_t signs)
@@ -63,12 +61,17 @@ void ClockHelperDS3231::WriteDateString(char * const target, const uint8_t maxLe
   *(target+pos++)=0;
 }
 
-void ClockHelperDS3231::Init()
+ClockHelperDS3231::ClockHelperDS3231(uint8_t _rtcPowerPin) : rtcPowerPin(_rtcPowerPin), lastTime(DateTime()) { }
+
+void ClockHelperDS3231::InitPre()
 {
   //power-on
   pinMode(rtcPowerPin, OUTPUT);
   digitalWrite(rtcPowerPin,HIGH);
-  delay(10);
+}
+
+void ClockHelperDS3231::InitPost()
+{
   clock.begin();
 }
 

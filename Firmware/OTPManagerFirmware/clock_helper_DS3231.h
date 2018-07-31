@@ -14,7 +14,8 @@ class ClockHelperDS3231 final : ClockHelperBase
   public:
     ClockHelperDS3231(uint8_t rtcPowerPin);
     //TODO: getting time ticks for various OTP algorithms
-    void Init() final;
+    void InitPre() final;
+    void InitPost() final;
     void WriteTimeString(char * const target, const uint8_t maxLen) final;
     void WriteDateString(char * const target, const uint8_t maxLen) final;
     void WakeupPre() final;

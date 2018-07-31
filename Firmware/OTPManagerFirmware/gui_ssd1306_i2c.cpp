@@ -10,12 +10,15 @@ GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t _displayPowerPin, uint8_t _displayAddr, C
   clockHelper(_clockHelper)
 { }
 
-void GuiSSD1306_I2C::Init()
+void GuiSSD1306_I2C::InitPre()
 {
   //power-on
   pinMode(displayPowerPin, OUTPUT);
-  digitalWrite(displayPowerPin,HIGH);
-  delay(10);
+  digitalWrite(displayPowerPin, HIGH);
+}
+
+void GuiSSD1306_I2C::InitPost()
+{
   u8g2.setI2CAddress(displayAddr);
   u8g2.begin();
 }

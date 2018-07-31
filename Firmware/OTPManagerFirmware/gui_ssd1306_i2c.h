@@ -14,7 +14,8 @@ class GuiSSD1306_I2C final : GuiBase
   public:
     GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase * const clockHelper);
 
-    void Init() final;
+    void InitPre() final;
+    void InitPost() final;
     void DescendPre() final;
     void WakeupPre() final;
     void DescendPost() final;

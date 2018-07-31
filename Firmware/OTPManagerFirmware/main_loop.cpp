@@ -145,8 +145,13 @@ void setup()
   commHelper.Init(SERIAL_PORT_SPEED);
   RX_PIN_PREP(); // enable pullup on serial RX-pin
   commHelper.FlushInput(); //flush incoming input
-  gui.Init();
-  clockHelper.Init();
+  //pre-init external low-powered devices
+  gui.InitPre();
+  clockHelper.InitPre();
+  delay(10);
+  //post-init external low-powered devices
+  gui.InitPost();
+  clockHelper.InitPost();
   //TODO: install button interrupts
   update_menu();
   if(commHelper.DataAvailable())
