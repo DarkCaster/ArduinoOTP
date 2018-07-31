@@ -15,30 +15,35 @@ enum class MenuItemType : uint8_t
 
 struct MenuItem
 {
+    MenuItem(const MenuItemType itemType, const int16_t itemIndex)
+    {
+      this->itemType=itemType;
+      this->itemIndex=itemIndex;
+    }
     MenuItemType itemType;
-    int16_t itemIndex; //<0 - no item was selected
+    int16_t itemIndex;
 };
 
-class GuiU8G2
+class GuiBase
 {
-  public:
-    void Init(uint8_t addr=0x78);
-    void Powersave(uint8_t mode);
-    void ResetToMainScr();
-    void ShowCDScr();
-    void ShowCEScr();
-    void ShowCodeScr(const char * const code);
+    virtual void Init() = 0;
+    virtual void Contrast(uint8_t contrast) = 0;
+    virtual void Descend() = 0;
+    virtual void Wakeup() = 0;
+    virtual void ResetToMainScr() = 0;
+    virtual void ShowCDScr() = 0;
+    virtual void ShowCEScr() = 0;
+    virtual void ShowCodeScr(const char * const code) = 0;
 
     //menu navigation methods, show, navigate and select menu items
 
     //show menu, move to the next menu item
-    void MenuNext();
+    virtual void MenuNext() = 0;
     //go to the parent submenu
-    void MenuUp();
+    virtual void MenuUp() = 0;
     //advance submenu, select menu item. Return item description that was selected
-    MenuItem MenuSelect();
-
-    //TODO: reload and fillup menu
+    virtual MenuItem MenuSelect() = 0;
 };
+
 
 #endif

@@ -3,7 +3,7 @@
 #include "debug.h"
 #include "main_loop.h"
 #include "comm_helper.h"
-#include "gui.h"
+#include "gui_ssd1306_i2c.h"
 #include "time_helper.h"
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
@@ -35,7 +35,7 @@
 #endif
 
 static CommHelper commHelper(&SERIAL_PORT);
-static GuiU8G2 gui;
+static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,DISPLAY_MAX_CONTRAST);
 
 void send_resync()
 {
@@ -122,7 +122,7 @@ void wakeup()
   //power-on RTC, wait for a while
   RTC_POWER_ON();
   //power-on display
-  gui.Powersave(0);
+  gui.Wakeup();
   //re-init RTC
   TimeHelper::Wakeup();
 }
@@ -130,7 +130,7 @@ void wakeup()
 void descend()
 {
   //TODO: power-off display
-  gui.Powersave(1);
+  gui.Descend();
   //power-off RTC
   RTC_POWER_OFF();
   //TODO: set MCU to sleep state
@@ -143,6 +143,8 @@ void update_menu()
 
 void setup()
 {
+  //TODO: read settings
+  uint8_t contrast=0;
   //TODO: deactivate watchdog
   RTC_POWER_PREP();
   RTC_POWER_ON();
@@ -150,7 +152,8 @@ void setup()
   SYNC_ERR();
   commHelper.Init(SERIAL_PORT_SPEED);
   RX_PIN_PREP(); // enable pullup on serial RX-pin
-  gui.Init(DISPLAY_ADDR);
+  gui.Init();
+  gui.Contrast(contrast);
   wakeup();
   //TODO: install button interrupts
   update_menu();
