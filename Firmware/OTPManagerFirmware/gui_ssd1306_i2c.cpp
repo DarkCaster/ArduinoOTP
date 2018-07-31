@@ -9,20 +9,22 @@ GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t _displayPowerPin, uint8_t _displayAddr) :
 
 void GuiSSD1306_I2C::Init()
 {
-  //TODO: power-on
+  //power-on
+  pinMode(displayPowerPin, OUTPUT);
+  digitalWrite(displayPowerPin,HIGH);
   u8g2.setI2CAddress(displayAddr);
   u8g2.begin();
 }
 
 void GuiSSD1306_I2C::Descend()
 {
-  //TODO: use display power to power-off display
-  u8g2.setPowerSave(1);
+  digitalWrite(displayPowerPin,LOW);
 }
 
 void GuiSSD1306_I2C::Wakeup()
 {
-  u8g2.setPowerSave(0);
+  digitalWrite(displayPowerPin,HIGH);
+  delay(10);
   u8g2.begin();
 }
 
