@@ -5,27 +5,13 @@
 
 static U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
-GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t _displayPowerPin, uint8_t _displayAddr, uint8_t _maxContrast) :
-  displayPowerPin(_displayPowerPin),
-  displayAddr(_displayAddr),
-  maxContrast(_maxContrast)
-{
-  lastContrast=0;
-}
+GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t _displayPowerPin, uint8_t _displayAddr) : displayPowerPin(_displayPowerPin), displayAddr(_displayAddr) { }
 
 void GuiSSD1306_I2C::Init()
 {
   //TODO: power-on
   u8g2.setI2CAddress(displayAddr);
   u8g2.begin();
-}
-
-void GuiSSD1306_I2C::Contrast(uint8_t contrast)
-{
-  if(contrast>maxContrast)
-    contrast=maxContrast;
-  u8g2.setContrast(contrast);
-  lastContrast=contrast;
 }
 
 void GuiSSD1306_I2C::Descend()
@@ -38,8 +24,6 @@ void GuiSSD1306_I2C::Wakeup()
 {
   u8g2.setPowerSave(0);
   u8g2.begin();
-  if(lastContrast>0)
-    Contrast(lastContrast);
 }
 
 //TODO:

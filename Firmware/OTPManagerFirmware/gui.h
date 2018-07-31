@@ -27,7 +27,6 @@ struct MenuItem
 class GuiBase
 {
     virtual void Init() = 0;
-    virtual void Contrast(uint8_t contrast) = 0;
     virtual void Descend() = 0;
     virtual void Wakeup() = 0;
     virtual void ResetToMainScr() = 0;

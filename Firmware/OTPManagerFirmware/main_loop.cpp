@@ -35,7 +35,7 @@
 #endif
 
 static CommHelper commHelper(&SERIAL_PORT);
-static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,DISPLAY_MAX_CONTRAST);
+static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR);
 
 void send_resync()
 {
@@ -144,7 +144,6 @@ void update_menu()
 void setup()
 {
   //TODO: read settings
-  uint8_t contrast=0;
   //TODO: deactivate watchdog
   RTC_POWER_PREP();
   RTC_POWER_ON();
@@ -153,7 +152,6 @@ void setup()
   commHelper.Init(SERIAL_PORT_SPEED);
   RX_PIN_PREP(); // enable pullup on serial RX-pin
   gui.Init();
-  gui.Contrast(contrast);
   wakeup();
   //TODO: install button interrupts
   update_menu();
