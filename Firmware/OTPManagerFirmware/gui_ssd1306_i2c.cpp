@@ -12,6 +12,7 @@ void GuiSSD1306_I2C::Init()
   //power-on
   pinMode(displayPowerPin, OUTPUT);
   digitalWrite(displayPowerPin,HIGH);
+  delay(10);
   u8g2.setI2CAddress(displayAddr);
   u8g2.begin();
 }
