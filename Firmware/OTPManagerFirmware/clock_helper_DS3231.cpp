@@ -20,11 +20,11 @@ static void Write2SignNumber(char * const target, uint8_t &pos, const uint8_t nu
   WritePositiveNumber(target, pos, number, zeros, 2);
 }
 
-static void Write4SignNumber(char * const target, uint8_t &pos, const uint16_t number)
+/*static void Write4SignNumber(char * const target, uint8_t &pos, const uint16_t number)
 {
   uint8_t zeros=number>999?0:number>99?1:number>9?2:3;
   WritePositiveNumber(target, pos, number, zeros, 4);
-}
+}*/
 
 void ClockHelperDS3231::WriteTimeString(char * const target, const uint8_t maxLen)
 {
@@ -72,14 +72,19 @@ void ClockHelperDS3231::Init()
   clock.begin();
 }
 
-void ClockHelperDS3231::Wakeup()
+void ClockHelperDS3231::WakeupPre()
 {
   digitalWrite(rtcPowerPin,HIGH);
-  delay(10);
+}
+
+void ClockHelperDS3231::WakeupPost()
+{
   clock.begin();
 }
 
-void ClockHelperDS3231::Descend()
+void ClockHelperDS3231::DescendPre() { }
+
+void ClockHelperDS3231::DescendPost()
 {
   digitalWrite(rtcPowerPin,LOW);
 }

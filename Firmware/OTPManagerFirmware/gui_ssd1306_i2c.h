@@ -3,18 +3,22 @@
 
 #include <Arduino.h>
 #include "gui.h"
+#include "clock_helper.h"
 
 class GuiSSD1306_I2C final : GuiBase
 {
   private:
     const uint8_t displayPowerPin;
     const uint8_t displayAddr;
+    ClockHelperBase * const clockHelper;
   public:
-    GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr);
+    GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase * const clockHelper);
 
     void Init() final;
-    void Descend() final;
-    void Wakeup() final;
+    void DescendPre() final;
+    void WakeupPre() final;
+    void DescendPost() final;
+    void WakeupPost() final;
     void ResetToMainScr() final;
     void ShowCDScr() final;
     void ShowCEScr() final;

@@ -2,6 +2,7 @@
 #define GUI_H
 
 #include <Arduino.h>
+#include "low_power_device.h"
 
 enum class MenuItemType : uint8_t
 {
@@ -24,11 +25,9 @@ struct MenuItem
     int16_t itemIndex;
 };
 
-class GuiBase
+class GuiBase : LowPowerDevice
 {
     virtual void Init() = 0;
-    virtual void Descend() = 0;
-    virtual void Wakeup() = 0;
     virtual void ResetToMainScr() = 0;
     virtual void ShowCDScr() = 0;
     virtual void ShowCEScr() = 0;

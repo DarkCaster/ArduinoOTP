@@ -17,8 +17,10 @@ class ClockHelperDS3231 final : ClockHelperBase
     void Init() final;
     void WriteTimeString(char * const target, const uint8_t maxLen) final;
     void WriteDateString(char * const target, const uint8_t maxLen) final;
-    void Wakeup() final;
-    void Descend() final;
+    void WakeupPre() final;
+    void DescendPre() final;
+    void WakeupPost() final;
+    void DescendPost() final;
     void Update() final;
 };
 

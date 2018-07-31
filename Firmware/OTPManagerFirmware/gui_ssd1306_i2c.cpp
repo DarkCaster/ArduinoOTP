@@ -1,11 +1,14 @@
 #include <U8g2lib.h>
 #include "configuration.h"
 #include "gui_ssd1306_i2c.h"
-#include "time_helper.h"
 
 static U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
-GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t _displayPowerPin, uint8_t _displayAddr) : displayPowerPin(_displayPowerPin), displayAddr(_displayAddr) { }
+GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t _displayPowerPin, uint8_t _displayAddr, ClockHelperBase * const _clockHelper) :
+  displayPowerPin(_displayPowerPin),
+  displayAddr(_displayAddr),
+  clockHelper(_clockHelper)
+{ }
 
 void GuiSSD1306_I2C::Init()
 {
@@ -17,16 +20,23 @@ void GuiSSD1306_I2C::Init()
   u8g2.begin();
 }
 
-void GuiSSD1306_I2C::Descend()
+void GuiSSD1306_I2C::DescendPre()
 {
   u8g2.clearDisplay();
+}
+
+void GuiSSD1306_I2C::DescendPost()
+{
   digitalWrite(displayPowerPin,LOW);
 }
 
-void GuiSSD1306_I2C::Wakeup()
+void GuiSSD1306_I2C::WakeupPre()
 {
   digitalWrite(displayPowerPin,HIGH);
-  delay(10);
+}
+
+void GuiSSD1306_I2C::WakeupPost()
+{
   u8g2.begin();
 }
 
@@ -79,8 +89,8 @@ void GuiSSD1306_I2C::ResetToMainScr()
 {
   char timeString[6];
   char dateString[48];
-  TimeHelper::WriteTimeString(timeString,6);
-  TimeHelper::WriteDateString(dateString,48);
+  clockHelper->WriteTimeString(timeString,6);
+  clockHelper->WriteDateString(dateString,48);
   uint8_t timeXPos=random(MAIN_SCREEN_TIME_MIN_POS_X, MAIN_SCREEN_TIME_MAX_POS_X);
   uint8_t timeYPos=random(MAIN_SCREEN_TIME_MIN_POS_Y, MAIN_SCREEN_TIME_MAX_POS_Y);
   uint8_t dateXPos=random(MAIN_SCREEN_DATE_MIN_POS_X, MAIN_SCREEN_DATE_MAX_POS_X);

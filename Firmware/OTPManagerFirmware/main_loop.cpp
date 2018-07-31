@@ -4,7 +4,7 @@
 #include "main_loop.h"
 #include "comm_helper.h"
 #include "gui_ssd1306_i2c.h"
-#include "time_helper.h"
+#include "clock_helper_DS3231.h"
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
@@ -12,16 +12,6 @@
 #define RX_PIN_PREP() ({pinMode(SERIAL_RX_PIN,INPUT_PULLUP);})
 #else
 #define RX_PIN_PREP() ({})
-#endif
-
-#ifdef RTC_POWER_PIN
-#define RTC_POWER_PREP() ({pinMode(RTC_POWER_PIN, OUTPUT);})
-#define RTC_POWER_ON() ({digitalWrite(RTC_POWER_PIN, HIGH);})
-#define RTC_POWER_OFF() ({digitalWrite(RTC_POWER_PIN, LOW);})
-#else
-#define RTC_POWER_PREP() ({})
-#define RTC_POWER_ON() ({})
-#define RTC_POWER_OFF() ({})
 #endif
 
 #ifdef LED_SYNC
@@ -35,7 +25,8 @@
 #endif
 
 static CommHelper commHelper(&SERIAL_PORT);
-static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR);
+static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
+static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,(ClockHelperBase*)(&clockHelper));
 
 void send_resync()
 {
@@ -119,21 +110,24 @@ void wakeup()
   //TODO: setup power state of MCU components
   //flush incoming data on the serial line
   commHelper.FlushInput();
-  //power-on RTC, wait for a while
-  RTC_POWER_ON();
+  //pre-wakeup, enable power on all devices
+  gui.WakeupPre();
+  clockHelper.WakeupPre();
+  //wait for stable power
   delay(10);
-  //power-on display
-  gui.Wakeup();
-  //re-init RTC
-  TimeHelper::Wakeup();
+  //post-wakeup, reinitialize devices
+  gui.WakeupPost();
+  clockHelper.WakeupPost();
 }
 
 void descend()
 {
-  //TODO: power-off display
-  gui.Descend();
-  //power-off RTC
-  RTC_POWER_OFF();
+  //pre-descend, prepare devices to powering-off
+  gui.DescendPre();
+  clockHelper.DescendPre();
+  //post-descend, physically power-off devices, no device-communication on this stage is allowed
+  gui.DescendPost();
+  clockHelper.DescendPost();
   //TODO: set MCU to sleep state
 }
 
@@ -146,14 +140,13 @@ void setup()
 {
   //TODO: read settings
   //TODO: deactivate watchdog
-  RTC_POWER_PREP();
-  RTC_POWER_ON();
   SYNC_LED_PREP();
   SYNC_ERR();
   commHelper.Init(SERIAL_PORT_SPEED);
   RX_PIN_PREP(); // enable pullup on serial RX-pin
+  commHelper.FlushInput(); //flush incoming input
   gui.Init();
-  wakeup();
+  clockHelper.Init();
   //TODO: install button interrupts
   update_menu();
   if(commHelper.DataAvailable())
@@ -164,7 +157,7 @@ void setup()
     update_menu();
   }
   //update current-time
-  TimeHelper::Update();
+  clockHelper.Update();
   gui.ResetToMainScr();
   LOG(F("Setup complete!"));
 }
