@@ -18,6 +18,7 @@ void GuiSSD1306_I2C::Init()
 
 void GuiSSD1306_I2C::Descend()
 {
+  u8g2.clearDisplay();
   digitalWrite(displayPowerPin,LOW);
 }
 
