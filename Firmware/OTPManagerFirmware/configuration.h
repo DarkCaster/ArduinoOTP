@@ -11,6 +11,9 @@
 #define RTC_POWER_PIN 4
 #define LED_SYNC LED_BUILTIN
 
+#define BUTTON_NEXT_PIN 2
+#define BUTTON_SELECT_PIN 3
+
 #define DISPLAY_ADDR 0x78
 #define DISPLAY_POWER_PIN 7
 
