@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <LowPower.h>
 #include "configuration.h"
 #include "debug.h"
 #include "main_loop.h"
@@ -128,13 +129,18 @@ void descend()
   //post-descend, physically power-off devices, no device-communication on this stage is allowed
   gui.DescendPost();
   clockHelper.DescendPost();
-  //TODO: set MCU to sleep state
+  //set MCU to sleep state
+  LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
 }
 
 void update_menu()
 {
   //TODO: reload menu items
 }
+
+void next_button_handler() { }
+
+void select_button_handler() { }
 
 void setup()
 {
@@ -152,8 +158,10 @@ void setup()
   //post-init external low-powered devices
   gui.InitPost();
   clockHelper.InitPost();
-  //TODO: install button interrupts
   update_menu();
+  //install button interrupts
+  attachInterrupt(digitalPinToInterrupt(BUTTON_NEXT_PIN),next_button_handler, RISING);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_SELECT_PIN),select_button_handler, RISING);
   if(commHelper.DataAvailable())
   {
     conn_loop();
@@ -180,5 +188,12 @@ void loop()
   //TODO: detect button event, perform action
   //TODO: calculate time after previous button event
   //TODO: after some idle time -> activate powersave mode (call descend)
-}
 
+  //code for testing powersave
+  delay(5000);
+  descend();
+  //<< execution will be paused here >>
+  wakeup();
+  clockHelper.Update();
+  gui.ResetToMainScr();
+}
