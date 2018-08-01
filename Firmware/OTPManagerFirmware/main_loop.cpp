@@ -6,6 +6,7 @@
 #include "comm_helper.h"
 #include "gui_ssd1306_i2c.h"
 #include "clock_helper_DS3231.h"
+#include "watchdog_AVR.h"
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
@@ -28,30 +29,29 @@
 static CommHelper commHelper(&SERIAL_PORT);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,(ClockHelperBase*)(&clockHelper));
+static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
 static volatile bool buttonPressed=false;
 static unsigned long lastTime=0;
 static MenuItem curMenuItem(MenuItemType::MainMenu,0);
 
-void send_resync()
-{
-  commHelper.SendAnswer(AnsType::Resync,nullptr,0);
-}
-
 void resync()
 {
-  send_resync();
+  SYNC_ERR();
+  gui.ShowCDScr();
+  commHelper.SendAnswer(AnsType::Resync,nullptr,0);
+  watchdog.Ping();
   uint8_t resyncState=0;
   while(true)
   {
-    SYNC_ERR();
-    gui.ShowCDScr();
     //read request
     auto request=commHelper.ReceiveRequest();
+    //we have received something, resync process is not dead
+    watchdog.Ping();
     //check header
     if(request.reqType==ReqType::Invalid)
     {
-      send_resync();
+      commHelper.SendAnswer(AnsType::Resync,nullptr,0);
       resyncState=0;
       continue;
     }
@@ -63,13 +63,15 @@ void resync()
         //send ANS_OK
         if(!commHelper.SendAnswer(AnsType::Ok,nullptr,0))
         {
-          send_resync();
+          commHelper.SendAnswer(AnsType::Resync,nullptr,0);
           resyncState=0;
           continue;
         }
         //resync complete!
         SYNC_OK();
+        watchdog.Ping();
         gui.ShowCEScr();
+        watchdog.Ping();
         return;
       }
       resyncState=0;
@@ -77,7 +79,7 @@ void resync()
     //final resync-sequence
     if(request.reqType!=ReqType::Resync || !commHelper.SendAnswer(AnsType::Resync,request.payload,request.plLen))
     {
-      send_resync();
+      commHelper.SendAnswer(AnsType::Resync,nullptr,0);
       continue;
     }
     resyncState=1;
@@ -87,17 +89,23 @@ void resync()
 void conn_loop()
 {
   LOG(F("Entering connection handling loop"));
-  //TODO: activate watchdog for handling connection-loss and stalled resync
+  //activate watchdog for handling connection-loss and stalled resync
+  watchdog.Enable();
   resync();
   while(true)
   {
     //read request
     auto request=commHelper.ReceiveRequest();
     uint8_t result=1;
-    //perform action
+    //ping watchdog
+    watchdog.Ping();
+    //disable watchdog while performing requested action
+    watchdog.Disable();
     switch (request.reqType)
     {
       default:
+      case ReqType::Ping:
+        result=commHelper.SendAnswer(AnsType::Ok,nullptr,0);
       case ReqType::Invalid:
       case ReqType::Resync:
       case ReqType::ResyncComplete:
@@ -105,6 +113,8 @@ void conn_loop()
         //TODO: ping watchdog
         break;
     }
+    //reenable watchdog
+    watchdog.Enable();
     if(!result)
       resync();
   }
@@ -112,7 +122,6 @@ void conn_loop()
 
 void wakeup()
 {
-  //TODO: setup power state of MCU components
   //flush incoming data on the serial line
   commHelper.FlushInput();
   //pre-wakeup, enable power on all devices
@@ -155,7 +164,8 @@ void select_button_handler()
 void setup()
 {
   //TODO: read settings
-  //TODO: deactivate watchdog
+  //deactivate watchdog
+  watchdog.Disable();
   SYNC_LED_PREP();
   SYNC_ERR();
   commHelper.Init(SERIAL_PORT_SPEED);
@@ -175,8 +185,8 @@ void setup()
   if(commHelper.DataAvailable())
   {
     conn_loop();
-    //TODO: deactivate watchdog
-    //TODO: reset button status
+    watchdog.Disable();
+    buttonPressed=false;
     update_menu();
   }
   //update current-time
@@ -194,8 +204,8 @@ void loop()
   if(commHelper.DataAvailable())
   {
     conn_loop();
-    //TODO: deactivate watchdog
-    //TODO: reset button status
+    watchdog.Disable();
+    buttonPressed=false;
     update_menu();
     curMenuItem=gui.ResetToMainScr();
   }
