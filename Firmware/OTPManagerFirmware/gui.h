@@ -27,7 +27,7 @@ struct MenuItem
 
 class GuiBase : LowPowerDevice
 {
-    virtual void ResetToMainScr() = 0;
+    virtual MenuItem ResetToMainScr() = 0;
     virtual void ShowCDScr() = 0;
     virtual void ShowCEScr() = 0;
     virtual void ShowCodeScr(const char * const code) = 0;

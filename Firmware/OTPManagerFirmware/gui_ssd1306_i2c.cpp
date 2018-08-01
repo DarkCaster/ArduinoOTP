@@ -88,7 +88,7 @@ MenuItem GuiSSD1306_I2C::MenuSelect()
   return MenuItem(MenuItemType::MainMenu,0);
 }
 
-void GuiSSD1306_I2C::ResetToMainScr()
+MenuItem GuiSSD1306_I2C::ResetToMainScr()
 {
   char timeString[6];
   char dateString[48];
@@ -105,6 +105,7 @@ void GuiSSD1306_I2C::ResetToMainScr()
     u8g2.setFont(MAIN_SCREEN_TIME_FONT);
     u8g2.drawStr(timeXPos,timeYPos,timeString);
   } while ( u8g2.nextPage() );
+  return MenuItem(MenuItemType::MainMenu,0);
 }
 
 

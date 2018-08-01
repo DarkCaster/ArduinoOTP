@@ -20,7 +20,7 @@ class GuiSSD1306_I2C final : GuiBase
     void WakeupPre() final;
     void DescendPost() final;
     void WakeupPost() final;
-    void ResetToMainScr() final;
+    MenuItem ResetToMainScr() final;
     void ShowCDScr() final;
     void ShowCEScr() final;
     void ShowCodeScr(const char * const code) final;
