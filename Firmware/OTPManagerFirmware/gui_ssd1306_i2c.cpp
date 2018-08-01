@@ -48,7 +48,7 @@ void GuiSSD1306_I2C::WakeupPost()
 void GuiSSD1306_I2C::ShowCDScr()
 {
   u8g2.firstPage();
-  u8g2.setFont(u8g2_font_crox2cb_tf);
+  u8g2.setFont(MAIN_SCREEN_DATE_FONT);
   do {
     u8g2.drawStr(0,24,"< Resync >");
   } while ( u8g2.nextPage() );
@@ -57,7 +57,7 @@ void GuiSSD1306_I2C::ShowCDScr()
 void GuiSSD1306_I2C::ShowCEScr()
 {
   u8g2.firstPage();
-  u8g2.setFont(u8g2_font_crox2cb_tf);
+  u8g2.setFont(MAIN_SCREEN_DATE_FONT);
   do {
     u8g2.drawStr(0,24,"< Connected >");
   } while ( u8g2.nextPage() );
@@ -66,7 +66,7 @@ void GuiSSD1306_I2C::ShowCEScr()
 void GuiSSD1306_I2C::ShowCodeScr(const char * const code)
 {
   u8g2.firstPage();
-  u8g2.setFont(u8g2_font_crox2cb_tf);
+  u8g2.setFont(MAIN_SCREEN_DATE_FONT);
   do {
     u8g2.drawStr(0,24,code);
   } while ( u8g2.nextPage() );
