@@ -63,6 +63,7 @@ Request CommHelper::ReceiveRequest()
   {
     case REQ_RESYNC:
     case REQ_RESYNC_COMPLETE:
+    case REQ_PING:
       break;
     default:
       return Request::Invalid();

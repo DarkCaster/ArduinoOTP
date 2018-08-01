@@ -23,6 +23,7 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 // requests (masks)
 #define REQ_ALL_MASK 0xE0_u8
 #define REQ_INVALID 0x00_u8
+#define REQ_PING 0x20_u8
 #define REQ_RESYNC_COMPLETE 0xC0_u8
 #define REQ_RESYNC 0xE0_u8
 
@@ -35,6 +36,7 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 enum class ReqType : uint8_t
 {
   Invalid = REQ_INVALID,
+  Ping = REQ_PING,
   ResyncComplete = REQ_RESYNC_COMPLETE,
   Resync = REQ_RESYNC
 };
