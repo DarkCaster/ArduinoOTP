@@ -11,8 +11,12 @@
 #define RTC_POWER_PIN 4
 #define LED_SYNC LED_BUILTIN
 
+#define DEFAULT_IDLE_TIMEOUT 10
+#define DEFAULT_CODE_TIMEOUT 30
+
 #define BUTTON_NEXT_PIN 2
 #define BUTTON_SELECT_PIN 3
+#define BUTTON_DELAY_MS 50
 
 #define DISPLAY_ADDR 0x78
 #define DISPLAY_POWER_PIN 7
@@ -33,9 +37,6 @@
 #define MAIN_SCREEN_DAYS_OF_THE_WEEK {"mon","tue","wed","thu","fri","sat","sun"}
 #define MAIN_SCREEN_DAY_LEN 4
 
-
 #define DEBUG_SERIAL_PORT SERIAL_PORT
-
-
 
 #endif
