@@ -1,9 +1,13 @@
 #include <avr/wdt.h>
 #include "watchdog_AVR.h"
 
-void WatchdogAVR::Enable(uint16_t maxDelayMS)
+WatchdogAVR::WatchdogAVR(uint16_t defaultDelayMS)
 {
-  uint8_t delay=0;
+  SetDelay(defaultDelayMS);
+}
+
+void WatchdogAVR::SetDelay(uint16_t maxDelayMS)
+{
   if(maxDelayMS>1000)
     delay=WDTO_2S;
   else if(maxDelayMS>500)
@@ -20,6 +24,10 @@ void WatchdogAVR::Enable(uint16_t maxDelayMS)
     delay=WDTO_30MS;
   else
     delay=WDTO_15MS;
+}
+
+void WatchdogAVR::Enable()
+{
   wdt_enable(delay);
 }
 
