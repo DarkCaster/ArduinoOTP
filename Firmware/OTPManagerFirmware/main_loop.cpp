@@ -29,6 +29,9 @@ static CommHelper commHelper(&SERIAL_PORT);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,(ClockHelperBase*)(&clockHelper));
 
+static volatile bool nextButtonPressed=false;
+static volatile bool selectButtonPressed=false;
+
 void send_resync()
 {
   commHelper.SendAnswer(AnsType::Resync,nullptr,0);
@@ -138,9 +141,15 @@ void update_menu()
   //TODO: reload menu items
 }
 
-void next_button_handler() { }
+void next_button_handler()
+{
+  nextButtonPressed=true;
+}
 
-void select_button_handler() { }
+void select_button_handler()
+{
+  selectButtonPressed=true;
+}
 
 void setup()
 {
@@ -196,4 +205,6 @@ void loop()
   wakeup();
   clockHelper.Update();
   gui.ResetToMainScr();
+  nextButtonPressed=false;
+  selectButtonPressed=false;
 }
