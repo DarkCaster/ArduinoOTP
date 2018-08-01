@@ -29,8 +29,9 @@ static CommHelper commHelper(&SERIAL_PORT);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,(ClockHelperBase*)(&clockHelper));
 
-static volatile bool nextButtonPressed=false;
-static volatile bool selectButtonPressed=false;
+static volatile bool buttonPressed=false;
+static unsigned long lastTime=0;
+static MenuItem curMenuItem(MenuItemType::MainMenu,0);
 
 void send_resync()
 {
@@ -143,12 +144,12 @@ void update_menu()
 
 void next_button_handler()
 {
-  nextButtonPressed=true;
+  buttonPressed=true;
 }
 
 void select_button_handler()
 {
-  selectButtonPressed=true;
+  buttonPressed=true;
 }
 
 void setup()
@@ -169,8 +170,8 @@ void setup()
   clockHelper.InitPost();
   update_menu();
   //install button interrupts
-  attachInterrupt(digitalPinToInterrupt(BUTTON_NEXT_PIN),next_button_handler, RISING);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_SELECT_PIN),select_button_handler, RISING);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_NEXT_PIN),next_button_handler, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_SELECT_PIN),select_button_handler, CHANGE);
   if(commHelper.DataAvailable())
   {
     conn_loop();
@@ -180,31 +181,81 @@ void setup()
   }
   //update current-time
   clockHelper.Update();
-  gui.ResetToMainScr();
+  curMenuItem=gui.ResetToMainScr();
+  //reset last-time
+  lastTime=millis();
+  STATUS();
   LOG(F("Setup complete!"));
 }
 
 void loop()
 {
+  //initialize resync routine, if any incoming data detected on serial
   if(commHelper.DataAvailable())
   {
     conn_loop();
     //TODO: deactivate watchdog
     //TODO: reset button status
     update_menu();
-    gui.ResetToMainScr();
+    curMenuItem=gui.ResetToMainScr();
   }
-  //TODO: detect button event, perform action
-  //TODO: calculate time after previous button event
-  //TODO: after some idle time -> activate powersave mode (call descend)
 
-  //code for testing powersave
-  delay(5000);
-  descend();
-  //<< execution will be paused here >>
-  wakeup();
-  clockHelper.Update();
-  gui.ResetToMainScr();
-  nextButtonPressed=false;
-  selectButtonPressed=false;
+  //read current time
+  auto currentTime=millis();
+  //fix timer overflow
+  if(currentTime<lastTime)
+    lastTime=currentTime;
+  auto timeDiff=currentTime-lastTime;
+  //delay between buttons press
+  if(timeDiff<BUTTON_DELAY_MS)
+    return;
+
+  //get current state of the buttons only once
+  uint8_t button=0;
+  if(buttonPressed)
+  {
+    if(digitalRead(BUTTON_NEXT_PIN))
+      button=2;
+    else if(digitalRead(BUTTON_SELECT_PIN))
+      button=1;
+    else
+      lastTime=millis();
+    buttonPressed=false;
+  }
+  else if(digitalRead(BUTTON_NEXT_PIN) || digitalRead(BUTTON_SELECT_PIN))
+    lastTime=millis();
+
+  //detect button event, perform action
+  if(button==2)
+  {
+    STATUS();
+    LOG(F("Next button pressed"));
+    //TODO: perform action
+    //reset last-time
+    lastTime=millis();
+    return;
+  }
+
+  if (button==1)
+  {
+    STATUS();
+    LOG(F("Select button pressed"));
+    //TODO: perform action
+    //reset last-time
+    lastTime=millis();
+    return;
+  }
+
+  if((timeDiff>DEFAULT_IDLE_TIMEOUT && curMenuItem.itemType==MenuItemType::MainMenu) ||
+    (timeDiff>DEFAULT_CODE_TIMEOUT && curMenuItem.itemType==MenuItemType::ProfileItem))
+  {
+    //activate powersave mode
+    descend();
+    //<< execution will be paused here >>
+    wakeup();
+    clockHelper.Update();
+    curMenuItem=gui.ResetToMainScr();
+    //reset last-time
+    lastTime=millis();
+  }
 }
