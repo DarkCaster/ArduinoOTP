@@ -13,3 +13,9 @@
 [submodule "Firmware/Libraries/Low-Power"]
 	path = Firmware/Libraries/Low-Power
 	url = https://github.com/rocketscream/Low-Power.git
+[submodule "OTPManager/DotNetBlocks"]
+	path = OTPManager/DotNetBlocks
+	url = https://github.com/DarkCaster/DotNetBlocks.git
+[submodule "OTPManager/External/xwt"]
+	path = OTPManager/External/xwt
+	url = https://github.com/mono/xwt.git
