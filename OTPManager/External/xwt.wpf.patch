@@ -1,0 +1,42 @@
+diff -uprN xwt/Xwt.WPF/Xwt.WPF.csproj xwt.new/Xwt.WPF/Xwt.WPF.csproj
+--- xwt/Xwt.WPF/Xwt.WPF.csproj	2017-11-05 00:29:06.178628000 +0300
++++ xwt.new/Xwt.WPF/Xwt.WPF.csproj	2017-11-05 02:20:18.771301000 +0300
+@@ -36,16 +36,26 @@
+     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
+   </PropertyGroup>
+   <ItemGroup>
+-    <Reference Include="PresentationCore" />
+-    <Reference Include="PresentationFramework" />
+-    <Reference Include="PresentationFramework.Aero" />
+-    <Reference Include="System" />
++    <Reference Include="PresentationCore">
++      <HintPath>..\..\PresentationCore.dll</HintPath>
++    </Reference>
++    <Reference Include="PresentationFramework">
++      <HintPath>..\..\PresentationFramework.dll</HintPath>
++    </Reference>
++    <Reference Include="PresentationFramework.Aero">
++      <HintPath>..\..\PresentationFramework.Aero.dll</HintPath>
++    </Reference>
++    <Reference Include="System">
++      <HintPath>..\..\System.dll</HintPath>
++    </Reference>
+     <Reference Include="System.Core" />
+     <Reference Include="System.Drawing" />
+     <Reference Include="System.Windows.Forms" />
+     <Reference Include="System.Xaml" />
+     <Reference Include="System.Xml" />
+-    <Reference Include="WindowsBase" />
++    <Reference Include="WindowsBase">
++      <HintPath>..\..\WindowsBase.dll</HintPath>
++    </Reference>
+   </ItemGroup>
+   <ItemGroup>
+     <Compile Include="AssemblyInfo.cs" />
+@@ -191,4 +201,4 @@
+     <EmbeddedResource Include="icons\remove-16~disabled.png" />
+     <EmbeddedResource Include="icons\remove-16~dark~disabled.png" />
+   </ItemGroup>
+-</Project>
+\ No newline at end of file
++</Project>

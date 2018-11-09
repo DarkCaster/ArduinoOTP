@@ -1,0 +1,161 @@
+diff -uprN xwt/Xwt/Xwt.nuspec xwt.new/Xwt/Xwt.nuspec
+--- xwt/Xwt/Xwt.nuspec	2017-11-03 18:42:03.000000000 +0300
++++ xwt.new/Xwt/Xwt.nuspec	2017-11-05 02:30:35.903301000 +0300
+@@ -1,11 +1,11 @@
+ ﻿<?xml version="1.0" encoding="UTF-8" ?>
+ <package>
+ 	<metadata>
+-		<id>$id$</id>
+-		<title>$title$</title>
+-		<version>$version$</version>
++		<id>Xwt</id>
++		<title>Xwt</title>
++		<version>0.2.47</version>
+ 		<authors>Lluis Sanchez</authors>
+-		<summary>$description$</summary>
++		<summary>Xwt UI Framework</summary>
+ 		<description>
+ Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono that run on multiple platforms from the same codebase.
+ 
+@@ -17,11 +17,11 @@ The framework consists of the frontend (
+ 		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>
+ 		<projectUrl>https://github.com/mono/xwt/</projectUrl>
+ 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+-		<copyright>$copyright$</copyright>
++		<copyright>Xamarin, Inc (http://www.xamarin.com)</copyright>
+ 		<tags>xwt cross platform gui ui toolkit framework desktop wpf mac osx monomac cocoa gtk</tags>
+ 	</metadata>
+ 	<files>
+-		<file src="..\LICENSE.txt" />
+-		<file src="..\README.markdown" />
++		<file src="**/*.dll" target="lib" exclude="**/System.*;**/Microsoft.*;**/Mono.*;**/mscorlib.*" />
++		<file src="**/*.pdb" target="lib" exclude="**/System.*;**/Microsoft.*;**/Mono.*;**/mscorlib.*" />
+ 	</files>
+-</package>
+\ No newline at end of file
++</package>
+diff -uprN xwt/Xwt.Gtk/Xwt.Gtk3.nuspec xwt.new/Xwt.Gtk/Xwt.Gtk3.nuspec
+--- xwt/Xwt.Gtk/Xwt.Gtk3.nuspec	2017-11-03 18:42:03.000000000 +0300
++++ xwt.new/Xwt.Gtk/Xwt.Gtk3.nuspec	2017-11-05 02:30:35.903301000 +0300
+@@ -1,11 +1,11 @@
+ ﻿<?xml version="1.0" encoding="UTF-8" ?>
+ <package>
+ 	<metadata>
+-		<id>$id$</id>
+-		<title>$title$</title>
+-		<version>$version$</version>
++		<id>Xwt.Gtk3</id>
++		<title>Xwt.Gtk3</title>
++		<version>0.2.47</version>
+ 		<authors>Lluis Sanchez</authors>
+-		<summary>$description$</summary>
++		<summary>Gtk3 Toolkit for the Xwt UI Framework</summary>
+ 		<description>
+ Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
+ 
+@@ -17,16 +17,16 @@ Xwt.Gtk3 requires gtk-sharp3 (https://gi
+ 		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>
+ 		<projectUrl>https://github.com/mono/xwt/</projectUrl>
+ 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+-		<copyright>$copyright$</copyright>
++		<copyright>Xamarin, Inc (http://www.xamarin.com)</copyright>
+ 		<tags>xwt cross platform gui ui toolkit framework desktop gtk gtk3</tags>
+ 		<dependencies>
+-			<dependency id="Xwt" version="[$version$]"/>
++			<dependency id="Xwt" version="[0.2.47]"/>
+ 		</dependencies>
+ 	</metadata>
+ 	<files>
++		<file src="**/*Gtk3.dll" target="lib" exclude="**/System.*;**/Microsoft.*;**/Mono.*;**/mscorlib.*" />
++		<file src="**/*Gtk3.pdb" target="lib" exclude="**/System.*;**/Microsoft.*;**/Mono.*;**/mscorlib.*" />
+ 		<file src="Xwt.Gtk3.dll.config" target="build" />
+ 		<file src="Xwt.Gtk3.nuget.props" target="build\Xwt.Gtk3.props" />
+-		<file src="..\LICENSE.txt" />
+-		<file src="..\README.markdown" />
+ 	</files>
+-</package>
+\ No newline at end of file
++</package>
+diff -uprN xwt/Xwt.Gtk/Xwt.Gtk.nuspec xwt.new/Xwt.Gtk/Xwt.Gtk.nuspec
+--- xwt/Xwt.Gtk/Xwt.Gtk.nuspec	2017-11-03 18:42:03.000000000 +0300
++++ xwt.new/Xwt.Gtk/Xwt.Gtk.nuspec	2017-11-05 02:30:35.903301000 +0300
+@@ -1,11 +1,11 @@
+ ﻿<?xml version="1.0" encoding="UTF-8" ?>
+ <package>
+ 	<metadata>
+-		<id>$id$</id>
++		<id>Xwt.Gtk</id>
+ 		<title>Xwt.Gtk2</title>
+-		<version>$version$</version>
++		<version>0.2.47</version>
+ 		<authors>Lluis Sanchez</authors>
+-		<summary>$description$</summary>
++		<summary>Gtk Toolkit for the Xwt UI Framework</summary>
+ 		<description>
+ Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
+ 
+@@ -17,16 +17,16 @@ Xwt.Gtk requires gtk-sharp (https://gith
+ 		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>
+ 		<projectUrl>https://github.com/mono/xwt/</projectUrl>
+ 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+-		<copyright>$copyright$</copyright>
++		<copyright>Xamarin, Inc (http://www.xamarin.com)</copyright>
+ 		<tags>xwt cross platform gui ui toolkit framework desktop gtk gtk2</tags>
+ 		<dependencies>
+ 			<dependency id="Xwt" version="[$version$]"/>
+ 		</dependencies>
+ 	</metadata>
+ 	<files>
++		<file src="**/*Gtk.dll" target="lib" exclude="**/System.*;**/Microsoft.*;**/Mono.*;**/mscorlib.*" />
++		<file src="**/*Gtk.pdb" target="lib" exclude="**/System.*;**/Microsoft.*;**/Mono.*;**/mscorlib.*" />
+ 		<file src="Xwt.Gtk.dll.config" target="build" />
+ 		<file src="Xwt.Gtk.nuget.props" target="build\Xwt.Gtk.props" />
+-		<file src="..\LICENSE.txt" />
+-		<file src="..\README.markdown" />
+ 	</files>
+-</package>
+\ No newline at end of file
++</package>
+diff -uprN xwt/Xwt.WPF/Xwt.WPF.nuspec xwt.new/Xwt.WPF/Xwt.WPF.nuspec
+--- xwt/Xwt.WPF/Xwt.WPF.nuspec	2017-11-03 18:42:03.000000000 +0300
++++ xwt.new/Xwt.WPF/Xwt.WPF.nuspec	2017-11-05 02:38:53.927301000 +0300
+@@ -1,28 +1,28 @@
+ ﻿<?xml version="1.0" encoding="UTF-8" ?>
+ <package>
+ 	<metadata>
+-		<id>$id$</id>
+-		<title>$title$</title>
+-		<version>$version$</version>
++		<id>Xwt.WPF</id>
++		<title>Xwt.WPF</title>
++		<version>0.2.47</version>
+ 		<authors>Lluis Sanchez</authors>
+-		<summary>$description$</summary>
++		<summary>Wpf Toolkit for the Xwt UI Framework</summary>
+ 		<description>
+ Xwt is a cross-platform UI toolkit for creating desktop applications with .NET and Mono.
+-		
++
+ This package contains the WPF toolkit backend for Xwt based applications targeting WPF (Windows Presentation Foundation).
+ 		</description>
+ 		<releaseNotes></releaseNotes>
+ 		<licenseUrl>https://raw.githubusercontent.com/mono/xwt/master/LICENSE.txt</licenseUrl>
+ 		<projectUrl>https://github.com/mono/xwt/</projectUrl>
+ 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+-		<copyright>$copyright$</copyright>
++		<copyright>Copyright (c) XWT Contributors, 2011-2012</copyright>
+ 		<tags>xwt cross platform gui ui toolkit framework desktop wpf</tags>
+ 		<dependencies>
+-			<dependency id="Xwt" version="[$version$]"/>
++			<dependency id="Xwt" version="[0.2.47]"/>
+ 		</dependencies>
+ 	</metadata>
+ 	<files>
+-		<file src="..\LICENSE.txt" />
+-		<file src="..\README.markdown" />
++		<file src="**/*WPF.dll" target="lib" exclude="**/System.*;**/Microsoft.*;**/Mono.*;**/mscorlib.*" />
++		<file src="**/*WPF.pdb" target="lib" exclude="**/System.*;**/Microsoft.*;**/Mono.*;**/mscorlib.*" />
+ 	</files>
+-</package>
+\ No newline at end of file
++</package>
