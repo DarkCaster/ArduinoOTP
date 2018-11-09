@@ -1,7 +1,7 @@
 diff -uprN xwt/Xwt.WPF/Xwt.WPF.csproj xwt.new/Xwt.WPF/Xwt.WPF.csproj
---- xwt/Xwt.WPF/Xwt.WPF.csproj	2017-11-05 00:29:06.178628000 +0300
-+++ xwt.new/Xwt.WPF/Xwt.WPF.csproj	2017-11-05 02:20:18.771301000 +0300
-@@ -36,16 +36,26 @@
+--- xwt/Xwt.WPF/Xwt.WPF.csproj	2018-11-10 01:45:14.316442850 +0300
++++ xwt.new/Xwt.WPF/Xwt.WPF.csproj	2018-11-10 02:44:05.616968622 +0300
+@@ -38,10 +38,18 @@
      <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
    </PropertyGroup>
    <ItemGroup>
@@ -24,8 +24,10 @@ diff -uprN xwt/Xwt.WPF/Xwt.WPF.csproj xwt.new/Xwt.WPF/Xwt.WPF.csproj
      <Reference Include="System.Core" />
      <Reference Include="System.Drawing" />
      <Reference Include="System.Windows.Forms" />
-     <Reference Include="System.Xaml" />
+@@ -49,7 +57,9 @@
      <Reference Include="System.Xml" />
+     <Reference Include="UIAutomationProvider" />
+     <Reference Include="UIAutomationTypes" />
 -    <Reference Include="WindowsBase" />
 +    <Reference Include="WindowsBase">
 +      <HintPath>..\..\WindowsBase.dll</HintPath>
@@ -33,10 +35,3 @@ diff -uprN xwt/Xwt.WPF/Xwt.WPF.csproj xwt.new/Xwt.WPF/Xwt.WPF.csproj
    </ItemGroup>
    <ItemGroup>
      <Compile Include="AssemblyInfo.cs" />
-@@ -191,4 +201,4 @@
-     <EmbeddedResource Include="icons\remove-16~disabled.png" />
-     <EmbeddedResource Include="icons\remove-16~dark~disabled.png" />
-   </ItemGroup>
--</Project>
-\ No newline at end of file
-+</Project>
