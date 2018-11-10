@@ -18,6 +18,8 @@ project(OTPManagerTestApp C CXX ASM)
 
 include(ArduinoCmakeBuilder/arduino-build-helper.cmake)
 
+set_avr_compiler_flags()
+
 add_arduino_library(SPI ${ARDUINO_LIBS_PATH})
 add_arduino_library(Wire ${ARDUINO_LIBS_PATH})
 add_arduino_library(U8g2_Arduino ${CMAKE_SOURCE_DIR}/Libraries SPI Wire)
