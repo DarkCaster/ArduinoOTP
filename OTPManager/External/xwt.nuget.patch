@@ -147,7 +147,7 @@ diff -uprN xwt/Xwt.WPF/Xwt.WPF.nuspec xwt.new/Xwt.WPF/Xwt.WPF.nuspec
  		<tags>xwt cross platform gui ui toolkit framework desktop wpf</tags>
  		<dependencies>
 -			<dependency id="Xwt" version="[$version$]"/>
-+			<dependency id="Xwt" version="[0.2.47]"/>
++			<dependency id="Xwt" version="[0.2.131]"/>
  		</dependencies>
  	</metadata>
  	<files>
