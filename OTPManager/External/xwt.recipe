@@ -1,3 +1,3 @@
 sources="xwt"
-targets="Xwt.0.2.47.nupkg Xwt.Gtk3.0.2.47.nupkg Xwt.WPF.0.2.47.nupkg"
+targets="Xwt.0.2.131.nupkg Xwt.Gtk3.0.2.131.nupkg Xwt.WPF.0.2.131.nupkg"
 files="xwt.nuget.patch xwt.wpf.patch PresentationCore.dll PresentationFramework.Aero.dll PresentationFramework.dll System.dll WindowsBase.dll"

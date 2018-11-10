@@ -10,7 +10,7 @@ diff -uprN xwt/Xwt/Xwt.nuspec xwt.new/Xwt/Xwt.nuspec
 -		<version>$version$</version>
 +		<id>Xwt</id>
 +		<title>Xwt</title>
-+		<version>0.2.47</version>
++		<version>0.2.131</version>
  		<authors>Lluis Sanchez</authors>
 -		<summary>$description$</summary>
 +		<summary>Xwt UI Framework</summary>
@@ -46,7 +46,7 @@ diff -uprN xwt/Xwt.Gtk/Xwt.Gtk3.nuspec xwt.new/Xwt.Gtk/Xwt.Gtk3.nuspec
 -		<version>$version$</version>
 +		<id>Xwt.Gtk3</id>
 +		<title>Xwt.Gtk3</title>
-+		<version>0.2.47</version>
++		<version>0.2.131</version>
  		<authors>Lluis Sanchez</authors>
 -		<summary>$description$</summary>
 +		<summary>Gtk3 Toolkit for the Xwt UI Framework</summary>
@@ -62,7 +62,7 @@ diff -uprN xwt/Xwt.Gtk/Xwt.Gtk3.nuspec xwt.new/Xwt.Gtk/Xwt.Gtk3.nuspec
  		<tags>xwt cross platform gui ui toolkit framework desktop gtk gtk3</tags>
  		<dependencies>
 -			<dependency id="Xwt" version="[$version$]"/>
-+			<dependency id="Xwt" version="[0.2.47]"/>
++			<dependency id="Xwt" version="[0.2.131]"/>
  		</dependencies>
  	</metadata>
  	<files>
@@ -87,7 +87,7 @@ diff -uprN xwt/Xwt.Gtk/Xwt.Gtk.nuspec xwt.new/Xwt.Gtk/Xwt.Gtk.nuspec
 +		<id>Xwt.Gtk</id>
  		<title>Xwt.Gtk2</title>
 -		<version>$version$</version>
-+		<version>0.2.47</version>
++		<version>0.2.131</version>
  		<authors>Lluis Sanchez</authors>
 -		<summary>$description$</summary>
 +		<summary>Gtk Toolkit for the Xwt UI Framework</summary>
@@ -128,7 +128,7 @@ diff -uprN xwt/Xwt.WPF/Xwt.WPF.nuspec xwt.new/Xwt.WPF/Xwt.WPF.nuspec
 -		<version>$version$</version>
 +		<id>Xwt.WPF</id>
 +		<title>Xwt.WPF</title>
-+		<version>0.2.47</version>
++		<version>0.2.131</version>
  		<authors>Lluis Sanchez</authors>
 -		<summary>$description$</summary>
 +		<summary>Wpf Toolkit for the Xwt UI Framework</summary>
