@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomBlocks", "DotNetBlock
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomBlocksExtra", "DotNetBlocks\CustomBlocksExtra\CustomBlocksExtra.csproj", "{9BBB3FA5-45C9-43BD-A0F3-A8F98E1469A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OTPManagerApi", "OTPManagerApi\OTPManagerApi.csproj", "{3E25E3E2-4C66-456B-AE33-AB086403EDFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{9BBB3FA5-45C9-43BD-A0F3-A8F98E1469A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BBB3FA5-45C9-43BD-A0F3-A8F98E1469A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BBB3FA5-45C9-43BD-A0F3-A8F98E1469A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E25E3E2-4C66-456B-AE33-AB086403EDFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E25E3E2-4C66-456B-AE33-AB086403EDFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E25E3E2-4C66-456B-AE33-AB086403EDFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E25E3E2-4C66-456B-AE33-AB086403EDFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
