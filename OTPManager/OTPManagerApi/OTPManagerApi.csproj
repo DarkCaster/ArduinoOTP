@@ -42,9 +42,16 @@
     <Compile Include="Abstracts\IOTPDeviceManager.cs" />
     <Compile Include="Abstracts\OTPDeviceEventArgs.cs" />
     <Compile Include="Abstracts\OTPDeviceState.cs" />
+    <Compile Include="Helpers\StreamResyncHelper.cs" />
+    <Compile Include="Helpers\CRC8.cs" />
+    <Compile Include="Helpers\StreamCommHelper.cs" />
+    <Compile Include="Helpers\ReqType.cs" />
+    <Compile Include="Helpers\AnsType.cs" />
+    <Compile Include="Helpers\Answer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetBlocks\CustomBlocks\CustomBlocks.csproj">
