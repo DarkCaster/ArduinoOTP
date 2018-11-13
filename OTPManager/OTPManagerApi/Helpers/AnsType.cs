@@ -32,6 +32,7 @@ namespace OTPManagerApi.Helpers
 	{
 		Invalid = 0x00,
 		Ok = 0xC0,
+		Pong = 0x20,
 		Resync = 0xE0
 	}
 }
