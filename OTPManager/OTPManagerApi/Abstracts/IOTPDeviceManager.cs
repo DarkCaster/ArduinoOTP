@@ -27,6 +27,7 @@
 // SOFTWARE.
 
 using System;
+using System.Threading.Tasks;
 using DarkCaster.Events;
 
 namespace OTPManagerApi
@@ -34,7 +35,7 @@ namespace OTPManagerApi
 	public interface IOTPDeviceManager : IDisposable
 	{
 		ISafeEvent<OTPDeviceEventArgs> DeviceEvent { get; }
-		void Connect();
-		void Disconnect();
+		Task Connect();
+		Task Disconnect();
 	}
 }
