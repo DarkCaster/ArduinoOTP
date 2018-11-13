@@ -105,7 +105,7 @@ void conn_loop()
     {
       default:
       case ReqType::Ping:
-        result=commHelper.SendAnswer(AnsType::Ok,nullptr,0);
+        result=commHelper.SendAnswer(AnsType::Pong,nullptr,0);
       case ReqType::Invalid:
       case ReqType::Resync:
       case ReqType::ResyncComplete:

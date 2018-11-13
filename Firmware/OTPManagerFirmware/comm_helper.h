@@ -30,6 +30,7 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 // answers (masks)
 #define ANS_ALL_MASK 0xE0_u8
 #define ANS_INVALID 0x00_u8
+#define ANS_PONG 0x20_u8
 #define ANS_OK 0xC0_u8
 #define ANS_RESYNC 0xE0_u8
 
@@ -45,6 +46,7 @@ enum class AnsType : uint8_t
 {
   Invalid = ANS_INVALID,
   Ok = ANS_OK,
+  Pong = ANS_PONG,
   Resync = ANS_RESYNC
 };
 
