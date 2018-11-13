@@ -36,14 +36,13 @@ namespace OTPManagerApi.Helpers
 	{
 		private readonly ICommHelper commHelper;
 		private readonly Random random;
+		private readonly ProtocolConfig config;
 
-		//TODO: make this parameter configurable
-		private const int RESYNC_DATA_DROP_LIMIT = 200;
-
-		public ResyncHelper(ICommHelper commHelper)
+		public ResyncHelper(ICommHelper commHelper, ProtocolConfig config)
 		{
 			this.commHelper = commHelper;
 			this.random = new Random();
+			this.config = config;
 		}
 
 		public async Task Resync()
@@ -52,7 +51,7 @@ namespace OTPManagerApi.Helpers
 			//send empty resync request
 			await commHelper.SendRequest(ReqType.Resync, reqBuff, 0, 0);
 			//read and drop answers until timeout exception, or data limit was reached
-			var dataDropLeft = RESYNC_DATA_DROP_LIMIT;
+			var dataDropLeft = config.RESYNC_DATA_DROP_LIMIT;
 			while(dataDropLeft>0)
 			{
 				try
