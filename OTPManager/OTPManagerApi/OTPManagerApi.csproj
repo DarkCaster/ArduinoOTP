@@ -49,6 +49,7 @@
     <Compile Include="Protocol\Answer.cs" />
     <Compile Include="Protocol\ReqType.cs" />
     <Compile Include="Helpers\ICommHelper.cs" />
+    <Compile Include="Abstracts\StreamDeviceManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
