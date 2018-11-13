@@ -28,11 +28,62 @@
 
 using System;
 using System.Threading.Tasks;
+using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Helpers
 {
-	internal static class ResyncHelper
+	internal sealed class ResyncHelper
 	{
-		
+		private readonly ICommHelper commHelper;
+		private readonly Random random;
+
+		//TODO: make this parameter configurable
+		private const int RESYNC_DATA_DROP_LIMIT = 200;
+
+		public ResyncHelper(ICommHelper commHelper)
+		{
+			this.commHelper = commHelper;
+			this.random = new Random();
+		}
+
+		public async Task Resync()
+		{
+			var reqBuff = new byte[commHelper.MaxPayloadSize];
+			//send empty resync request
+			await commHelper.SendRequest(ReqType.Resync, reqBuff, 0, 0);
+			//read and drop answers until timeout exception, or data limit was reached
+			var dataDropLeft = RESYNC_DATA_DROP_LIMIT;
+			while(dataDropLeft>0)
+			{
+				try
+				{
+					var answer = await commHelper.ReceiveAnswer();
+					if (answer.plLen > 0)
+						dataDropLeft -= answer.plLen;
+					else
+						dataDropLeft -= 1;
+				}
+				catch (TimeoutException) { break; }
+			}
+			if (dataDropLeft <= 0)
+				throw new Exception("Cannot confirm resync request transmisson!");
+			//generate payload
+			random.NextBytes(reqBuff);
+			//send resync sequence
+			await commHelper.SendRequest(ReqType.Resync, reqBuff, 0, reqBuff.Length);
+			//receive resync answer
+			var verification = await commHelper.ReceiveAnswer();
+			//compare resync sequence
+			if (verification.plLen != reqBuff.Length)
+				throw new Exception("Resync verification sequence is incorrect!");
+			for (int i = 0; i < verification.plLen; ++i)
+				if (verification.payload[i] != reqBuff[i])
+					throw new Exception("Resync verification sequence mismatch!");
+			//send resync-complete request
+			await commHelper.SendRequest(ReqType.ResyncComplete, reqBuff, 0, 0);
+			//receive OK answer
+			if ((await commHelper.ReceiveAnswer()).ansType != AnsType.Ok)
+				throw new Exception("Final resync-confirmation failed!");
+		}
 	}
 }
