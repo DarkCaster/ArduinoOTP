@@ -14,7 +14,7 @@ if((${CMAKE_GENERATOR} STREQUAL "NMake Makefiles JOM") AND (NOT EXISTS "${CMAKE_
     set(CMAKE_MAKE_PROGRAM "${CMAKE_SOURCE_DIR}/Jom_Win32/jom.exe" CACHE INTERNAL "CMAKE_MAKE_PROGRAM")
 endif()
 
-project(OTPManagerTestApp C CXX ASM)
+project(OTPManagerFirmware C CXX ASM)
 
 include(ArduinoCmakeBuilder/arduino-build-helper.cmake)
 
