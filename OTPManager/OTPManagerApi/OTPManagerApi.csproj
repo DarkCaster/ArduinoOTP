@@ -42,7 +42,7 @@
     <Compile Include="Abstracts\IOTPDeviceManager.cs" />
     <Compile Include="Abstracts\OTPDeviceEventArgs.cs" />
     <Compile Include="Abstracts\OTPDeviceState.cs" />
-    <Compile Include="Helpers\StreamResyncHelper.cs" />
+    <Compile Include="Helpers\ResyncHelper.cs" />
     <Compile Include="Helpers\CRC8.cs" />
     <Compile Include="Helpers\StreamCommHelper.cs" />
     <Compile Include="Protocol\AnsType.cs" />

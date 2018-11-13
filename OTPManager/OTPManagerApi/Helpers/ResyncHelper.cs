@@ -1,5 +1,5 @@
 ﻿//
-// StreamResyncHelper.cs
+// ResyncHelper.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace OTPManagerApi.Helpers
 {
-	internal static class StreamResyncHelper
+	internal static class ResyncHelper
 	{
 		
 	}
