@@ -34,7 +34,7 @@ using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Helpers
 {
-	public sealed class StreamCommHelper
+	public sealed class StreamCommHelper : ICommHelper
 	{
 		private const int CMD_HDR_SIZE = 1;
 		private const int CMD_CRC_SIZE = 1;
@@ -44,7 +44,7 @@ namespace OTPManagerApi.Helpers
 		private const int CMD_SIZE_MASK = 0x1F;
 		private const int CMD_MAX_REMSZ = 15;
 		private const int CMD_MIN_REMSZ = 1;
-		public const int CMD_MAX_PLSZ = 14;
+		private const int CMD_MAX_PLSZ = 14;
 
 		private const int ANS_ALL_MASK = 0xE0;
 
@@ -59,6 +59,8 @@ namespace OTPManagerApi.Helpers
 			this.sendBuff = new byte[CMD_BUFF_SIZE];
 		}
 
+		public int MaxPayloadSize => CMD_MAX_PLSZ;
+
 		public async Task<Answer> ReceiveAnswer()
 		{
 			try
@@ -69,7 +71,7 @@ namespace OTPManagerApi.Helpers
 					cts.CancelAfter(CMD_TIMEOUT);
 					bRead = await link.ReadAsync(recvBuff, 0, 1, cts.Token);
 					if (bRead != 1)
-						return Answer.Invalid;
+						throw new NotSupportedException("Stream has reached EOF and cannot receive data");
 				}
 				int remSz = recvBuff[0] & CMD_SIZE_MASK;
 				if (remSz < CMD_MIN_REMSZ || remSz > CMD_MAX_REMSZ)

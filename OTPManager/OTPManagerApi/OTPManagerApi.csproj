@@ -48,6 +48,7 @@
     <Compile Include="Protocol\AnsType.cs" />
     <Compile Include="Protocol\Answer.cs" />
     <Compile Include="Protocol\ReqType.cs" />
+    <Compile Include="Helpers\ICommHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
