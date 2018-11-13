@@ -51,11 +51,13 @@
     <Compile Include="Helpers\ICommHelper.cs" />
     <Compile Include="Abstracts\StreamDeviceManager.cs" />
     <Compile Include="Protocol\ProtocolConfig.cs" />
+    <Compile Include="Serial\SerialProtocolConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
     <Folder Include="Helpers\" />
     <Folder Include="Protocol\" />
+    <Folder Include="Serial\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetBlocks\CustomBlocks\CustomBlocks.csproj">
