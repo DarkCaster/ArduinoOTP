@@ -1,5 +1,5 @@
 ﻿//
-// Request.cs
+// AnsType.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
@@ -26,22 +26,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 using System;
-namespace OTPManagerApi.Helpers
+namespace OTPManagerApi.Protocol
 {
-	public struct Answer
+	public enum AnsType
 	{
-		public readonly AnsType ansType;
-		public readonly byte[] payload;
-		public readonly int plLen;
-
-		public Answer(AnsType ansType, byte[] plBuff, int offset, int length)
-		{
-			this.ansType = ansType;
-			this.payload = new byte[length];
-			Buffer.BlockCopy(plBuff, offset, this.payload, 0, length);
-			this.plLen = length;
-		}
-
-		public static Answer Invalid => new Answer(AnsType.Invalid, new byte[0], 0, 0);
+		Invalid = 0x00,
+		Ok = 0xC0,
+		Pong = 0x20,
+		Resync = 0xE0
 	}
 }

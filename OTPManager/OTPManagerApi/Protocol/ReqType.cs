@@ -1,5 +1,5 @@
 ﻿//
-// AnsType.cs
+// Request.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
@@ -25,14 +25,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+// requests (masks)
 using System;
-namespace OTPManagerApi.Helpers
+
+namespace OTPManagerApi.Protocol
 {
-	public enum AnsType
+	public enum ReqType
 	{
 		Invalid = 0x00,
-		Ok = 0xC0,
-		Pong = 0x20,
+		Ping = 0x20,
+		ResyncComplete = 0xC0,
 		Resync = 0xE0
 	}
 }

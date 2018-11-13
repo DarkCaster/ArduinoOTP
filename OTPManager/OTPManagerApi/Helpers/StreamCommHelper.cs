@@ -30,6 +30,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
+using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Helpers
 {
@@ -126,7 +127,7 @@ namespace OTPManagerApi.Helpers
 			}
 			catch (TaskCanceledException ex)
 			{
-				throw new TimeoutException("ReceiveAnswer was timed out", ex);
+				throw new TimeoutException("SendRequest was timed out", ex);
 			}
 		}
 	}

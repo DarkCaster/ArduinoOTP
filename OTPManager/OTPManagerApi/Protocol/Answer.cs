@@ -25,16 +25,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-// requests (masks)
 using System;
-
-namespace OTPManagerApi.Helpers
+namespace OTPManagerApi.Protocol
 {
-	public enum ReqType
+	public struct Answer
 	{
-		Invalid = 0x00,
-		Ping = 0x20,
-		ResyncComplete = 0xC0,
-		Resync = 0xE0
+		public readonly AnsType ansType;
+		public readonly byte[] payload;
+		public readonly int plLen;
+
+		public Answer(AnsType ansType, byte[] plBuff, int offset, int length)
+		{
+			this.ansType = ansType;
+			this.payload = new byte[length];
+			Buffer.BlockCopy(plBuff, offset, this.payload, 0, length);
+			this.plLen = length;
+		}
+
+		public static Answer Invalid => new Answer(AnsType.Invalid, new byte[0], 0, 0);
 	}
 }
