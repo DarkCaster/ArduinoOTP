@@ -32,7 +32,7 @@ using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Helpers
 {
-	internal sealed class ResyncHelper
+	public sealed class ResyncHelper
 	{
 		private readonly ICommHelper commHelper;
 		private readonly Random random;
