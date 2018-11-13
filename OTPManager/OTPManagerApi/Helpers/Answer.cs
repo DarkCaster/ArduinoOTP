@@ -30,8 +30,6 @@ namespace OTPManagerApi.Helpers
 {
 	public struct Answer
 	{
-		private const int CMD_MAX_PLSZ = 14;
-
 		public readonly AnsType ansType;
 		public readonly byte[] payload;
 		public readonly int plLen;
@@ -44,6 +42,6 @@ namespace OTPManagerApi.Helpers
 			this.plLen = length;
 		}
 
-		public static Answer Invalid() => new Answer(AnsType.Invalid, new byte[0], 0, 0);
+		public static Answer Invalid => new Answer(AnsType.Invalid, new byte[0], 0, 0);
 	}
 }
