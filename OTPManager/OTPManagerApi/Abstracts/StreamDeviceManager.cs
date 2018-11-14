@@ -26,30 +26,108 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 using System;
-using System.Diagnostics.Contracts;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using DarkCaster.Async;
 using DarkCaster.Events;
+using OTPManagerApi.Helpers;
+using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi
 {
-	public abstract class StreamDeviceManager
+	public abstract class StreamDeviceManager : IOTPDeviceManager
 	{
-		private readonly Stream link;
+		private readonly AsyncRWLock pingLock = new AsyncRWLock();
+		private volatile Exception pingThreadException = null;
+		private volatile Thread pingThread = null;
+		private readonly CancellationToken pingThreadCT;
 
-		protected StreamDeviceManager(Stream link)
+		protected readonly CancellationTokenSource pingThreadCTS;
+		protected readonly ICommHelper commHelper;
+		protected readonly ResyncHelper resyncHelper;
+		protected readonly Stream link;
+		protected readonly ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtl;
+		protected readonly ProtocolConfig config;
+
+		public abstract ISafeEvent<OTPDeviceEventArgs> DeviceEvent { get; }
+
+		protected StreamDeviceManager(Stream link, ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtl, ProtocolConfig config)
 		{
 			this.link = link;
+			this.deviceEventCtl = deviceEventCtl;
+			this.commHelper = new StreamCommHelper(link, config);
+			this.resyncHelper = new ResyncHelper(commHelper, config);
+			this.config = config;
+			this.pingThreadCTS = new CancellationTokenSource();
+			this.pingThreadCT = pingThreadCTS.Token;
 		}
 
-		protected async Task ConnectRoutine()
+		private void PingThread()
 		{
-			throw new NotImplementedException("TODO:");
+			var taskRunner = new AsyncRunner();
+			var nullBuff = new byte[0];
+			while (!pingThreadCT.IsCancellationRequested)
+			{
+				pingLock.EnterWriteLock();
+				try
+				{
+					Answer answer = Answer.Invalid;
+					taskRunner.AddTask(() => commHelper.SendRequest(ReqType.Ping, nullBuff, 0, 0));
+					taskRunner.AddTask(commHelper.ReceiveAnswer, (obj) => answer = obj);
+					taskRunner.RunPendingTasks();
+					if (answer.ansType != AnsType.Pong)
+						throw new Exception();
+				}
+				catch (Exception)
+				{
+					//try to resync
+					try { taskRunner.ExecuteTask(resyncHelper.Resync); }
+					//TODO: send event and set apropriate state
+					catch (Exception ex) { pingThreadException = ex; return; }
+				}
+				finally
+				{
+					pingLock.ExitWriteLock();
+				}
+				try { taskRunner.ExecuteTask(() => Task.Delay(config.PING_INTERVAL, pingThreadCT)); }
+				catch (TaskCanceledException) { return; }
+				//TODO: send event and set apropriate state
+				catch (Exception ex) { pingThreadException = ex; return; }
+			}
 		}
 
-		protected async Task Disconect()
+		public virtual async Task Connect()
 		{
-			throw new NotImplementedException("TODO:");
+			//run resync
+			await resyncHelper.Resync();
+			//run ping thread
+			pingThread = new Thread(PingThread);
+			pingThread.Start();
+		}
+
+		public virtual async Task Disconnect()
+		{
+			pingThreadCTS.Cancel();
+			await pingLock.EnterReadLockAsync();
+			pingLock.ExitReadLock();
+			pingThread?.Join();
+			pingThread = null;
+			//TODO: send event and set apropriate state
+		}
+
+		public void Dispose()
+		{
+			if (pingThread != null)
+			{
+				try
+				{
+					var taskRunner = new AsyncRunner();
+					taskRunner.ExecuteTask(Disconnect);
+				}
+				catch (Exception ex) { pingThreadException = ex; }
+			}
+			deviceEventCtl.Dispose();
 		}
 	}
 }
