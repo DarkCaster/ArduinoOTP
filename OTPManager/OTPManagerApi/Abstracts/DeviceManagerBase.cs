@@ -1,5 +1,5 @@
 ﻿//
-// StreamDeviceManager.cs
+// DeviceManagerBase.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
@@ -26,7 +26,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 using System;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using DarkCaster.Async;
@@ -36,28 +35,24 @@ using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi
 {
-	public abstract class StreamDeviceManager : IOTPDeviceManager
+	public abstract class DeviceManagerBase : IOTPDeviceManager
 	{
 		private readonly AsyncRWLock pingLock = new AsyncRWLock();
 		private volatile Exception pingThreadException = null;
 		private volatile Thread pingThread = null;
-		private readonly CancellationToken pingThreadCT;
 
-		protected readonly CancellationTokenSource pingThreadCTS;
-		protected readonly ICommHelper commHelper;
-		protected readonly ResyncHelper resyncHelper;
-		protected readonly Stream link;
-		protected readonly ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtl;
-		protected readonly ProtocolConfig config;
+		private readonly CancellationToken pingThreadCT;
+		private readonly CancellationTokenSource pingThreadCTS;
+		private readonly ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtl;
+		private readonly CommHelperBase commHelper;
+		private readonly ProtocolConfig config;
 
 		public abstract ISafeEvent<OTPDeviceEventArgs> DeviceEvent { get; }
 
-		protected StreamDeviceManager(Stream link, ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtl, ProtocolConfig config)
+		protected DeviceManagerBase(ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtl, CommHelperBase commHelper, ProtocolConfig config)
 		{
-			this.link = link;
 			this.deviceEventCtl = deviceEventCtl;
-			this.commHelper = new StreamCommHelper(link, config);
-			this.resyncHelper = new ResyncHelper(commHelper, config);
+			this.commHelper = commHelper;
 			this.config = config;
 			this.pingThreadCTS = new CancellationTokenSource();
 			this.pingThreadCT = pingThreadCTS.Token;
@@ -82,7 +77,7 @@ namespace OTPManagerApi
 				catch (Exception)
 				{
 					//try to resync
-					try { taskRunner.ExecuteTask(resyncHelper.Resync); }
+					try { taskRunner.ExecuteTask(commHelper.Resync); }
 					//TODO: send event and set apropriate state
 					catch (Exception ex) { pingThreadException = ex; return; }
 				}
@@ -100,7 +95,7 @@ namespace OTPManagerApi
 		public virtual async Task Connect()
 		{
 			//run resync
-			await resyncHelper.Resync();
+			await commHelper.Resync();
 			//run ping thread
 			pingThread = new Thread(PingThread);
 			pingThread.Start();
@@ -116,18 +111,23 @@ namespace OTPManagerApi
 			//TODO: send event and set apropriate state
 		}
 
-		public void Dispose()
+		protected virtual void Dispose(bool disposing)
 		{
-			if (pingThread != null)
+			if (disposing)
 			{
-				try
+				if (pingThread != null)
 				{
-					var taskRunner = new AsyncRunner();
-					taskRunner.ExecuteTask(Disconnect);
+					try
+					{
+						var taskRunner = new AsyncRunner();
+						taskRunner.ExecuteTask(Disconnect);
+					}
+					catch (Exception ex) { pingThreadException = ex; }
 				}
-				catch (Exception ex) { pingThreadException = ex; }
+				deviceEventCtl.Dispose();
 			}
-			deviceEventCtl.Dispose();
 		}
+
+		public void Dispose() => Dispose(true);
 	}
 }

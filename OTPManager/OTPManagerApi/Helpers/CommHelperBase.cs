@@ -1,5 +1,5 @@
 ﻿//
-// ResyncHelper.cs
+// CommHelperBase.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
@@ -32,31 +32,29 @@ using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Helpers
 {
-	public sealed class ResyncHelper
+	public abstract class CommHelperBase
 	{
-		private readonly ICommHelper commHelper;
-		private readonly Random random;
-		private readonly ProtocolConfig config;
+		public abstract Task<Answer> ReceiveAnswer();
+		public abstract Task SendRequest(ReqType reqType, byte[] plBuff, int offset, int len);
+		public abstract int MaxPayloadSize { get; }
 
-		public ResyncHelper(ICommHelper commHelper, ProtocolConfig config)
-		{
-			this.commHelper = commHelper;
-			this.random = new Random();
-			this.config = config;
-		}
+		private readonly Random random = new Random();
+		protected readonly ProtocolConfig config;
+
+		protected CommHelperBase(ProtocolConfig config) => this.config = config;
 
 		public async Task Resync()
 		{
-			var reqBuff = new byte[commHelper.MaxPayloadSize];
+			var reqBuff = new byte[MaxPayloadSize];
 			//send empty resync request
-			await commHelper.SendRequest(ReqType.Resync, reqBuff, 0, 0);
+			await SendRequest(ReqType.Resync, reqBuff, 0, 0);
 			//read and drop answers until timeout exception, or data limit was reached
 			var dataDropLeft = config.RESYNC_DATA_DROP_LIMIT;
-			while(dataDropLeft>0)
+			while (dataDropLeft > 0)
 			{
 				try
 				{
-					var answer = await commHelper.ReceiveAnswer();
+					var answer = await ReceiveAnswer();
 					if (answer.plLen > 0)
 						dataDropLeft -= answer.plLen;
 					else
@@ -69,9 +67,9 @@ namespace OTPManagerApi.Helpers
 			//generate payload
 			random.NextBytes(reqBuff);
 			//send resync sequence
-			await commHelper.SendRequest(ReqType.Resync, reqBuff, 0, reqBuff.Length);
+			await SendRequest(ReqType.Resync, reqBuff, 0, reqBuff.Length);
 			//receive resync answer
-			var verification = await commHelper.ReceiveAnswer();
+			var verification = await ReceiveAnswer();
 			//compare resync sequence
 			if (verification.plLen != reqBuff.Length)
 				throw new Exception("Resync verification sequence is incorrect!");
@@ -79,9 +77,9 @@ namespace OTPManagerApi.Helpers
 				if (verification.payload[i] != reqBuff[i])
 					throw new Exception("Resync verification sequence mismatch!");
 			//send resync-complete request
-			await commHelper.SendRequest(ReqType.ResyncComplete, reqBuff, 0, 0);
+			await SendRequest(ReqType.ResyncComplete, reqBuff, 0, 0);
 			//receive OK answer
-			if ((await commHelper.ReceiveAnswer()).ansType != AnsType.Ok)
+			if ((await ReceiveAnswer()).ansType != AnsType.Ok)
 				throw new Exception("Final resync-confirmation failed!");
 		}
 	}

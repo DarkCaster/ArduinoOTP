@@ -34,24 +34,21 @@ using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Helpers
 {
-	public sealed class StreamCommHelper : ICommHelper
+	public abstract class StreamCommHelper : CommHelperBase
 	{
-		private readonly Stream link;
 		private readonly byte[] recvBuff;
 		private readonly byte[] sendBuff;
-		private readonly ProtocolConfig config;
+		protected abstract Stream Link { get; }
 
-		public StreamCommHelper(Stream link, ProtocolConfig config)
+		protected StreamCommHelper(ProtocolConfig config) : base(config)
 		{
-			this.link = link;
-			this.config = config;
 			this.recvBuff = new byte[config.CMD_BUFF_SIZE];
 			this.sendBuff = new byte[config.CMD_BUFF_SIZE];
 		}
 
-		public int MaxPayloadSize => config.CMD_MAX_PLSZ;
+		public override int MaxPayloadSize => config.CMD_MAX_PLSZ;
 
-		public async Task<Answer> ReceiveAnswer()
+		public override async Task<Answer> ReceiveAnswer()
 		{
 			try
 			{
@@ -59,7 +56,7 @@ namespace OTPManagerApi.Helpers
 				using (var cts = new CancellationTokenSource())
 				{
 					cts.CancelAfter(config.CMD_TIMEOUT);
-					bRead = await link.ReadAsync(recvBuff, 0, 1, cts.Token);
+					bRead = await Link.ReadAsync(recvBuff, 0, 1, cts.Token);
 					if (bRead != 1)
 						throw new NotSupportedException("Stream has reached EOF and cannot receive data");
 				}
@@ -85,7 +82,7 @@ namespace OTPManagerApi.Helpers
 				{
 					cts.CancelAfter(config.CMD_TIMEOUT);
 					while (rem > 0)
-						rem -= await link.ReadAsync(recvBuff, config.CMD_HDR_SIZE + (remSz - rem), rem, cts.Token);
+						rem -= await Link.ReadAsync(recvBuff, config.CMD_HDR_SIZE + (remSz - rem), rem, cts.Token);
 				}
 				//verify CRC
 				var testSz = config.CMD_HDR_SIZE + remSz - 1;
@@ -99,7 +96,7 @@ namespace OTPManagerApi.Helpers
 			}
 		}
 
-		public async Task SendRequest(ReqType reqType, byte[] plBuff, int offset, int len)
+		public override async Task SendRequest(ReqType reqType, byte[] plBuff, int offset, int len)
 		{
 			try
 			{
@@ -114,7 +111,7 @@ namespace OTPManagerApi.Helpers
 				using (var cts = new CancellationTokenSource())
 				{
 					cts.CancelAfter(config.CMD_TIMEOUT);
-					await link.WriteAsync(sendBuff, 0, testLen + config.CMD_CRC_SIZE, cts.Token);
+					await Link.WriteAsync(sendBuff, 0, testLen + config.CMD_CRC_SIZE, cts.Token);
 				}
 			}
 			catch (TaskCanceledException ex)

@@ -42,16 +42,15 @@
     <Compile Include="Abstracts\IOTPDeviceManager.cs" />
     <Compile Include="Abstracts\OTPDeviceEventArgs.cs" />
     <Compile Include="Abstracts\OTPDeviceState.cs" />
-    <Compile Include="Helpers\ResyncHelper.cs" />
     <Compile Include="Helpers\CRC8.cs" />
     <Compile Include="Helpers\StreamCommHelper.cs" />
     <Compile Include="Protocol\AnsType.cs" />
     <Compile Include="Protocol\Answer.cs" />
     <Compile Include="Protocol\ReqType.cs" />
-    <Compile Include="Helpers\ICommHelper.cs" />
-    <Compile Include="Abstracts\StreamDeviceManager.cs" />
+    <Compile Include="Helpers\CommHelperBase.cs" />
     <Compile Include="Protocol\ProtocolConfig.cs" />
     <Compile Include="Serial\SerialProtocolConfig.cs" />
+    <Compile Include="Abstracts\DeviceManagerBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
