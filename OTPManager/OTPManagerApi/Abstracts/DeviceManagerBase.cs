@@ -35,21 +35,15 @@ using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi
 {
-	public abstract class DeviceManagerBase : IOTPDeviceManager
+	/// <summary>
+	/// Common device manager logic, without any complex error-reporting and connection-maintaining stuff
+	/// </summary>
+	public abstract class DeviceManagerBase
 	{
 		//must be implemented by inherited class
-		//using properties because this parameters hard to initialize inplace in base constructe
+		//using properties because this parameters maybe hard to initialize inplace in base construct
 		protected abstract CommHelperBase CommHelper { get; }
 
-		//not used here
-		public abstract ISafeEvent<OTPDeviceEventArgs> DeviceEvent { get; }
-
-		public virtual async Task Connect() => await CommHelper.Resync(); //run resync
-	
-		public abstract Task Disconnect();
-
-		protected abstract void Dispose(bool disposing);
-
-		public void Dispose() => Dispose(true);
+		public async Task BaseConnect() => await CommHelper.Resync(); //run resync
 	}
 }
