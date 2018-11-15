@@ -33,6 +33,8 @@ namespace OTPManagerApi.Serial
 {
 	public class SerialProtocolConfig : ProtocolConfig
 	{
+		public int SERIAL_PORT_SPEED { get; protected set; }
+
 		public SerialProtocolConfig()
 		{
 			CMD_HDR_SIZE = 1;
@@ -46,6 +48,7 @@ namespace OTPManagerApi.Serial
 			ANS_ALL_MASK = 0xE0;
 			RESYNC_DATA_DROP_LIMIT = 200;
 			PING_INTERVAL = 500;
+			SERIAL_PORT_SPEED = 38400;
 		}
 	}
 }

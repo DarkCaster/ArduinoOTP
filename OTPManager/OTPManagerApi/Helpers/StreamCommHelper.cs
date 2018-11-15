@@ -34,16 +34,17 @@ using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Helpers
 {
-	public abstract class StreamCommHelper : CommHelperBase
+	public class StreamCommHelper : CommHelperBase
 	{
 		private readonly byte[] recvBuff;
 		private readonly byte[] sendBuff;
-		protected abstract Stream Link { get; }
+		private readonly Stream link;
 
-		protected StreamCommHelper(ProtocolConfig config) : base(config)
+		public StreamCommHelper(Stream link, ProtocolConfig config) : base(config)
 		{
 			this.recvBuff = new byte[config.CMD_BUFF_SIZE];
 			this.sendBuff = new byte[config.CMD_BUFF_SIZE];
+			this.link = link;
 		}
 
 		public override int MaxPayloadSize => config.CMD_MAX_PLSZ;
@@ -56,7 +57,7 @@ namespace OTPManagerApi.Helpers
 				using (var cts = new CancellationTokenSource())
 				{
 					cts.CancelAfter(config.CMD_TIMEOUT);
-					bRead = await Link.ReadAsync(recvBuff, 0, 1, cts.Token);
+					bRead = await link.ReadAsync(recvBuff, 0, 1, cts.Token);
 					if (bRead != 1)
 						throw new NotSupportedException("Stream has reached EOF and cannot receive data");
 				}
@@ -82,7 +83,7 @@ namespace OTPManagerApi.Helpers
 				{
 					cts.CancelAfter(config.CMD_TIMEOUT);
 					while (rem > 0)
-						rem -= await Link.ReadAsync(recvBuff, config.CMD_HDR_SIZE + (remSz - rem), rem, cts.Token);
+						rem -= await link.ReadAsync(recvBuff, config.CMD_HDR_SIZE + (remSz - rem), rem, cts.Token);
 				}
 				//verify CRC
 				var testSz = config.CMD_HDR_SIZE + remSz - 1;
@@ -111,7 +112,7 @@ namespace OTPManagerApi.Helpers
 				using (var cts = new CancellationTokenSource())
 				{
 					cts.CancelAfter(config.CMD_TIMEOUT);
-					await Link.WriteAsync(sendBuff, 0, testLen + config.CMD_CRC_SIZE, cts.Token);
+					await link.WriteAsync(sendBuff, 0, testLen + config.CMD_CRC_SIZE, cts.Token);
 				}
 			}
 			catch (TaskCanceledException ex)

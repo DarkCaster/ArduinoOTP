@@ -51,7 +51,7 @@
     <Compile Include="Protocol\ProtocolConfig.cs" />
     <Compile Include="Serial\SerialProtocolConfig.cs" />
     <Compile Include="Abstracts\DeviceManagerBase.cs" />
-    <Compile Include="Helpers\SerialCommHelper.cs" />
+    <Compile Include="Serial\SerialDeviceManager.cs" />
     <Compile Include="Helpers\PingWorker.cs" />
   </ItemGroup>
   <ItemGroup>
