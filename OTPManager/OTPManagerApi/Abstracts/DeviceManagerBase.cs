@@ -37,96 +37,18 @@ namespace OTPManagerApi
 {
 	public abstract class DeviceManagerBase : IOTPDeviceManager
 	{
-		private readonly AsyncRWLock pingLock = new AsyncRWLock();
-		private volatile Exception pingThreadException = null;
-		private volatile Thread pingThread = null;
+		//must be implemented by inherited class
+		//using properties because this parameters hard to initialize inplace in base constructe
+		protected abstract CommHelperBase CommHelper { get; }
 
-		private readonly CancellationToken pingThreadCT;
-		private readonly CancellationTokenSource pingThreadCTS;
-		private readonly ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtl;
-		private readonly CommHelperBase commHelper;
-		private readonly ProtocolConfig config;
-
+		//not used here
 		public abstract ISafeEvent<OTPDeviceEventArgs> DeviceEvent { get; }
 
-		protected DeviceManagerBase(ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtl, CommHelperBase commHelper, ProtocolConfig config)
-		{
-			this.deviceEventCtl = deviceEventCtl;
-			this.commHelper = commHelper;
-			this.config = config;
-			this.pingThreadCTS = new CancellationTokenSource();
-			this.pingThreadCT = pingThreadCTS.Token;
-		}
+		public virtual async Task Connect() => await CommHelper.Resync(); //run resync
+	
+		public abstract Task Disconnect();
 
-		private void PingThread()
-		{
-			var taskRunner = new AsyncRunner();
-			var nullBuff = new byte[0];
-			while (!pingThreadCT.IsCancellationRequested)
-			{
-				pingLock.EnterWriteLock();
-				try
-				{
-					Answer answer = Answer.Invalid;
-					taskRunner.AddTask(() => commHelper.SendRequest(ReqType.Ping, nullBuff, 0, 0));
-					taskRunner.AddTask(commHelper.ReceiveAnswer, (obj) => answer = obj);
-					taskRunner.RunPendingTasks();
-					if (answer.ansType != AnsType.Pong)
-						throw new Exception();
-				}
-				catch (Exception)
-				{
-					//try to resync
-					try { taskRunner.ExecuteTask(commHelper.Resync); }
-					//TODO: send event and set apropriate state
-					catch (Exception ex) { pingThreadException = ex; return; }
-				}
-				finally
-				{
-					pingLock.ExitWriteLock();
-				}
-				try { taskRunner.ExecuteTask(() => Task.Delay(config.PING_INTERVAL, pingThreadCT)); }
-				catch (TaskCanceledException) { return; }
-				//TODO: send event and set apropriate state
-				catch (Exception ex) { pingThreadException = ex; return; }
-			}
-		}
-
-		public virtual async Task Connect()
-		{
-			//run resync
-			await commHelper.Resync();
-			//run ping thread
-			pingThread = new Thread(PingThread);
-			pingThread.Start();
-		}
-
-		public virtual async Task Disconnect()
-		{
-			pingThreadCTS.Cancel();
-			await pingLock.EnterReadLockAsync();
-			pingLock.ExitReadLock();
-			pingThread?.Join();
-			pingThread = null;
-			//TODO: send event and set apropriate state
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				if (pingThread != null)
-				{
-					try
-					{
-						var taskRunner = new AsyncRunner();
-						taskRunner.ExecuteTask(Disconnect);
-					}
-					catch (Exception ex) { pingThreadException = ex; }
-				}
-				deviceEventCtl.Dispose();
-			}
-		}
+		protected abstract void Dispose(bool disposing);
 
 		public void Dispose() => Dispose(true);
 	}
