@@ -32,8 +32,21 @@ namespace OTPManagerApi
 {
 	public enum OTPDeviceState
 	{
-		Disconnected, // Starting with this state
-		Connected, // When connection with device is established and alive (device correctly responding to pings in defined intervals)
-		Failed, // IOTPDeviceManager should not be used anymore in such state
+		/// <summary>
+		/// IOTPDeviceManager ready to connect
+		/// </summary>
+		Ready,
+		/// <summary>
+		/// IOTPDeviceManager has successfully established connection with OTP device
+		/// </summary>
+		Connected,
+		/// <summary>
+		/// IOTPDeviceManager has successfully disconnected from OTP device and cannot be used anymore
+		/// </summary>
+		Disconnected,
+		/// <summary>
+		/// IOTPDeviceManager has failed and cannot be used anymore
+		/// </summary>
+		Failed,
 	}
 }
