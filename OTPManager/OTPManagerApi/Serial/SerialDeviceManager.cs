@@ -33,71 +33,68 @@ using OTPManagerApi.Helpers;
 
 namespace OTPManagerApi.Serial
 {
-	public sealed class SerialDeviceManager : DeviceManagerBase
+	/// <summary>
+	/// This class is thread safe
+	/// </summary>
+	public sealed class SerialDeviceManager : DeviceManagerBase, IOTPDeviceManager
 	{
-		private readonly ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtrl;
-		private readonly string portName;
-
-		//will be re-created after connect/disconnect
-		private SerialPort port;
 		private StreamCommHelper commHelper;
-		private bool isDisposed = false;
-		private bool isConnected = false;
 		private PingWorker pingWorker = null;
+		private OTPDeviceState state = OTPDeviceState.Disconnected;
 
 		private readonly SerialProtocolConfig config;
+		private readonly SerialPort port;
+		private readonly ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtrl;
+
+		private volatile bool isDisposed = false;
 
 		private SerialDeviceManager(string serialPortName)
 		{
+			//this init sequence guarantee that no IDisposable objects will be created in case of exception during constructor execution
+			config = new SerialProtocolConfig();
+			port = new SerialPort(serialPortName, config.SERIAL_PORT_SPEED, Parity.None, 8, StopBits.One);
 #if DEBUG
 			deviceEventCtrl = new SafeEventDbg<OTPDeviceEventArgs>();
 #else
 			deviceEventCtrl = new SafeEvent<OTPDeviceEventArgs>();
 #endif
-			portName = serialPortName;
-			config = new SerialProtocolConfig();
 		}
 
-		public override ISafeEvent<OTPDeviceEventArgs> DeviceEvent => (ISafeEvent<OTPDeviceEventArgs>)deviceEventCtrl;
+		public ISafeEvent<OTPDeviceEventArgs> DeviceEvent => (ISafeEvent<OTPDeviceEventArgs>)deviceEventCtrl;
 
 		protected override CommHelperBase CommHelper => commHelper;
 
-		public override async Task Connect()
+		public async Task Connect()
 		{
 			if (isDisposed)
 				throw new ObjectDisposedException("SerialDeviceManager");
-			if (isConnected)
-				throw new Exception("Already connected!");
-			//create new serial port object
-			port = new SerialPort(portName, ((SerialProtocolConfig)config).SERIAL_PORT_SPEED, Parity.None, 8, StopBits.One);
+			if (state != OTPDeviceState.Disconnected)
+				throw new Exception("Device manager is in wrong state: " + state.ToString());
 			try
 			{
 				port.Open();
 				commHelper = new StreamCommHelper(port.BaseStream, config);
-				await base.Connect(); //run base connection routine
+				await BaseConnect(); //run base connection routine
 			}
 			catch (Exception)
 			{
-				try { port.Dispose(); port = null; commHelper = null; } //TODO: state change
+				try { commHelper = null; } //TODO: state change
 				catch (Exception) { }
 				throw;
 			}
 			//run ping worker thread
 			pingWorker = new PingWorker(CommHelper, config.PING_INTERVAL, null); //TODO: fail callback
-			isConnected = true;
+			//TODO: state change
 		}
 
-		public override Task Disconnect()
+		public Task Disconnect()
 		{
 			if (isDisposed)
 				throw new ObjectDisposedException("SerialDeviceManager");
-			if (!isConnected)
-				throw new Exception("Not connected!");
-			isConnected = false; //method will not be triggered more than once
 			try
 			{
 				pingWorker.Dispose(); //kill ping worker thread (should not throw exceptions)
-				port.Close(); //close serial port, will call dispose internally
+				port.Close();
 			}
 			catch (Exception)
 			{
@@ -107,23 +104,21 @@ namespace OTPManagerApi.Serial
 			finally
 			{
 				pingWorker = null;
-				port = null;
 				commHelper = null;
 			}
 			//TODO state change, send notification
 			return Task.FromResult(true);
 		}
 
-		protected override void Dispose(bool disposing)
+		public void Dispose()
 		{
-			if (disposing)
-			{
-				if (isDisposed)
-					return;
-				if (isConnected)
-					Disconnect();
-				isDisposed = true;
-			}
+			if (isDisposed)
+				return;
+			isDisposed = true;
+			//TODO: call disconnect
+			pingWorker?.Dispose();
+			port.Dispose();
+			deviceEventCtrl.Dispose();
 		}
 	}
 }
