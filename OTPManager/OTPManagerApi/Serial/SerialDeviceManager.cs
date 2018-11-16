@@ -29,6 +29,7 @@ using System;
 using System.IO.Ports;
 using System.Threading.Tasks;
 using DarkCaster.Events;
+using DarkCaster.Async;
 using OTPManagerApi.Helpers;
 
 namespace OTPManagerApi.Serial
@@ -42,9 +43,10 @@ namespace OTPManagerApi.Serial
 		private PingWorker pingWorker = null;
 		private OTPDeviceState state = OTPDeviceState.Disconnected;
 
+		private readonly AsyncRunner asyncRunner = new AsyncRunner();
 		private readonly SerialProtocolConfig config;
 		private readonly SerialPort port;
-		private readonly ISafeEventCtrl<OTPDeviceEventArgs> deviceEventCtrl;
+		private readonly ISafeEventCtrlLite<OTPDeviceEventArgs> deviceEventCtrl;
 
 		private volatile bool isDisposed = false;
 
@@ -64,61 +66,109 @@ namespace OTPManagerApi.Serial
 
 		protected override CommHelperBase CommHelper => commHelper;
 
-		public async Task Connect()
+		private class PingFailedCallbackException : Exception { }
+
+		public void PingFailedCallback(Exception ex)
 		{
-			if (isDisposed)
-				throw new ObjectDisposedException("SerialDeviceManager");
-			if (state != OTPDeviceState.Disconnected)
-				throw new Exception("Device manager is in wrong state: " + state.ToString());
 			try
 			{
-				port.Open();
-				commHelper = new StreamCommHelper(port.BaseStream, config);
-				await BaseConnect(); //run base connection routine
+				deviceEventCtrl.Raise(this, () =>
+				{
+					if (state == OTPDeviceState.Connected)
+					{
+						state = OTPDeviceState.Failed;
+						return new OTPDeviceEventArgs() { State = OTPDeviceState.Failed, Error = ex };
+					}
+					throw new PingFailedCallbackException();
+				});
 			}
-			catch (Exception)
-			{
-				try { commHelper = null; } //TODO: state change
-				catch (Exception) { }
-				throw;
-			}
-			//run ping worker thread
-			pingWorker = new PingWorker(CommHelper, config.PING_INTERVAL, null); //TODO: fail callback
-			//TODO: state change
+			catch (PingFailedCallbackException) { }
 		}
 
-		public Task Disconnect()
+		public async Task ConnectAsync()
 		{
 			if (isDisposed)
 				throw new ObjectDisposedException("SerialDeviceManager");
-			try
+			Exception connectException = null;
+			await deviceEventCtrl.RaiseAsync(this,async () =>
 			{
-				pingWorker.Dispose(); //kill ping worker thread (should not throw exceptions)
-				port.Close();
-			}
-			catch (Exception)
+				if (state != OTPDeviceState.Disconnected)
+					throw new Exception("Device manager is in wrong state: " + state.ToString());
+				try
+				{
+					port.Open();
+					commHelper = new StreamCommHelper(port.BaseStream, config);
+					await BaseConnect(); //run base connection routine
+				}
+				catch (Exception ex)
+				{
+					commHelper = null;
+					connectException = ex;
+					state = OTPDeviceState.Failed;
+					return new OTPDeviceEventArgs() { State = OTPDeviceState.Failed, Error = ex };
+				}
+				//run ping worker thread
+				pingWorker = new PingWorker(CommHelper, config.PING_INTERVAL, PingFailedCallback);
+				//state change
+				state = OTPDeviceState.Connected;
+				return new OTPDeviceEventArgs() { State = OTPDeviceState.Connected, Error = null };
+			});
+			if (connectException != null)
+				throw connectException;
+		}
+
+		public async Task DisconnectAsync()
+		{
+			if (isDisposed)
+				throw new ObjectDisposedException("SerialDeviceManager");
+			Exception disconnectException = null;
+			await deviceEventCtrl.RaiseAsync(this, () =>
 			{
-				//TODO state change, send notification
-				throw;
-			}
-			finally
-			{
-				pingWorker = null;
-				commHelper = null;
-			}
-			//TODO state change, send notification
-			return Task.FromResult(true);
+				if (state != OTPDeviceState.Connected)
+					throw new Exception("Device manager is in wrong state: " + state.ToString());
+				try
+				{
+					pingWorker.Dispose(); //kill ping worker thread (should not throw exceptions)
+					port.Close();
+				}
+				catch (Exception ex)
+				{
+					disconnectException = ex;
+					state = OTPDeviceState.Failed;
+					return Task.FromResult(new OTPDeviceEventArgs() { State = OTPDeviceState.Failed, Error = ex });
+				}
+				finally
+				{
+					pingWorker = null;
+					commHelper = null;
+				}
+				//state change
+				state = OTPDeviceState.Disconnected;
+				return Task.FromResult(new OTPDeviceEventArgs() { State = OTPDeviceState.Disconnected, Error = null });
+			});
+			if (disconnectException != null)
+				throw disconnectException;
+		}
+
+		public void Connect()
+		{
+			asyncRunner.ExecuteTask(ConnectAsync);
+		}
+
+		public void Disconnect()
+		{
+			asyncRunner.ExecuteTask(DisconnectAsync);
 		}
 
 		public void Dispose()
 		{
 			if (isDisposed)
 				return;
+			try { asyncRunner.ExecuteTask(DisconnectAsync); }
+			catch (Exception) { };
 			isDisposed = true;
-			//TODO: call disconnect
 			pingWorker?.Dispose();
 			port.Dispose();
-			deviceEventCtrl.Dispose();
 		}
 	}
 }
