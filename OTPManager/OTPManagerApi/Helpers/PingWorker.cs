@@ -50,33 +50,35 @@ namespace OTPManagerApi.Helpers
 
 		private void Worker(CommHelperBase commHelper, CancellationToken token, int pingInterval)
 		{
-			var taskRunner = new AsyncRunner();
-			var nullBuff = new byte[0];
-			while (!token.IsCancellationRequested)
+			using (var taskRunner = new AsyncRunner())
 			{
-				pingLock.EnterWriteLock();
-				try
+				var nullBuff = new byte[0];
+				while (!token.IsCancellationRequested)
 				{
-					Answer answer = Answer.Invalid;
-					taskRunner.AddTask(() => commHelper.SendRequest(ReqType.Ping, nullBuff, 0, 0));
-					taskRunner.AddTask(commHelper.ReceiveAnswer, (obj) => answer = obj);
-					taskRunner.RunPendingTasks();
-					if (answer.ansType != AnsType.Pong)
-						throw new Exception();
-				}
-				catch (Exception)
-				{
-					//try to resync
-					try { taskRunner.ExecuteTask(commHelper.Resync); }
+					pingLock.EnterWriteLock();
+					try
+					{
+						Answer answer = Answer.Invalid;
+						taskRunner.AddTask(() => commHelper.SendRequest(ReqType.Ping, nullBuff, 0, 0));
+						taskRunner.AddTask(commHelper.ReceiveAnswer, (obj) => answer = obj);
+						taskRunner.RunPendingTasks();
+						if (answer.ansType != AnsType.Pong)
+							throw new Exception();
+					}
+					catch (Exception)
+					{
+						//try to resync
+						try { taskRunner.ExecuteTask(commHelper.Resync); }
+						catch (Exception ex) { pingThreadFailedCallback?.Invoke(ex); return; }
+					}
+					finally
+					{
+						pingLock.ExitWriteLock();
+					}
+					try { taskRunner.ExecuteTask(() => Task.Delay(pingInterval, token)); }
+					catch (TaskCanceledException) { return; }
 					catch (Exception ex) { pingThreadFailedCallback?.Invoke(ex); return; }
 				}
-				finally
-				{
-					pingLock.ExitWriteLock();
-				}
-				try { taskRunner.ExecuteTask(() => Task.Delay(pingInterval, token)); }
-				catch (TaskCanceledException) { return; }
-				catch (Exception ex) { pingThreadFailedCallback?.Invoke(ex); return; }
 			}
 		}
 
