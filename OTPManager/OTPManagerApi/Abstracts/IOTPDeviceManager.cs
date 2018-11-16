@@ -35,7 +35,9 @@ namespace OTPManagerApi
 	public interface IOTPDeviceManager : IDisposable
 	{
 		ISafeEvent<OTPDeviceEventArgs> DeviceEvent { get; }
-		Task Connect();
-		Task Disconnect();
+		void Connect();
+		void Disconnect();
+		Task ConnectAsync();
+		Task DisconnectAsync();
 	}
 }
