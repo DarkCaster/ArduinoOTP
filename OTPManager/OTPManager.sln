@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OTPManagerApi", "OTPManager
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OTPManager", "OTPManager\OTPManager.csproj", "{ADAEFBF5-B364-418B-BAEC-10EB363E0CE7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{05F0A7E0-BB04-4885-A9EB-FC3D3A18A651}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{ADAEFBF5-B364-418B-BAEC-10EB363E0CE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADAEFBF5-B364-418B-BAEC-10EB363E0CE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADAEFBF5-B364-418B-BAEC-10EB363E0CE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05F0A7E0-BB04-4885-A9EB-FC3D3A18A651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05F0A7E0-BB04-4885-A9EB-FC3D3A18A651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05F0A7E0-BB04-4885-A9EB-FC3D3A18A651}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05F0A7E0-BB04-4885-A9EB-FC3D3A18A651}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
