@@ -31,8 +31,8 @@ namespace OTPManagerApi.Protocol
 	public enum AnsType
 	{
 		Invalid = 0x00,
-		Ok = 0xC0,
 		Pong = 0x20,
+		Ok = 0xC0,
 		Resync = 0xE0
 	}
 }
