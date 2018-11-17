@@ -27,6 +27,7 @@
 // SOFTWARE.
 using NUnit.Framework;
 using System;
+using System.Threading;
 using OTPManagerApi;
 using OTPManagerApi.Serial;
 
@@ -63,6 +64,50 @@ namespace Tests
 			try
 			{
 				manager.Connect();
+				Assert.AreEqual(OTPDeviceState.Connected, lastState);
+				Assert.IsNull(lastException);
+			}
+			finally
+			{
+				try { manager.Dispose(); }
+				catch (Exception) { }
+			}
+		}
+
+		[Test()]
+		public void Connect_Disconnect()
+		{
+			Reset();
+			var manager = new SerialDeviceManager(portName);
+			manager.DeviceEvent.Subscribe(OnDeviceManagerEvent);
+			try
+			{
+				manager.Connect();
+				Assert.AreEqual(OTPDeviceState.Connected, lastState);
+				Assert.IsNull(lastException);
+				manager.Disconnect();
+				Assert.AreEqual(OTPDeviceState.Disconnected, lastState);
+				Assert.IsNull(lastException);
+			}
+			finally
+			{
+				try { manager.Dispose(); }
+				catch (Exception) { }
+			}
+		}
+
+		[Test()]
+		public void Connect_Hold()
+		{
+			Reset();
+			var manager = new SerialDeviceManager(portName);
+			manager.DeviceEvent.Subscribe(OnDeviceManagerEvent);
+			try
+			{
+				manager.Connect();
+				Assert.AreEqual(OTPDeviceState.Connected, lastState);
+				Assert.IsNull(lastException);
+				Thread.Sleep(5000);
 				Assert.AreEqual(OTPDeviceState.Connected, lastState);
 				Assert.IsNull(lastException);
 			}
