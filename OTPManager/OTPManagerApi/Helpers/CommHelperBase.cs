@@ -64,12 +64,14 @@ namespace OTPManagerApi.Helpers
 			}
 			if (dataDropLeft <= 0)
 				throw new Exception("Cannot confirm resync request transmisson!");
-			//generate payload
+			//generate payload with random sequence
 			random.NextBytes(reqBuff);
 			//send resync sequence
 			await SendRequest(ReqType.Resync, reqBuff, 0, reqBuff.Length);
 			//receive resync answer
 			var verification = await ReceiveAnswer();
+			if (verification.ansType != AnsType.Resync)
+				throw new Exception("Incorrect answer received during resync verification");
 			//compare resync sequence
 			if (verification.plLen != reqBuff.Length)
 				throw new Exception("Resync verification sequence is incorrect!");
