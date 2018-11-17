@@ -36,10 +36,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test.cs" />
+    <Compile Include="SerialDeviceManagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OTPManagerApi\OTPManagerApi.csproj">
+      <Project>{3E25E3E2-4C66-456B-AE33-AB086403EDFA}</Project>
+      <Name>OTPManagerApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

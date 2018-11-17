@@ -30,7 +30,7 @@ using System;
 namespace Tests
 {
 	[TestFixture()]
-	public class Test
+	public class SerialDeviceManagerTests
 	{
 		[Test()]
 		public void TestCase()
