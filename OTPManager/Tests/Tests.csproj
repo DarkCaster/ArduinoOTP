@@ -46,6 +46,10 @@
       <Project>{3E25E3E2-4C66-456B-AE33-AB086403EDFA}</Project>
       <Name>OTPManagerApi</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DotNetBlocks\CustomBlocks\CustomBlocks.csproj">
+      <Project>{2C871C2E-1544-413F-8654-AD0B3838DCB3}</Project>
+      <Name>CustomBlocks</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

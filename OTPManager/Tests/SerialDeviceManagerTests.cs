@@ -1,5 +1,5 @@
 ﻿//
-// Test.cs
+// SerialDeviceManagerTests.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
@@ -27,14 +27,69 @@
 // SOFTWARE.
 using NUnit.Framework;
 using System;
+using OTPManagerApi;
+using OTPManagerApi.Serial;
+
+
 namespace Tests
 {
 	[TestFixture()]
 	public class SerialDeviceManagerTests
 	{
-		[Test()]
-		public void TestCase()
+		private static volatile OTPDeviceState lastState = OTPDeviceState.Disconnected;
+		private static volatile Exception lastException = null;
+
+		private static void OnDeviceManagerEvent(object sender, OTPDeviceEventArgs args)
 		{
+			lastState = args.State;
+			lastException = args.Error;
+		}
+
+		private static void Reset()
+		{
+			lastState = OTPDeviceState.Disconnected;
+			lastException = null;
+		}
+
+		private readonly static string portName = (((int)Environment.OSVersion.Platform == 4) || ((int)Environment.OSVersion.Platform == 6) || ((int)Environment.OSVersion.Platform == 128)) ?
+			"/dev/ttyUSB0" : "COM1";
+
+		[Test()]
+		public void Connect()
+		{
+			Reset();
+			var manager = new SerialDeviceManager(portName);
+			manager.DeviceEvent.Subscribe(OnDeviceManagerEvent);
+			try
+			{
+				manager.Connect();
+				Assert.AreEqual(OTPDeviceState.Connected, lastState);
+				Assert.IsNull(lastException);
+			}
+			finally
+			{
+				try { manager.Dispose(); }
+				catch (Exception) { }
+			}
+		}
+
+		[Test()]
+		public void Connect_WrongPort()
+		{
+			Reset();
+			var manager = new SerialDeviceManager("deadbeef");
+			manager.DeviceEvent.Subscribe(OnDeviceManagerEvent);
+			try
+			{
+				Assert.Throws(typeof(System.IO.IOException), manager.Connect);
+				Assert.AreEqual(OTPDeviceState.Failed, lastState);
+				Assert.IsInstanceOf(typeof(System.IO.IOException), lastException);
+			}
+			finally
+			{
+				try { manager.Dispose(); }
+				catch (Exception) { }
+			}
 		}
 	}
 }
