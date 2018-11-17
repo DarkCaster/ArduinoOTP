@@ -50,7 +50,7 @@ namespace OTPManagerApi.Serial
 
 		private volatile bool isDisposed = false;
 
-		private SerialDeviceManager(string serialPortName)
+		public SerialDeviceManager(string serialPortName)
 		{
 			//this init sequence guarantee that no IDisposable objects will be created in case of exception during constructor execution
 			config = new SerialProtocolConfig();
