@@ -91,7 +91,7 @@ namespace OTPManagerApi.Helpers
 					return Answer.Invalid;
 				return new Answer(ans, recvBuff, config.CMD_HDR_SIZE, remSz - config.CMD_CRC_SIZE);
 			}
-			catch (TaskCanceledException ex)
+			catch (Exception ex) when (ex is TaskCanceledException || ex is TimeoutException)
 			{
 				throw new TimeoutException("ReceiveAnswer was timed out", ex);
 			}
