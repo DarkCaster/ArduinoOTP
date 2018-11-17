@@ -64,7 +64,7 @@ namespace OTPManagerApi.Helpers
 				int remSz = recvBuff[0] & config.CMD_SIZE_MASK;
 				if (remSz < config.CMD_MIN_REMSZ || remSz > config.CMD_MAX_REMSZ)
 					return Answer.Invalid;
-				if(!Enum.TryParse<AnsType>((recvBuff[0] & config.CMD_SIZE_MASK).ToString(),out AnsType ans))
+				if(!Enum.TryParse<AnsType>((recvBuff[0] & config.ANS_ALL_MASK).ToString(),out AnsType ans))
 					return Answer.Invalid;
 				switch (ans)
 				{
