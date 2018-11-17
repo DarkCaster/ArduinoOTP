@@ -51,7 +51,7 @@ namespace Tests
 			lastException = null;
 		}
 
-		private readonly static string portName = (((int)Environment.OSVersion.Platform == 4) || ((int)Environment.OSVersion.Platform == 6) || ((int)Environment.OSVersion.Platform == 128)) ?
+		public readonly static string portName = (((int)Environment.OSVersion.Platform == 4) || ((int)Environment.OSVersion.Platform == 6) || ((int)Environment.OSVersion.Platform == 128)) ?
 			"/dev/ttyUSB0" : "COM1";
 
 		[Test()]

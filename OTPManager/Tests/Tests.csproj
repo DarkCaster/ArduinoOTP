@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SerialDeviceManagerTests.cs" />
+    <Compile Include="SerialPortSafetyTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
