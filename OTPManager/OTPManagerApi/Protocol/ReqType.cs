@@ -34,6 +34,10 @@ namespace OTPManagerApi.Protocol
 	{
 		Invalid = 0x00,
 		Ping = 0x20,
+		CommandBegin = 0x40,
+		CommandData = 0x60,
+		CommandCommit = 0x80,
+		DataRequest = 0xA0,
 		ResyncComplete = 0xC0,
 		Resync = 0xE0
 	}
