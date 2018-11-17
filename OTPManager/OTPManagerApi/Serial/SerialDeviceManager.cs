@@ -55,6 +55,8 @@ namespace OTPManagerApi.Serial
 			//this init sequence guarantee that no IDisposable objects will be created in case of exception during constructor execution
 			config = new SerialProtocolConfig();
 			port = new SerialPort(serialPortName, config.SERIAL_PORT_SPEED, Parity.None, 8, StopBits.One);
+			port.ReadTimeout = config.CMD_TIMEOUT;
+			port.WriteTimeout = config.CMD_TIMEOUT;
 #if DEBUG
 			deviceEventCtrl = new SafeEventDbg<OTPDeviceEventArgs>();
 #else
