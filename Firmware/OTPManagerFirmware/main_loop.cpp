@@ -103,14 +103,14 @@ void conn_loop()
     watchdog.Disable();
     switch (request.reqType)
     {
-      default:
       case ReqType::Ping:
         result=commHelper.SendAnswer(AnsType::Pong,nullptr,0);
+        break;
       case ReqType::Invalid:
       case ReqType::Resync:
       case ReqType::ResyncComplete:
-        result=0;
-        //TODO: ping watchdog
+      default:
+        result=0; // we will run resync
         break;
     }
     //reenable watchdog
