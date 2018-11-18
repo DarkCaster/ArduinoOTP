@@ -18,7 +18,8 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 #define CMD_SIZE_MASK 0x1F_u8
 #define CMD_MAX_REMSZ 15_u8
 #define CMD_MIN_REMSZ 1_u8
-#define CMD_MAX_PLSZ  14_u8
+//#define CMD_MAX_PLSZ  14_u8
+#define CMD_MAX_PLSZ  10_u8
 
 // requests (masks)
 #define REQ_ALL_MASK 0xE0_u8
