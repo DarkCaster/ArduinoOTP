@@ -55,6 +55,16 @@ namespace OTPManagerApi.Helpers
 			}
 		}
 
+		public LCGen(byte[] seed)
+		{
+			ulong init = unchecked((uint)(seed[0] | seed[1] << 8 | seed[2] << 16 | seed[3] << 24));
+			if (init < 1)
+				init = 1;
+			if (init > (m - 1))
+				init = m - 1;
+			curLCGValue = init;
+		}
+
 		public LCGen(uint seed)
 		{
 			ulong init = seed;
