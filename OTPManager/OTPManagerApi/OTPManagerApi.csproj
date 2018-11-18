@@ -53,6 +53,7 @@
     <Compile Include="Abstracts\DeviceManagerBase.cs" />
     <Compile Include="Serial\SerialDeviceManager.cs" />
     <Compile Include="Helpers\PingWorker.cs" />
+    <Compile Include="Helpers\LCGen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
