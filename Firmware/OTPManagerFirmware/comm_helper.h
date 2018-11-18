@@ -66,14 +66,16 @@ enum class AnsType : uint8_t
 
 struct Request
 {
-  private:
-    Request();
-  public:
-    static Request Invalid();
-    Request(const uint8_t req, const uint8_t* const payload, const uint8_t plLen);
-    ReqType reqType;
-    uint8_t plLen;
-    uint8_t payload[CMD_MAX_PLSZ];
+	private:
+		Request();
+	public:
+		static Request Invalid();
+		static Request Invalid(const uint8_t plLen);
+		Request(const uint8_t req, const uint32_t seq, const uint8_t* const payload, const uint8_t plLen);
+		ReqType reqType;
+		uint32_t seq;
+		uint8_t plLen;
+		uint8_t payload[CMD_MAX_PLSZ];
 };
 
 class CommHelper

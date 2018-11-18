@@ -8,19 +8,28 @@ Request::Request()
   plLen=0;
 }
 
-Request::Request(const uint8_t req, const uint8_t* const _payload, const uint8_t _plLen)
+Request::Request(const uint8_t req, const uint32_t seq, const uint8_t* const payload, const uint8_t plLen)
 {
-  reqType= static_cast<ReqType>(req);
-  plLen=_plLen;
-  for(uint8_t i=0;i<_plLen;++i)
-    *(payload+i)=*(_payload+i);
+	this->reqType=static_cast<ReqType>(req);
+	this->seq=seq;
+	this->plLen=plLen;
+	for(uint8_t i=0;i<plLen;++i)
+		*(this->payload+i)=*(payload+i);
 }
 
 Request Request::Invalid()
 {
-  Request request;
-  request.reqType=ReqType::Invalid;
-  return request;
+	Request request;
+	request.reqType=ReqType::Invalid;
+	return request;
+}
+
+Request Request::Invalid(const uint8_t plLen)
+{
+	Request request;
+	request.reqType=ReqType::Invalid;
+	request.plLen=plLen;
+	return request;
 }
 
 CommHelper::CommHelper(HardwareSerial * const port) : serial(port) { }
