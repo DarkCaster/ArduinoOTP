@@ -27,6 +27,7 @@
 // SOFTWARE.
 
 using System;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using OTPManagerApi.Protocol;
 
@@ -38,7 +39,6 @@ namespace OTPManagerApi.Helpers
 		public abstract Task SendRequest(ReqType reqType, byte[] plBuff, int offset, int len);
 		public abstract int MaxPayloadSize { get; }
 
-		private readonly Random random = new Random();
 		protected readonly ProtocolConfig config;
 
 		protected CommHelperBase(ProtocolConfig config) => this.config = config;
@@ -65,7 +65,9 @@ namespace OTPManagerApi.Helpers
 			if (dataDropLeft <= 0)
 				throw new Exception("Cannot confirm resync request transmisson!");
 			//generate payload with random sequence
-			random.NextBytes(reqBuff);
+			using (var random = new RNGCryptoServiceProvider())
+				random.GetBytes(reqBuff);
+			//TODO: init send and receive LCGs
 			//send resync sequence
 			await SendRequest(ReqType.Resync, reqBuff, 0, reqBuff.Length);
 			//receive resync answer
