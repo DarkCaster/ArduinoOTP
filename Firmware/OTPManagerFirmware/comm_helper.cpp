@@ -66,13 +66,24 @@ Request CommHelper::ReceiveRequest()
 	auto remSz = static_cast<uint8_t>(*recvBuff & CMD_SIZE_MASK);
 	if(remSz<CMD_MIN_REMSZ||remSz>CMD_MAX_REMSZ)
 		return Request::Invalid();
-	//check header against supported commands list
+	//check header against supported commands list to verify command validity
 	auto req=static_cast<uint8_t>(*recvBuff & REQ_ALL_MASK);
 	switch(req)
 	{
-		case REQ_RESYNC:
-		case REQ_RESYNC_COMPLETE:
+		//these requests MUST include only 4-byte sequence number only
 		case REQ_PING:
+		case REQ_RESYNC_COMPLETE:
+			if(remSz != CMD_MIN_REMSZ+4)
+				return Request::Invalid();
+		case REQ_COMMAND:
+		case REQ_DATA_REQUEST:
+			if(remSz != CMD_MIN_REMSZ+4+1)
+				return Request::Invalid();
+		case REQ_RESYNC:
+			if(remSz != CMD_MIN_REMSZ)
+				return Request::Invalid();
+			break;
+		case REQ_COMMAND_DATA:
 			break;
 		default:
 			return Request::Invalid();
@@ -87,7 +98,7 @@ Request CommHelper::ReceiveRequest()
 			return Request::Invalid();
 	}
 	//verify CRC
-	auto testSz=(uint8_t)(CMD_HDR_SIZE+remSz-1);
+	auto testSz=static_cast<uint8_t>(CMD_HDR_SIZE+remSz-1);
 	if(*(recvBuff+testSz)!=CRC8(recvBuff,testSz))
 		return Request::Invalid();
 	return Request(req,recvBuff+CMD_HDR_SIZE,remSz-CMD_CRC_SIZE);
@@ -105,15 +116,15 @@ uint8_t CommHelper::SendAnswer(const AnsType answer, const uint8_t* const payloa
 		*(cmdBuff+CMD_HDR_SIZE+i)=*(payload+i);
 	//write header
 #ifdef CMD_HDR_SIZE_IS_1
-	*cmdBuff=(uint8_t)(((uint8_t)answer)|(plLen+CMD_CRC_SIZE));
+	*cmdBuff=static_cast<uint8_t>((static_cast<uint8_t>(answer))|(plLen+CMD_CRC_SIZE));
 #else
 #error unsupporned CMD_HDR_SIZE
 #endif
 	//write crc
-	auto testLen=(uint8_t)(plLen+CMD_HDR_SIZE);
+	auto testLen=static_cast<uint8_t>(plLen+CMD_HDR_SIZE);
 	*(cmdBuff+testLen)=CRC8(cmdBuff,testLen);
 	//send data
-	auto finalLen=(uint8_t)(testLen+CMD_CRC_SIZE);
+	auto finalLen=static_cast<uint8_t>(testLen+CMD_CRC_SIZE);
 	for(uint8_t i=0; i<finalLen; ++i)
 		while(serial->write(*(cmdBuff+i))<1);
 	return 1;
