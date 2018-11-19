@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "main_loop.h"
 #include "comm_helper.h"
+#include "lcgen.h"
 #include "gui_ssd1306_i2c.h"
 #include "clock_helper_DS3231.h"
 #include "watchdog_AVR.h"
@@ -27,6 +28,8 @@
 #endif
 
 static CommHelper commHelper(&SERIAL_PORT);
+static LCGen reqLCG(0);
+static LCGen ansLCG(0);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,(ClockHelperBase*)(&clockHelper));
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
@@ -39,7 +42,7 @@ void resync()
 {
 	SYNC_ERR();
 	gui.ShowCDScr();
-	commHelper.SendAnswer(AnsType::Resync,nullptr,0);
+	commHelper.SendAnswer(AnsType::Resync,0,nullptr,0);
 	watchdog.Ping();
 	uint8_t resyncState=0;
 	while(true)
@@ -51,19 +54,19 @@ void resync()
 		//check header
 		if(request.reqType==ReqType::Invalid)
 		{
-			commHelper.SendAnswer(AnsType::Resync,nullptr,0);
+			commHelper.SendAnswer(AnsType::Resync,0,nullptr,0);
 			resyncState=0;
 			continue;
 		}
 		if(resyncState==1)
 		{
-			//if request is ResyncComplete
-			if(request.reqType==ReqType::ResyncComplete)
+			//if request is ResyncComplete, TODO: check req seq-number
+			if(request.reqType==ReqType::ResyncComplete && request.seq==reqLCG.GenerateValue())
 			{
-				//send ANS_OK
-				if(!commHelper.SendAnswer(AnsType::Ok,nullptr,0))
+				//send ANS_OK with current sequence number from ans-LCG
+				if(!commHelper.SendAnswer(AnsType::Ok,ansLCG.GenerateValue(),nullptr,0))
 				{
-					commHelper.SendAnswer(AnsType::Resync,nullptr,0);
+					commHelper.SendAnswer(AnsType::Resync,0,nullptr,0);
 					resyncState=0;
 					continue;
 				}
@@ -77,11 +80,14 @@ void resync()
 			resyncState=0;
 		}
 		//final resync-sequence
-		if(request.reqType!=ReqType::Resync || !commHelper.SendAnswer(AnsType::Resync,request.payload,request.plLen))
+		if(request.reqType!=ReqType::Resync || request.seq==0 || !commHelper.SendAnswer(AnsType::Resync,request.seq,request.payload,request.plLen))
 		{
-			commHelper.SendAnswer(AnsType::Resync,nullptr,0);
+			commHelper.SendAnswer(AnsType::Resync,0,nullptr,0);
 			continue;
 		}
+		//TODO: set req and ans LCGs
+		reqLCG=LCGen(request.seq);
+		ansLCG=LCGen(request.seq);
 		resyncState=1;
 	}
 }
@@ -101,24 +107,26 @@ void conn_loop()
 		watchdog.Ping();
 		//disable watchdog while performing requested action
 		watchdog.Disable();
-		switch (request.reqType)
-		{
-			//TODO: seqence check
-			case ReqType::Ping:
-				result=commHelper.SendAnswer(AnsType::Pong,nullptr,0);
-				break;
-			case ReqType::Invalid:
-			case ReqType::Resync:
-			case ReqType::ResyncComplete:
-			default:
-				commHelper.FlushInput(); //flush incoming data-buffer
-				result=0; // we will run resync
-				break;
-		}
+		//check sequence number
+		if(request.seq!=reqLCG.GenerateValue())
+			result=0;
+		else
+			switch (request.reqType)
+			{
+				case ReqType::Ping:
+					result=commHelper.SendAnswer(AnsType::Pong,ansLCG.GenerateValue(),nullptr,0);
+					break;
+				default:
+					result=0; // we will run resync
+					break;
+			}
 		//reenable watchdog
 		watchdog.Enable();
 		if(!result)
+		{
+			commHelper.FlushInput(); //flush incoming data-buffer
 			resync();
+		}
 	}
 }
 
