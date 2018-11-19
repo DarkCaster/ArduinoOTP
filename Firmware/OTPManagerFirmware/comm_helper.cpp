@@ -84,7 +84,7 @@ Request CommHelper::ReceiveRequest()
 				return Request::Invalid();
 			break;
 		case REQ_RESYNC:
-			if(plSize != 0)
+			if(plSize != 0 && plSize != CMD_SEQ_SIZE+CMD_MAX_PLSZ)
 				return Request::Invalid();
 			break;
 		case REQ_COMMAND_DATA:
