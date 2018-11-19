@@ -103,6 +103,7 @@ void conn_loop()
     watchdog.Disable();
     switch (request.reqType)
     {
+			//TODO: seqence check
       case ReqType::Ping:
         result=commHelper.SendAnswer(AnsType::Pong,nullptr,0);
         break;
@@ -110,6 +111,7 @@ void conn_loop()
       case ReqType::Resync:
       case ReqType::ResyncComplete:
       default:
+				commHelper.FlushInput(); //flush incoming data-buffer
         result=0; // we will run resync
         break;
     }
