@@ -10,15 +10,16 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 
 // command buffer sizes
 #define CMD_HDR_SIZE 1_u8
+#define CMD_SEQ_SIZE 4_u8
+#define CMD_SEQ_SIZE_IS_4
 #define CMD_HDR_SIZE_IS_1
 #define CMD_CRC_SIZE 1_u8
-#define CMD_BUFF_SIZE 16 //1 byte - header, up to 14 bytes - payload, 1 byte - crc8 checksum
+#define CMD_BUFF_SIZE 16 //1 byte - header, up to 14 bytes - payload (data+seq number), 1 byte - crc8 checksum
 #define CMD_TIMEOUT 500 //timeout for reading command payload
 
 #define CMD_SIZE_MASK 0x1F_u8
 #define CMD_MAX_REMSZ 15_u8
 #define CMD_MIN_REMSZ 1_u8
-//#define CMD_MAX_PLSZ  14_u8
 #define CMD_MAX_PLSZ  10_u8
 
 // requests (masks)
@@ -86,7 +87,7 @@ class CommHelper
     uint8_t DataAvailable();
     void FlushInput();
     Request ReceiveRequest();
-    uint8_t SendAnswer(const AnsType answer, const uint8_t* const payload, uint8_t plLen);
+		uint8_t SendAnswer(const AnsType answer, const uint32_t seq, const uint8_t* const payload, uint8_t plLen);
 };
 
 #endif

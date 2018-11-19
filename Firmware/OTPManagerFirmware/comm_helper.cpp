@@ -75,7 +75,7 @@ Request CommHelper::ReceiveRequest()
 		//these requests MUST include only 4-byte sequence number only
 		case REQ_PING:
 		case REQ_RESYNC_COMPLETE:
-			if(plSize != 4)
+			if(plSize != CMD_SEQ_SIZE)
 				return Request::Invalid();
 			break;
 		case REQ_COMMAND:
@@ -110,36 +110,56 @@ Request CommHelper::ReceiveRequest()
 	uint32_t seq=0;
 	uint8_t* pl=recvBuff+CMD_HDR_SIZE;
 	uint8_t dataSize=0;
-	if(plSize>=4)
+	if(plSize>=CMD_SEQ_SIZE)
 	{
+#ifdef CMD_SEQ_SIZE_IS_4
 		seq=static_cast<uint32_t>(*pl)|static_cast<uint32_t>(*(pl+1))<<8|static_cast<uint32_t>(*(pl+2))<<16|static_cast<uint32_t>(*(pl+3))<<24;
-		dataSize=plSize-4;
+#else
+#error selected CMD_SEQ_SIZE not unsupported
+#endif
+		dataSize=plSize-CMD_SEQ_SIZE;
 	}
-	uint8_t* data=(dataSize>0)?pl+4:nullptr;
+	uint8_t* data=(dataSize>0)?pl+CMD_SEQ_SIZE:nullptr;
 	//create reqtest-object
-	//return Request(req,recvBuff+CMD_HDR_SIZE,remSz-CMD_CRC_SIZE);
 	return Request(req,seq,data,dataSize);
 }
 
 
-uint8_t CommHelper::SendAnswer(const AnsType answer, const uint8_t* const payload, uint8_t plLen)
+uint8_t CommHelper::SendAnswer(const AnsType answer, const uint32_t seq, const uint8_t* const payload, uint8_t plLen)
 {
 	if(plLen>CMD_MAX_PLSZ)
 		return 0;
 	//message buffer
 	uint8_t cmdBuff[CMD_BUFF_SIZE];
+	uint8_t* plPtr=cmdBuff+CMD_HDR_SIZE;
+	//write seq number
+	auto seqLen=seq>0?CMD_SEQ_SIZE:0_u8;
+	if(seqLen>0)
+	{
+#ifdef CMD_SEQ_SIZE_IS_4
+		*(plPtr)=static_cast<uint8_t>(seq&0xFF);
+		*(plPtr+1)=static_cast<uint8_t>((seq>>8)&0xFF);
+		*(plPtr+2)=static_cast<uint8_t>((seq>>16)&0xFF);
+		*(plPtr+3)=static_cast<uint8_t>((seq>>24)&0xFF);
+#else
+#error selected CMD_SEQ_SIZE not unsupported
+#endif
+		plPtr+=seqLen;
+	}
+	else
+		plLen=0;
 	//place data to cmdBuff, payload buffer may overlap with cmdBuff
 	for(uint8_t i=0; i<plLen; ++i)
-		*(cmdBuff+CMD_HDR_SIZE+i)=*(payload+i);
+		*(plPtr++)=*(payload+i);
 	//write header
 #ifdef CMD_HDR_SIZE_IS_1
-	*cmdBuff=static_cast<uint8_t>((static_cast<uint8_t>(answer))|(plLen+CMD_CRC_SIZE));
+	*cmdBuff=static_cast<uint8_t>((static_cast<uint8_t>(answer))|(seqLen+plLen+CMD_CRC_SIZE));
 #else
 #error unsupporned CMD_HDR_SIZE
 #endif
 	//write crc
-	auto testLen=static_cast<uint8_t>(plLen+CMD_HDR_SIZE);
-	*(cmdBuff+testLen)=CRC8(cmdBuff,testLen);
+	auto testLen=static_cast<uint8_t>(plPtr-cmdBuff);
+	*plPtr=CRC8(cmdBuff,testLen);
 	//send data
 	auto finalLen=static_cast<uint8_t>(testLen+CMD_CRC_SIZE);
 	for(uint8_t i=0; i<finalLen; ++i)
