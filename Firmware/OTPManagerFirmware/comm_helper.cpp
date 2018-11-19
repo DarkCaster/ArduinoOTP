@@ -34,7 +34,7 @@ Request Request::Invalid(const uint8_t plLen)
 
 CommHelper::CommHelper(HardwareSerial * const port) : serial(port) { }
 
-void CommHelper::Init(const long speed)
+void CommHelper::Init(const unsigned long speed)
 {
 	serial->begin(speed);
 	serial->setTimeout(CMD_TIMEOUT);
@@ -66,6 +66,8 @@ Request CommHelper::ReceiveRequest()
 	auto remSz = static_cast<uint8_t>(*recvBuff & CMD_SIZE_MASK);
 	if(remSz<CMD_MIN_REMSZ||remSz>CMD_MAX_REMSZ)
 		return Request::Invalid();
+	//calculate plSize
+	auto plSize=static_cast<uint8_t>(remSz-CMD_CRC_SIZE);
 	//check header against supported commands list to verify command validity
 	auto req=static_cast<uint8_t>(*recvBuff & REQ_ALL_MASK);
 	switch(req)
@@ -73,14 +75,16 @@ Request CommHelper::ReceiveRequest()
 		//these requests MUST include only 4-byte sequence number only
 		case REQ_PING:
 		case REQ_RESYNC_COMPLETE:
-			if(remSz != CMD_MIN_REMSZ+4)
+			if(plSize != 4)
 				return Request::Invalid();
+			break;
 		case REQ_COMMAND:
 		case REQ_DATA_REQUEST:
-			if(remSz != CMD_MIN_REMSZ+4+1)
+			if(plSize != 5)
 				return Request::Invalid();
+			break;
 		case REQ_RESYNC:
-			if(remSz != CMD_MIN_REMSZ)
+			if(plSize != 0)
 				return Request::Invalid();
 			break;
 		case REQ_COMMAND_DATA:
@@ -101,7 +105,20 @@ Request CommHelper::ReceiveRequest()
 	auto testSz=static_cast<uint8_t>(CMD_HDR_SIZE+remSz-1);
 	if(*(recvBuff+testSz)!=CRC8(recvBuff,testSz))
 		return Request::Invalid();
-	return Request(req,recvBuff+CMD_HDR_SIZE,remSz-CMD_CRC_SIZE);
+
+	//decode sequence number
+	uint32_t seq=0;
+	uint8_t* pl=recvBuff+CMD_HDR_SIZE;
+	uint8_t dataSize=0;
+	if(plSize>=4)
+	{
+		seq=static_cast<uint32_t>(*pl)|static_cast<uint32_t>(*(pl+1))<<8|static_cast<uint32_t>(*(pl+2))<<16|static_cast<uint32_t>(*(pl+3))<<24;
+		dataSize=plSize-4;
+	}
+	uint8_t* data=(dataSize>0)?pl+4:nullptr;
+	//create reqtest-object
+	//return Request(req,recvBuff+CMD_HDR_SIZE,remSz-CMD_CRC_SIZE);
+	return Request(req,seq,data,dataSize);
 }
 
 

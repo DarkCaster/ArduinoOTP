@@ -81,7 +81,7 @@ class CommHelper
     HardwareSerial * const serial;
   public:
     CommHelper(HardwareSerial * const port);
-    void Init(const long speed);
+		void Init(const unsigned long speed);
     void Deinit();
     uint8_t DataAvailable();
     void FlushInput();
