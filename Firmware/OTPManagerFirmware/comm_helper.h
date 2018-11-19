@@ -5,7 +5,7 @@
 
 constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 {
-  return static_cast<uint8_t>(arg);
+	return static_cast<uint8_t>(arg);
 }
 
 // command buffer sizes
@@ -78,15 +78,15 @@ struct Request
 
 class CommHelper
 {
-  private:
-    HardwareSerial * const serial;
-  public:
-    CommHelper(HardwareSerial * const port);
+	private:
+		HardwareSerial * const serial;
+	public:
+		CommHelper(HardwareSerial * const port);
 		void Init(const unsigned long speed);
-    void Deinit();
-    uint8_t DataAvailable();
-    void FlushInput();
-    Request ReceiveRequest();
+		void Deinit();
+		uint8_t DataAvailable();
+		void FlushInput();
+		Request ReceiveRequest();
 		uint8_t SendAnswer(const AnsType answer, const uint32_t seq, const uint8_t* const payload, uint8_t plLen);
 };
 
