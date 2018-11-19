@@ -25,10 +25,9 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 #define REQ_ALL_MASK 0xE0_u8
 #define REQ_INVALID 0x00_u8
 #define REQ_PING 0x20_u8
-#define REQ_CMD_BEGIN 0x40_u8
-#define REQ_CMD_DATA 0x60_u8
-#define REQ_CMD_COMMIT 0x80_u8
-#define REQ_DATA_REQUEST 0xA0_u8
+#define REQ_COMMAND 0x40_u8
+#define REQ_COMMAND_DATA 0x60_u8
+#define REQ_DATA_REQUEST 0x80_u8
 #define REQ_RESYNC_COMPLETE 0xC0_u8
 #define REQ_RESYNC 0xE0_u8
 
@@ -36,9 +35,8 @@ constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
 #define ANS_ALL_MASK 0xE0_u8
 #define ANS_INVALID 0x00_u8
 #define ANS_PONG 0x20_u8
-#define ANS_DATA_BEGIN 0x40_u8
+#define ANS_DATA_MARKER 0x40_u8
 #define ANS_DATA 0x60_u8
-#define ANS_DATA_END 0x80_u8
 #define ANS_OK 0xC0_u8
 #define ANS_RESYNC 0xE0_u8
 
@@ -46,9 +44,8 @@ enum class ReqType : uint8_t
 {
 	Invalid = REQ_INVALID,
 	Ping = REQ_PING,
-	CommandBegin = REQ_CMD_BEGIN,
-	CommandData = REQ_CMD_DATA,
-	CommandCommit = REQ_CMD_COMMIT,
+	Command = REQ_COMMAND,
+	CommandData = REQ_COMMAND_DATA,
 	DataRequest = REQ_DATA_REQUEST,
 	ResyncComplete = REQ_RESYNC_COMPLETE,
 	Resync = REQ_RESYNC
@@ -58,9 +55,8 @@ enum class AnsType : uint8_t
 {
 	Invalid = ANS_INVALID,
 	Pong = ANS_PONG,
-	DataBegin = ANS_DATA_BEGIN,
+	DataMarker = ANS_DATA_MARKER,
 	Data = ANS_DATA,
-	DataEnd = ANS_DATA_END,
 	Ok = ANS_OK,
 	Resync = ANS_RESYNC
 };
