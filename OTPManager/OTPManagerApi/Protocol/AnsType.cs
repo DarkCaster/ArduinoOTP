@@ -32,9 +32,8 @@ namespace OTPManagerApi.Protocol
 	{
 		Invalid = 0x00,
 		Pong = 0x20,
-		DataBegin = 0x40,
+		DataMarker = 0x40,
 		Data = 0x60,
-		DataEnd = 0x80,
 		Ok = 0xC0,
 		Resync = 0xE0
 	}
