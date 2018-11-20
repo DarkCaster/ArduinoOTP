@@ -107,7 +107,7 @@ namespace OTPManagerApi.Serial
 				{
 					port.Open();
 					commHelper = new StreamCommHelper(port.BaseStream, config);
-					var lcgInitValues=await BaseConnect(); //run base connection routine
+					var lcgInitValues = await CommHelper.Resync(); //run resync;
 					reqLCG.ReInit(lcgInitValues.Key);
 					ansLCG.ReInit(lcgInitValues.Value);
 				}

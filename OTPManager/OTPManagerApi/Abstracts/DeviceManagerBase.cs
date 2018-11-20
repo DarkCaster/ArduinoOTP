@@ -40,7 +40,5 @@ namespace OTPManagerApi
 		//must be implemented by inherited class
 		//using properties because this parameters maybe hard to initialize inplace in base construct
 		protected abstract CommHelperBase CommHelper { get; }
-
-		public async Task<KeyValuePair<uint, uint>> BaseConnect() => await CommHelper.Resync(); //run resync
 	}
 }
