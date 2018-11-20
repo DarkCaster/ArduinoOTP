@@ -39,7 +39,6 @@ namespace OTPManagerApi.Serial
 	/// </summary>
 	public sealed class SerialDeviceManager : DeviceManagerBase, IOTPDeviceManager
 	{
-		private StreamCommHelper commHelper;
 		private PingWorker pingWorker = null;
 		private OTPDeviceState state = OTPDeviceState.Disconnected;
 
@@ -48,15 +47,23 @@ namespace OTPManagerApi.Serial
 		private readonly SerialPort port;
 		private readonly ISafeEventCtrlLite<OTPDeviceEventArgs> deviceEventCtrl;
 
+		//fields shared between ping-worker and main thread:
+		private readonly AsyncRWLock pingLock = new AsyncRWLock();
+		private readonly LCGen reqLCG = new LCGen(0);
+		private readonly LCGen ansLCG = new LCGen(0);
+		private StreamCommHelper commHelper; //created on connect
+
 		private volatile bool isDisposed = false;
 
 		public SerialDeviceManager(string serialPortName)
 		{
 			//this init sequence guarantee that no IDisposable objects will be created in case of exception during constructor execution
 			config = new SerialProtocolConfig();
-			port = new SerialPort(serialPortName, config.SERIAL_PORT_SPEED, Parity.None, 8, StopBits.One);
-			port.ReadTimeout = config.CMD_TIMEOUT;
-			port.WriteTimeout = config.CMD_TIMEOUT;
+			port = new SerialPort(serialPortName, config.SERIAL_PORT_SPEED, Parity.None, 8, StopBits.One)
+			{
+				ReadTimeout = config.CMD_TIMEOUT,
+				WriteTimeout = config.CMD_TIMEOUT
+			};
 #if DEBUG
 			deviceEventCtrl = new SafeEventDbg<OTPDeviceEventArgs>();
 #else
@@ -100,7 +107,9 @@ namespace OTPManagerApi.Serial
 				{
 					port.Open();
 					commHelper = new StreamCommHelper(port.BaseStream, config);
-					await BaseConnect(); //run base connection routine
+					var lcgInitValues=await BaseConnect(); //run base connection routine
+					reqLCG.ReInit(lcgInitValues.Key);
+					ansLCG.ReInit(lcgInitValues.Value);
 				}
 				catch (Exception ex)
 				{
@@ -110,7 +119,7 @@ namespace OTPManagerApi.Serial
 					return new OTPDeviceEventArgs() { State = OTPDeviceState.Failed, Error = ex };
 				}
 				//run ping worker thread
-				pingWorker = new PingWorker(CommHelper, config.PING_INTERVAL, PingFailedCallback);
+				pingWorker = PingWorker.StartNewWorker(pingLock, CommHelper, reqLCG, ansLCG, config.PING_INTERVAL, PingFailedCallback);
 				//state change
 				state = OTPDeviceState.Connected;
 				return new OTPDeviceEventArgs() { State = OTPDeviceState.Connected, Error = null };
@@ -130,7 +139,7 @@ namespace OTPManagerApi.Serial
 					throw new Exception("Device manager is in wrong state: " + state.ToString());
 				try
 				{
-					pingWorker.Dispose(); //kill ping worker thread (should not throw exceptions)
+					pingWorker.Stop(); //kill ping worker thread (should not throw exceptions)
 					port.Close();
 				}
 				catch (Exception ex)
@@ -169,7 +178,7 @@ namespace OTPManagerApi.Serial
 			try { asyncRunner.ExecuteTask(DisconnectAsync); }
 			catch (Exception) { };
 			isDisposed = true;
-			pingWorker?.Dispose();
+			pingWorker?.Stop();
 			port.Dispose();
 		}
 	}

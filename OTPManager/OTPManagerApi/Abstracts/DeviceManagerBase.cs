@@ -26,6 +26,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using OTPManagerApi.Helpers;
 
@@ -40,6 +41,6 @@ namespace OTPManagerApi
 		//using properties because this parameters maybe hard to initialize inplace in base construct
 		protected abstract CommHelperBase CommHelper { get; }
 
-		public async Task BaseConnect() => await CommHelper.Resync(); //run resync
+		public async Task<KeyValuePair<uint, uint>> BaseConnect() => await CommHelper.Resync(); //run resync
 	}
 }

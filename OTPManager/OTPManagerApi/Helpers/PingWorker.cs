@@ -33,36 +33,41 @@ using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Helpers
 {
-	public sealed class PingWorker : IDisposable
+	public sealed class PingWorker
 	{
-		public readonly AsyncRWLock pingLock = new AsyncRWLock();
 		private readonly Thread pingThread;
 		private readonly CancellationTokenSource CTS;
-		private readonly Action<Exception> pingThreadFailedCallback;
 
-		public PingWorker(CommHelperBase commHelper, int pingInterval, Action<Exception> pingThreadFailedCallback)
+		private PingWorker() { }
+
+		private PingWorker(AsyncRWLock commLock, CommHelperBase sharedCommHelper, LCGen sharedReqLCG, LCGen sharedAnsLCG, int pingInterval, Action<Exception> pingThreadFailedCallback)
 		{
 			this.CTS = new CancellationTokenSource();
-			this.pingThreadFailedCallback = pingThreadFailedCallback;
-			this.pingThread = new Thread(() => Worker(commHelper, CTS.Token, pingInterval));
-			this.pingThread.Start();
+			this.pingThread = new Thread(() => Worker(commLock, sharedCommHelper, sharedReqLCG, sharedAnsLCG, pingInterval, CTS.Token, pingThreadFailedCallback));
 		}
 
-		private void Worker(CommHelperBase commHelper, CancellationToken token, int pingInterval)
+		public static PingWorker StartNewWorker(AsyncRWLock commLock, CommHelperBase sharedCommHelper, LCGen sharedReqLCG, LCGen sharedAnsLCG, int pingInterval, Action<Exception> pingThreadFailedCallback)
+		{
+			var result = new PingWorker(commLock, sharedCommHelper, sharedReqLCG, sharedAnsLCG, pingInterval, pingThreadFailedCallback);
+			result.pingThread.Start();
+			return result;
+		}
+
+		private void Worker(AsyncRWLock commLock, CommHelperBase commHelper, LCGen reqLCG, LCGen ansLCG, int pingInterval, CancellationToken token, Action<Exception> pingThreadFailedCallback)
 		{
 			using (var taskRunner = new AsyncRunner())
 			{
 				var nullBuff = new byte[0];
 				while (!token.IsCancellationRequested)
 				{
-					pingLock.EnterWriteLock();
+					commLock.EnterWriteLock();
 					try
 					{
 						Answer answer = Answer.Invalid;
-						taskRunner.AddTask(() => commHelper.SendRequest(ReqType.Ping, nullBuff, 0, 0));
+						taskRunner.AddTask(() => commHelper.SendRequest(ReqType.Ping, reqLCG.GenerateValue(), nullBuff, 0, 0));
 						taskRunner.AddTask(commHelper.ReceiveAnswer, (obj) => answer = obj);
 						taskRunner.RunPendingTasks();
-						if (answer.ansType != AnsType.Pong)
+						if (answer.ansType != AnsType.Pong || answer.seq!=ansLCG.GenerateValue())
 							throw new Exception();
 					}
 					catch (Exception)
@@ -73,7 +78,7 @@ namespace OTPManagerApi.Helpers
 					}
 					finally
 					{
-						pingLock.ExitWriteLock();
+						commLock.ExitWriteLock();
 					}
 					try { taskRunner.ExecuteTask(() => Task.Delay(pingInterval, token)); }
 					catch (TaskCanceledException) { return; }
@@ -82,7 +87,7 @@ namespace OTPManagerApi.Helpers
 			}
 		}
 
-		public void Dispose()
+		public void Stop()
 		{
 			CTS.Cancel();
 			pingThread.Join();
