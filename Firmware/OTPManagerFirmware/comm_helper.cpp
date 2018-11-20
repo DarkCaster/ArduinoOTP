@@ -80,7 +80,7 @@ Request CommHelper::ReceiveRequest()
 			break;
 		case REQ_COMMAND:
 		case REQ_DATA_REQUEST:
-			if(plSize != 5)
+			if(plSize != CMD_SEQ_SIZE+1)
 				return Request::Invalid();
 			break;
 		case REQ_RESYNC:
@@ -88,6 +88,8 @@ Request CommHelper::ReceiveRequest()
 				return Request::Invalid();
 			break;
 		case REQ_COMMAND_DATA:
+			if(plSize < CMD_SEQ_SIZE)
+				return Request::Invalid();
 			break;
 		default:
 			return Request::Invalid();
@@ -105,7 +107,6 @@ Request CommHelper::ReceiveRequest()
 	auto testSz=static_cast<uint8_t>(CMD_HDR_SIZE+remSz-1);
 	if(*(recvBuff+testSz)!=CRC8(recvBuff,testSz))
 		return Request::Invalid();
-
 	//decode sequence number
 	uint32_t seq=0;
 	uint8_t* pl=recvBuff+CMD_HDR_SIZE;
