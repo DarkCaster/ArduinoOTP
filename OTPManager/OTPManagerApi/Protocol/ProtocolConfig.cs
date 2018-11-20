@@ -31,6 +31,7 @@ namespace OTPManagerApi.Protocol
 	public abstract class ProtocolConfig
 	{
 		public int CMD_HDR_SIZE { get; protected set; }
+		public int CMD_SEQ_SIZE { get; protected set; }
 		public int CMD_CRC_SIZE { get; protected set; }
 		public int CMD_BUFF_SIZE { get; protected set; }
 		public int CMD_TIMEOUT { get; protected set; }
@@ -41,5 +42,7 @@ namespace OTPManagerApi.Protocol
 		public int ANS_ALL_MASK { get; protected set; }
 		public int RESYNC_DATA_DROP_LIMIT { get; protected set; }
 		public int PING_INTERVAL { get; protected set; }
+
+		protected ProtocolConfig() => CMD_SEQ_SIZE = 4;
 	}
 }

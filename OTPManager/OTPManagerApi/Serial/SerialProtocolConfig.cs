@@ -44,7 +44,7 @@ namespace OTPManagerApi.Serial
 			CMD_SIZE_MASK = 0x1F;
 			CMD_MAX_REMSZ = 15;
 			CMD_MIN_REMSZ = 1;
-			CMD_MAX_PLSZ = 14;
+			CMD_MAX_PLSZ = 10;
 			ANS_ALL_MASK = 0xE0;
 			RESYNC_DATA_DROP_LIMIT = 200;
 			PING_INTERVAL = 500;
