@@ -97,16 +97,36 @@ namespace OTPManagerApi.Helpers
 			}
 		}
 
-		public override async Task SendRequest(ReqType reqType, byte[] plBuff, int offset, int len)
+		public override async Task SendRequest(ReqType reqType, uint seq, byte[] plBuff, int offset, int len)
 		{
 			try
 			{
 				if (len > config.CMD_MAX_PLSZ)
 					throw new ArgumentException("len > CMD_MAX_PLSZ", nameof(len));
-				Buffer.BlockCopy(plBuff, offset, sendBuff, config.CMD_HDR_SIZE, len);
-				sendBuff[0] = (byte)((int)reqType | (len + config.CMD_CRC_SIZE));
+				//write sequence number
+				int pos = config.CMD_HDR_SIZE;
+				int seqLen = 0;
+				if (seq > 0)
+				{
+					if (config.CMD_SEQ_SIZE == 4)
+					{
+						sendBuff[pos++] = (byte)(seq & 0xFF);
+						sendBuff[pos++] = (byte)((seq >> 8) & 0xFF);
+						sendBuff[pos++] = (byte)((seq >> 16) & 0xFF);
+						sendBuff[pos++] = (byte)((seq >> 24) & 0xFF);
+					}
+					else
+						throw new Exception("config.CMD_SEQ_SIZE != 4");
+					seqLen = config.CMD_SEQ_SIZE;
+				}
+				else
+					len = 0;
+				//write payload
+				Buffer.BlockCopy(plBuff, offset, sendBuff, pos, len);
+				pos += len;
+				sendBuff[0] = (byte)((int)reqType | (len + seqLen + config.CMD_CRC_SIZE));
 				//write crc
-				int testLen = len + config.CMD_HDR_SIZE;
+				int testLen = len + seqLen + config.CMD_HDR_SIZE;
 				sendBuff[testLen] = CRC8.Calculate(sendBuff, 0, testLen);
 				//send data
 				using (var cts = new CancellationTokenSource())
