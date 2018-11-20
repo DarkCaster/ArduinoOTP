@@ -39,33 +39,9 @@ namespace OTPManagerApi.Helpers
 		private const ulong m = 4294967291UL;
 		private const ulong a = 279470273UL;
 
-		public LCGen()
-		{
-			using (var random = new RNGCryptoServiceProvider())
-			{
-				//set initial LGC counter to random value
-				var bInit = new byte[4];
-				random.GetBytes(bInit);
-				ulong init = unchecked((uint)(bInit[0] | bInit[1] << 8 | bInit[2] << 16 | bInit[3] << 24));
-				if (init < 1)
-					init = 1;
-				if (init > (m - 1))
-					init = m - 1;
-				curLCGValue = init;
-			}
-		}
+		public LCGen(uint seed) => ReInit(seed);
 
-		public LCGen(byte[] seed)
-		{
-			ulong init = unchecked((uint)(seed[0] | seed[1] << 8 | seed[2] << 16 | seed[3] << 24));
-			if (init < 1)
-				init = 1;
-			if (init > (m - 1))
-				init = m - 1;
-			curLCGValue = init;
-		}
-
-		public LCGen(uint seed)
+		public void ReInit(uint seed)
 		{
 			ulong init = seed;
 			if (init < 1)
