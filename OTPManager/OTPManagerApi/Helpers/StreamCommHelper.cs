@@ -66,13 +66,23 @@ namespace OTPManagerApi.Helpers
 					return Answer.Invalid;
 				if(!Enum.TryParse<AnsType>((recvBuff[0] & config.ANS_ALL_MASK).ToString(),out AnsType ans))
 					return Answer.Invalid;
+				//calculate plSize
+				var plSize = remSz - config.CMD_CRC_SIZE;
 				switch (ans)
 				{
+					case AnsType.Ok:
 					case AnsType.Pong:
-						if (remSz > config.CMD_CRC_SIZE)
+						if (plSize != config.CMD_SEQ_SIZE)
 							return Answer.Invalid;
 						break;
-					case AnsType.Ok:
+					case AnsType.DataMarker:
+						if (plSize != config.CMD_SEQ_SIZE + 1)
+							return Answer.Invalid;
+						break;
+					case AnsType.Data:
+						if (plSize < config.CMD_SEQ_SIZE)
+							return Answer.Invalid;
+						break;
 					case AnsType.Resync:
 						break;
 					default:
@@ -89,7 +99,20 @@ namespace OTPManagerApi.Helpers
 				var testSz = config.CMD_HDR_SIZE + remSz - 1;
 				if (recvBuff[testSz] != CRC8.Calculate(recvBuff, 0, testSz))
 					return Answer.Invalid;
-				return new Answer(ans, recvBuff, config.CMD_HDR_SIZE, remSz - config.CMD_CRC_SIZE);
+				//decode sequence number
+				uint seq = 0;
+				var seqPos = config.CMD_HDR_SIZE;
+				int dataSize = 0;
+				if (plSize >= config.CMD_SEQ_SIZE)
+				{
+					if (config.CMD_SEQ_SIZE == 4)
+						seq = unchecked((uint)(recvBuff[seqPos] | recvBuff[seqPos + 1] << 8 | recvBuff[seqPos + 2] << 16 | recvBuff[seqPos + 3] << 24));
+					else
+						throw new Exception("config.CMD_SEQ_SIZE != 4");
+					dataSize = plSize - config.CMD_SEQ_SIZE;
+				}
+				var dataPos = (dataSize > 0) ? config.CMD_HDR_SIZE + config.CMD_SEQ_SIZE : 0;
+				return new Answer(ans, seq, recvBuff, dataPos, dataSize);
 			}
 			catch (Exception ex) when (ex is TaskCanceledException || ex is TimeoutException)
 			{
