@@ -1,5 +1,5 @@
 ﻿//
-// IOTPAnswer.cs
+// IOTPResponse.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
