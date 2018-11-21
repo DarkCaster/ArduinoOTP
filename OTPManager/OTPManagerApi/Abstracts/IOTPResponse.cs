@@ -28,7 +28,7 @@
 using System;
 namespace OTPManagerApi
 {
-	public interface IOTPAnswer
+	public interface IOTPResponse
 	{
 		byte AnswerType { get; }
 	}

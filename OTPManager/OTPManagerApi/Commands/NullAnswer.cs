@@ -28,7 +28,7 @@
 using System;
 namespace OTPManagerApi.Commands
 {
-	public sealed class NullAnswer : IOTPAnswer
+	public sealed class NullAnswer : IOTPResponse
 	{
 		public byte AnswerType => 0;
 	}
