@@ -56,12 +56,14 @@
     <Compile Include="Helpers\LCGen.cs" />
     <Compile Include="Abstracts\IOTPCommand.cs" />
     <Compile Include="Abstracts\IOTPAnswer.cs" />
+    <Compile Include="Commands\SetTime.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
     <Folder Include="Helpers\" />
     <Folder Include="Protocol\" />
     <Folder Include="Serial\" />
+    <Folder Include="Commands\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetBlocks\CustomBlocks\CustomBlocks.csproj">
