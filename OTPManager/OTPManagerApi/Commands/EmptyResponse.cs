@@ -1,5 +1,5 @@
 ﻿//
-// NullAnswer.cs
+// EmptyResponse.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
@@ -28,7 +28,7 @@
 using System;
 namespace OTPManagerApi.Commands
 {
-	public sealed class NullAnswer : IOTPResponse
+	public sealed class EmptyResponse : IOTPResponse
 	{
 		public byte AnswerType => 0;
 	}
