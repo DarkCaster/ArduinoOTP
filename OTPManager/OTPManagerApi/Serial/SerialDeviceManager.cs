@@ -49,8 +49,8 @@ namespace OTPManagerApi.Serial
 
 		//fields shared between ping-worker and main thread:
 		private readonly AsyncRWLock pingLock = new AsyncRWLock();
-		private readonly LCGen reqLCG = new LCGen(0);
-		private readonly LCGen ansLCG = new LCGen(0);
+		//protected readonly LCGen reqLCG = new LCGen(0); // defined at DeviceManagerBase
+		//protected readonly LCGen ansLCG = new LCGen(0); // defined at DeviceManagerBase
 		private StreamCommHelper commHelper; //created on connect
 
 		private volatile bool isDisposed = false;

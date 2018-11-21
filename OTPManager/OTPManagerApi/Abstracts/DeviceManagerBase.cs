@@ -26,7 +26,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using OTPManagerApi.Helpers;
 
@@ -40,5 +39,13 @@ namespace OTPManagerApi
 		//must be implemented by inherited class
 		//using properties because this parameters maybe hard to initialize inplace in base construct
 		protected abstract CommHelperBase CommHelper { get; }
+
+		protected readonly LCGen reqLCG = new LCGen(0);
+		protected readonly LCGen ansLCG = new LCGen(0);
+
+		protected IOTPAnswer ExecuteCommand(IOTPCommand command)
+		{
+			throw new NotImplementedException("TODO");
+		}
 	}
 }
