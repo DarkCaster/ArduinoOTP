@@ -41,6 +41,7 @@ namespace OTPManagerApi.Serial
 			CMD_CRC_SIZE = 1;
 			CMD_BUFF_SIZE = 16; //1 byte - header, up to 14 bytes - payload, 1 byte - crc8 checksum
 			CMD_TIMEOUT = 500; //timeout for reading command payload
+			COMMIT_TIMEOUT = 5000; //timeout for awaiting command commit
 			CMD_SIZE_MASK = 0x1F;
 			CMD_MAX_REMSZ = 15;
 			CMD_MIN_REMSZ = 1;

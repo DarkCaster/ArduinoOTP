@@ -43,6 +43,7 @@ namespace OTPManagerApi.Protocol
 		public int RESYNC_DATA_DROP_LIMIT { get; protected set; }
 		public int PING_INTERVAL { get; protected set; }
 		public int MAX_RESPONSE_SZ { get; protected set; }
+		public int COMMIT_TIMEOUT { get; protected set; }
 
 		protected ProtocolConfig()
 		{
