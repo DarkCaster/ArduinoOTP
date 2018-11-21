@@ -57,6 +57,7 @@
     <Compile Include="Abstracts\IOTPCommand.cs" />
     <Compile Include="Abstracts\IOTPAnswer.cs" />
     <Compile Include="Commands\SetTimeCommand.cs" />
+    <Compile Include="Commands\NullAnswer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
