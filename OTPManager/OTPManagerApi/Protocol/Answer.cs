@@ -32,7 +32,6 @@ namespace OTPManagerApi.Protocol
 	{
 		public readonly AnsType ansType;
 		public readonly byte[] payload;
-		public readonly int plLen;
 		public readonly uint seq;
 
 		public Answer(AnsType ansType, uint seq, byte[] plBuff, int offset, int length)
@@ -41,7 +40,6 @@ namespace OTPManagerApi.Protocol
 			this.ansType = ansType;
 			this.payload = new byte[length];
 			Buffer.BlockCopy(plBuff, offset, this.payload, 0, length);
-			this.plLen = length;
 		}
 
 		public static Answer Invalid => new Answer(AnsType.Invalid, 0, new byte[0], 0, 0);
