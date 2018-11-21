@@ -42,7 +42,12 @@ namespace OTPManagerApi.Protocol
 		public int ANS_ALL_MASK { get; protected set; }
 		public int RESYNC_DATA_DROP_LIMIT { get; protected set; }
 		public int PING_INTERVAL { get; protected set; }
+		public int MAX_RESPONSE_SZ { get; protected set; }
 
-		protected ProtocolConfig() => CMD_SEQ_SIZE = 4;
+		protected ProtocolConfig()
+		{
+			CMD_SEQ_SIZE = 4;
+			MAX_RESPONSE_SZ = 8192;
+		}
 	}
 }
