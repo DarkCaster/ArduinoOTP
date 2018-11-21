@@ -54,6 +54,8 @@
     <Compile Include="Serial\SerialDeviceManager.cs" />
     <Compile Include="Helpers\PingWorker.cs" />
     <Compile Include="Helpers\LCGen.cs" />
+    <Compile Include="Abstracts\IOTPCommand.cs" />
+    <Compile Include="Abstracts\IOTPAnswer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
