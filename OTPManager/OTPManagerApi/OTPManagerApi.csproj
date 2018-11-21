@@ -56,7 +56,7 @@
     <Compile Include="Helpers\LCGen.cs" />
     <Compile Include="Abstracts\IOTPCommand.cs" />
     <Compile Include="Abstracts\IOTPAnswer.cs" />
-    <Compile Include="Commands\SetTime.cs" />
+    <Compile Include="Commands\SetTimeCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />

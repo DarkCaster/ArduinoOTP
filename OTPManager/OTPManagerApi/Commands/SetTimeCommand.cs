@@ -1,5 +1,5 @@
 ﻿//
-// SetTime.cs
+// SetTimeCommand.cs
 //
 // Author:
 //       DarkCaster <dark.caster@outlook.com>
@@ -28,12 +28,12 @@
 using System;
 namespace OTPManagerApi.Commands
 {
-	public sealed class SetTime : IOTPCommand
+	public sealed class SetTimeCommand : IOTPCommand
 	{
 		private readonly DateTime localTime;
 		private readonly int UTCOffset;
 
-		public SetTime(DateTime localTime, int UTCOffset)
+		public SetTimeCommand(DateTime localTime, int UTCOffset)
 		{
 			this.localTime = localTime;
 			this.UTCOffset = UTCOffset;
