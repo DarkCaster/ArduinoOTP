@@ -45,7 +45,10 @@ namespace OTPManagerApi.Helpers
 			this.recvBuff = new byte[config.CMD_BUFF_SIZE];
 			this.sendBuff = new byte[config.CMD_BUFF_SIZE];
 			this.link = link;
+			this.UseCommitTimeout = false;
 		}
+
+		public bool UseCommitTimeout { get; set; }
 
 		public override int MaxPayloadSize => config.CMD_MAX_PLSZ;
 
@@ -56,7 +59,7 @@ namespace OTPManagerApi.Helpers
 				int bRead = 0;
 				using (var cts = new CancellationTokenSource())
 				{
-					cts.CancelAfter(config.CMD_TIMEOUT);
+					cts.CancelAfter(UseCommitTimeout?config.COMMIT_TIMEOUT:config.CMD_TIMEOUT);
 					bRead = await link.ReadAsync(recvBuff, 0, 1, cts.Token);
 					if (bRead != 1)
 						throw new NotSupportedException("Stream has reached EOF and cannot receive data");
@@ -91,7 +94,7 @@ namespace OTPManagerApi.Helpers
 				var rem = remSz;
 				using (var cts = new CancellationTokenSource())
 				{
-					cts.CancelAfter(config.CMD_TIMEOUT);
+					cts.CancelAfter(UseCommitTimeout?config.COMMIT_TIMEOUT:config.CMD_TIMEOUT);
 					while (rem > 0)
 						rem -= await link.ReadAsync(recvBuff, config.CMD_HDR_SIZE + (remSz - rem), rem, cts.Token);
 				}
@@ -154,7 +157,7 @@ namespace OTPManagerApi.Helpers
 				//send data
 				using (var cts = new CancellationTokenSource())
 				{
-					cts.CancelAfter(config.CMD_TIMEOUT);
+					cts.CancelAfter(UseCommitTimeout?config.COMMIT_TIMEOUT:config.CMD_TIMEOUT);
 					await link.WriteAsync(sendBuff, 0, testLen + config.CMD_CRC_SIZE, cts.Token);
 				}
 			}

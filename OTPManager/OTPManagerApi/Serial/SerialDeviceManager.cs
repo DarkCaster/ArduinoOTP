@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using DarkCaster.Events;
 using DarkCaster.Async;
 using OTPManagerApi.Helpers;
+using OTPManagerApi.Protocol;
 
 namespace OTPManagerApi.Serial
 {
@@ -74,6 +75,22 @@ namespace OTPManagerApi.Serial
 		public ISafeEvent<OTPDeviceEventArgs> DeviceEvent => (ISafeEvent<OTPDeviceEventArgs>)deviceEventCtrl;
 
 		protected override CommHelperBase CommHelper => commHelper;
+
+		protected override ProtocolConfig Config => config;
+
+		protected override void PreCommandCommit()
+		{
+			port.WriteTimeout = config.COMMIT_TIMEOUT;
+			port.ReadTimeout = config.COMMIT_TIMEOUT;
+			commHelper.UseCommitTimeout = true;
+		}
+
+		protected override void PostCommandCommit()
+		{
+			port.WriteTimeout = config.CMD_TIMEOUT;
+			port.ReadTimeout = config.CMD_TIMEOUT;
+			commHelper.UseCommitTimeout = false;
+		}
 
 		private class PingFailedCallbackException : Exception { }
 

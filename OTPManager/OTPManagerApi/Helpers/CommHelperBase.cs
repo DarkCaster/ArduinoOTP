@@ -56,8 +56,8 @@ namespace OTPManagerApi.Helpers
 				try
 				{
 					var answer = await ReceiveAnswer();
-					if (answer.plLen > 0)
-						dataDropLeft -= answer.plLen;
+					if (answer.payload.Length > 0)
+						dataDropLeft -= answer.payload.Length;
 					else
 						dataDropLeft -= 1;
 				}
@@ -83,11 +83,11 @@ namespace OTPManagerApi.Helpers
 			if (verification.ansType != AnsType.Resync)
 				throw new Exception("Incorrect answer received during resync verification");
 			//compare resync sequence
-			if (verification.plLen != reqBuff.Length)
+			if (verification.payload.Length != reqBuff.Length)
 				throw new Exception("Resync verification sequence is incorrect!");
 			//init answer LCG
 			var ansGen = new LCGen(verification.seq);
-			for (int i = 0; i < verification.plLen; ++i)
+			for (int i = 0; i < verification.payload.Length; ++i)
 				if (verification.payload[i] != reqBuff[i])
 					throw new Exception("Resync verification sequence mismatch!");
 			//get final request and answer LCG init values
