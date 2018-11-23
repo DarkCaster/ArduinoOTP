@@ -34,6 +34,14 @@ static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,(ClockHelperBase*)(&clockHelper));
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
+static uint8_t commandBuffer[COMMAND_BUFFER_SIZE];
+static uint8_t responseBuffer[RESPONSE_BUFFER_SIZE];
+static CMDRSP_BUFF_TYPE cmdBuffPos=0;
+static CMDRSP_BUFF_TYPE rspBuffPos=0;
+static CMDRSP_BUFF_TYPE rspSize=0;
+static uint8_t cmdType=0;
+static uint8_t rspType=0;
+
 static volatile bool buttonPressed=false;
 static unsigned long lastTime=0;
 static MenuItem curMenuItem(MenuItemType::MainMenu,0);
@@ -115,6 +123,51 @@ void conn_loop()
 			{
 				case ReqType::Ping:
 					result=commHelper.SendAnswer(AnsType::Pong,ansLCG.GenerateValue(),nullptr,0);
+					break;
+				case ReqType::Command:
+					if(request.payload[0]==0)
+					{
+						//TODO: commit command
+						//TODO: fillup results
+						//reset cmdType;
+						cmdType=0;
+					}
+					else
+						//save command type
+						cmdType=request.payload[0];
+					//reset command buffer pos
+					cmdBuffPos=0;
+					//send ok
+					result=commHelper.SendAnswer(AnsType::Ok,ansLCG.GenerateValue(),nullptr,0);
+					break;
+				case ReqType::CommandData:
+					//copy command data
+					for(uint8_t cnt=0;cnt<request.plLen;++cnt)
+						commandBuffer[cmdBuffPos++]=request.payload[cnt];
+					//send ok
+					result=commHelper.SendAnswer(AnsType::Ok,ansLCG.GenerateValue(),nullptr,0);
+					break;
+				case ReqType::DataRequest:
+					if(request.payload[0]==0)
+					{
+						//reset response position
+						rspBuffPos=0;
+						//send answer with response type
+						uint8_t rspTypeTmp[1];
+						rspTypeTmp[0]=rspType;
+						result=commHelper.SendAnswer(AnsType::DataMarker,ansLCG.GenerateValue(),rspTypeTmp,1);
+					}
+					else
+					{
+						//get next response-data chunk
+						CMDRSP_BUFF_TYPE rspChunkSz=CMD_MAX_PLSZ;
+						auto availBuffSz=rspSize-rspBuffPos;
+						if(availBuffSz>rspChunkSz)
+							rspChunkSz=static_cast<CMDRSP_BUFF_TYPE>(availBuffSz);
+						//send chunk to client
+						result=commHelper.SendAnswer(AnsType::Data,ansLCG.GenerateValue(),responseBuffer+rspBuffPos,rspChunkSz);
+						rspBuffPos+=rspChunkSz;
+					}
 					break;
 				default:
 					result=0; // we will run resync
