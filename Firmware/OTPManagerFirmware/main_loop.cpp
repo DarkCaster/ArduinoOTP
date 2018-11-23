@@ -31,7 +31,7 @@ static CommHelper commHelper(&SERIAL_PORT);
 static LCGen reqLCG(0);
 static LCGen ansLCG(0);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
-static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,(ClockHelperBase*)(&clockHelper));
+static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,dynamic_cast<ClockHelperBase*>(&clockHelper));
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
 static uint8_t commandBuffer[COMMAND_BUFFER_SIZE];
