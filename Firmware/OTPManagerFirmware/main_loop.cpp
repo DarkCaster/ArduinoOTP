@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "main_loop.h"
 #include "comm_helper.h"
+#include "cmd_processor.h"
 #include "lcgen.h"
 #include "gui_ssd1306_i2c.h"
 #include "clock_helper_DS3231.h"

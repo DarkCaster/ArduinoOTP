@@ -2,11 +2,7 @@
 #define COMM_HELPER
 
 #include <Arduino.h>
-
-constexpr uint8_t operator "" _u8 (unsigned long long arg) noexcept
-{
-	return static_cast<uint8_t>(arg);
-}
+#include "helper_defines.h"
 
 // command buffer sizes
 #define CMD_HDR_SIZE 1_u8
