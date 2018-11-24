@@ -6,12 +6,14 @@
 #include "helper_defines.h"
 
 #define RSP_EMPTY 0_u8
+#define RSP_INVALID 1_u8
 
 struct RspParams
 {
 		CMDRSP_BUFF_TYPE rspLen;
 		uint8_t rspType;
 		static RspParams Empty();
+		static RspParams Invalid();
 };
 
 class CmdProcessor
