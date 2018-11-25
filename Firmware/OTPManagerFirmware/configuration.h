@@ -42,6 +42,8 @@
 #define MAIN_SCREEN_DAYS_OF_THE_WEEK {"mon","tue","wed","thu","fri","sat","sun"}
 #define MAIN_SCREEN_DAY_LEN 4
 
+#define YEAR_START 2000
+
 #define DEBUG_SERIAL_PORT SERIAL_PORT
 
 #endif

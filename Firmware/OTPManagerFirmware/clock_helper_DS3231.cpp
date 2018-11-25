@@ -94,5 +94,24 @@ void ClockHelperDS3231::DescendPost()
 
 void ClockHelperDS3231::Update()
 {
-  lastTime=clock.read();
+	lastTime=clock.read();
+}
+
+bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const uint8_t &hour, const uint8_t &day, const uint8_t &dow, const uint8_t &month, const uint16_t &year, const uint32_t &utcOffset)
+{
+	DateTime target;
+	target.Second=sec;
+	target.Minute=min;
+	target.Hour=hour;
+	target.Day=day;
+	target.Dow=dow;
+	target.Month=month;
+	if(year<YEAR_START || year>YEAR_START+199)
+		return false;
+	uint8_t yearCorr=static_cast<uint8_t>(year-YEAR_START);
+	target.Year=yearCorr;
+	//TODO: save utcOffset to eeprom;
+	if(!clock.write(target))
+		return false;
+	return true;
 }

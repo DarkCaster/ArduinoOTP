@@ -23,6 +23,7 @@ class ClockHelperDS3231 final : public ClockHelperBase
     void WakeupPost() final;
     void DescendPost() final;
     void Update() final;
+		bool SetTime(const uint8_t &sec, const uint8_t &min, const uint8_t &hour, const uint8_t &day, const uint8_t &dow, const uint8_t &month, const uint16_t &year, const uint32_t &utcOffset) final;
 };
 
 #endif
