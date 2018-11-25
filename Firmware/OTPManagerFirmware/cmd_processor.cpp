@@ -16,14 +16,29 @@ RspParams RspParams::Invalid()
 	return result;
 }
 
+RspParams RspParams::Error(const CMDRSP_BUFF_TYPE rspLen)
+{
+	RspParams result;
+	result.rspLen=rspLen;
+	result.rspType=RSP_ERROR;
+	return result;
+}
+
 CmdProcessor::CmdProcessor(ClockHelperBase* const _clockHelper) : clockHelper(_clockHelper) { }
 
 RspParams CmdProcessor::ProcessCommand(const uint8_t cmdType, const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t* const rspData)
 {
 	//check cmdType
-	//process command
-	//return result
-	return RspParams::Invalid();
+	RspParams result;
+	switch (cmdType)
+	{
+		case CMD_SETTIME:
+			result=SetTime(cmdData,cmdLen);
+			break;
+		default:
+			return RspParams::Invalid();
+	}
+	return result;
 }
 
 RspParams CmdProcessor::SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen)
@@ -43,5 +58,7 @@ RspParams CmdProcessor::SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_
 	utcOffset|=static_cast<uint32_t>(cmdData[pos++])<<8;
 	utcOffset|=static_cast<uint32_t>(cmdData[pos++])<<16;
 	//TODO: use clockHelper to set time
+	if(!clockHelper->SetTime(sec,min,hour,day,dow,month,year,utcOffset))
+		return RspParams::Error(0);
 	return RspParams::Empty();
 }

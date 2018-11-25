@@ -8,6 +8,8 @@
 
 #define RSP_EMPTY 0_u8
 #define RSP_INVALID 1_u8
+#define RSP_ERROR 1_u8
+#define CMD_SETTIME 1_u8
 
 struct RspParams
 {
@@ -15,6 +17,7 @@ struct RspParams
 		uint8_t rspType;
 		static RspParams Empty();
 		static RspParams Invalid();
+		static RspParams Error(const CMDRSP_BUFF_TYPE rspLen);
 };
 
 class CmdProcessor
