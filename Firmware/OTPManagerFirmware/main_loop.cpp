@@ -33,6 +33,7 @@ static LCGen reqLCG(0);
 static LCGen ansLCG(0);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,dynamic_cast<ClockHelperBase*>(&clockHelper));
+static CmdProcessor cmdProcessor(dynamic_cast<ClockHelperBase*>(&clockHelper));
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
 static uint8_t commandBuffer[COMMAND_BUFFER_SIZE];
@@ -128,8 +129,11 @@ void conn_loop()
 				case ReqType::Command:
 					if(request.payload[0]==0)
 					{
-						//TODO: commit command
-						//TODO: fillup results
+						//commit command
+						auto rspParams=cmdProcessor.ProcessCommand(cmdType,commandBuffer,cmdBuffPos,responseBuffer);
+						//fillup results
+						rspType=rspParams.rspType;
+						rspSize=rspParams.rspLen;
 						//reset cmdType;
 						cmdType=0;
 					}
