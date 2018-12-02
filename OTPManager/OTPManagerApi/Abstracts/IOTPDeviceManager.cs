@@ -39,5 +39,7 @@ namespace OTPManagerApi
 		void Disconnect();
 		Task ConnectAsync();
 		Task DisconnectAsync();
+		void SetTime();
+		Task SetTimeAsync();
 	}
 }
