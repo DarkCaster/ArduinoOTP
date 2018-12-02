@@ -30,6 +30,6 @@ namespace OTPManagerApi.Commands
 {
 	public sealed class EmptyResponse : IOTPResponse
 	{
-		public byte AnswerType => 0;
+		public ResponseType AnswerType => ResponseType.Empty;
 	}
 }

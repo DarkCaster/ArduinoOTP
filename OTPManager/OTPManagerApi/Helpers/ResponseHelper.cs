@@ -34,9 +34,10 @@ namespace OTPManagerApi.Helpers
 	{
 		public static IOTPResponse DeserializeResponse(byte rType, byte[] rData)
 		{
-			switch (rType)
+			var eRType = (ResponseType)rType;
+			switch (eRType)
 			{
-				case 0:
+				case ResponseType.Empty:
 					return new EmptyResponse();
 				default:
 					throw new Exception($"Incorrect response type: {rType}");
