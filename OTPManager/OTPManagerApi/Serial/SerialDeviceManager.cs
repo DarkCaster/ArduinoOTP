@@ -188,6 +188,20 @@ namespace OTPManagerApi.Serial
 			asyncRunner.ExecuteTask(DisconnectAsync);
 		}
 
+		public void SetTime()
+		{
+			pingLock.EnterWriteLock();
+			try { asyncRunner.ExecuteTask(SetTimeBase); }
+			finally { pingLock.ExitWriteLock(); }
+		}
+
+		public async Task SetTimeAsync()
+		{
+			await pingLock.EnterWriteLockAsync();
+			try { await SetTimeBase(); }
+			finally { pingLock.ExitWriteLock(); }
+		}
+
 		public void Dispose()
 		{
 			if (isDisposed)

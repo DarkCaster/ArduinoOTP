@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using OTPManagerApi.Helpers;
 using OTPManagerApi.Protocol;
+using OTPManagerApi.Commands;
 
 namespace OTPManagerApi
 {
@@ -123,6 +124,15 @@ namespace OTPManagerApi
 				totalResponseSz += answer.payload.Length;
 			}
 			throw new Exception("Response data size reached!");
+		}
+
+		protected async Task SetTimeBase()
+		{
+			var curTime = DateTime.Now;
+			var utcTime = curTime.ToUniversalTime();
+			var response = await ExecuteCommand(new SetTimeCommand(curTime, (int)(utcTime - curTime).TotalSeconds));
+			if (response.AnswerType != ResponseType.Empty)
+				throw new Exception($"Incorrect response received: {response.AnswerType}");
 		}
 	}
 }
