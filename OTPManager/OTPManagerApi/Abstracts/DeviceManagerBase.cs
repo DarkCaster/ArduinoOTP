@@ -98,7 +98,7 @@ namespace OTPManagerApi
 			//receive data fragments
 			var totalResponseSz = 0;
 			var responseFragments = new List<byte[]>();
-			while (totalResponseSz > Config.MAX_RESPONSE_SZ)
+			while (totalResponseSz < Config.MAX_RESPONSE_SZ)
 			{
 				//request response-data from device
 				await CommHelper.SendRequest(ReqType.DataRequest, reqLCG.GenerateValue(), new byte[1] { 1 }, 0, 1);

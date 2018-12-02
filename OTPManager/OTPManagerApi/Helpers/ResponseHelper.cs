@@ -39,6 +39,10 @@ namespace OTPManagerApi.Helpers
 			{
 				case ResponseType.Empty:
 					return new EmptyResponse();
+				case ResponseType.Error:
+					return new ErrorResponse();
+				case ResponseType.Invalid:
+					return new InvalidResponse();
 				default:
 					throw new Exception($"Incorrect response type: {rType}");
 			}
