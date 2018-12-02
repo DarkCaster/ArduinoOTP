@@ -104,7 +104,7 @@ bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const ui
 	target.Minute=min;
 	target.Hour=hour;
 	target.Day=day;
-	target.Dow=dow;
+	target.Dow=dow+1; //day of week for DS3231 starts from 1, not 0
 	target.Month=month;
 	if(year<YEAR_START || year>YEAR_START+199)
 		return false;
