@@ -60,6 +60,8 @@
     <Compile Include="Commands\EmptyResponse.cs" />
     <Compile Include="Helpers\ResponseHelper.cs" />
     <Compile Include="Commands\ResponseType.cs" />
+    <Compile Include="Commands\InvalidResponse.cs" />
+    <Compile Include="Commands\ErrorResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
