@@ -2,7 +2,7 @@
 #include "clock_helper_DS3231.h"
 #include <DS3231_Simple.h>
 
-static const char daysOfTheWeek[7][MAIN_SCREEN_DAY_LEN] PROGMEM = MAIN_SCREEN_DAYS_OF_THE_WEEK;
+static const char daysOfTheWeek[MAIN_SCREEN_DOW_LEN][MAIN_SCREEN_DAY_LEN] PROGMEM = MAIN_SCREEN_DOW;
 
 static void WritePositiveNumber(char * const target, uint8_t &pos, const uint16_t number, const uint8_t zeros, const uint8_t signs)
 {

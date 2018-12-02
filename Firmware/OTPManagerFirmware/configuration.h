@@ -39,7 +39,8 @@
 #define MAIN_SCREEN_TIME_MIN_POS_Y 60
 #define MAIN_SCREEN_TIME_MAX_POS_Y 64
 
-#define MAIN_SCREEN_DAYS_OF_THE_WEEK {"mon","tue","wed","thu","fri","sat","sun"}
+#define MAIN_SCREEN_DOW_LEN 8
+#define MAIN_SCREEN_DOW {"nil","sun","mon","tue","wed","thu","fri","sat"}
 #define MAIN_SCREEN_DAY_LEN 4
 
 #define YEAR_START 2000
