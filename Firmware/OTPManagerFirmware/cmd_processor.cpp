@@ -53,7 +53,7 @@ RspParams CmdProcessor::SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_
 	uint8_t dow=cmdData[pos++]>>5;
 	uint8_t month=cmdData[pos++];
 	uint16_t year=cmdData[pos++];
-	year|=(static_cast<uint16_t>(cmdData[pos++])<<5);
+	year|=(static_cast<uint16_t>(cmdData[pos++])<<8);
 	uint32_t utcOffset=cmdData[pos++];
 	utcOffset|=static_cast<uint32_t>(cmdData[pos++])<<8;
 	utcOffset|=static_cast<uint32_t>(cmdData[pos++])<<16;
