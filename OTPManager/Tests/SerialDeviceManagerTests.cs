@@ -136,5 +136,27 @@ namespace Tests
 				catch (Exception) { }
 			}
 		}
+
+		[Test()]
+		public void SetTime()
+		{
+			Reset();
+			var manager = new SerialDeviceManager(portName);
+			manager.DeviceEvent.Subscribe(OnDeviceManagerEvent);
+			try
+			{
+				manager.Connect();
+				Assert.AreEqual(OTPDeviceState.Connected, lastState);
+				Assert.IsNull(lastException);
+				manager.SetTime();
+				Assert.AreEqual(OTPDeviceState.Connected, lastState);
+				Assert.IsNull(lastException);
+			}
+			finally
+			{
+				try { manager.Dispose(); }
+				catch (Exception) { }
+			}
+		}
 	}
 }
