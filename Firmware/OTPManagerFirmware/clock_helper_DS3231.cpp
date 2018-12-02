@@ -111,10 +111,7 @@ bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const ui
 	uint8_t yearCorr=static_cast<uint8_t>(year-YEAR_START);
 	target.Year=yearCorr;
 	//TODO: save utcOffset to eeprom;
-	//NOTE: according to wire-library sources, DS3231_Simple library will incorrectly handle response from Wire.endTransmission() call,
-	//NOTE: so we need to inverse return value handling from DS3231_Simple::write call
-	//TODO: recheck on next releases of DS3231_Simple library
-	if(clock.write(target))
+	if(!clock.write(target))
 		return false;
 	return true;
 }
