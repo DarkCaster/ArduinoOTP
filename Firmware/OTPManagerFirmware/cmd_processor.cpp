@@ -57,7 +57,6 @@ RspParams CmdProcessor::SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_
 	uint32_t utcOffset=cmdData[pos++];
 	utcOffset|=static_cast<uint32_t>(cmdData[pos++])<<8;
 	utcOffset|=static_cast<uint32_t>(cmdData[pos++])<<16;
-	//TODO: use clockHelper to set time
 	if(!clockHelper->SetTime(sec,min,hour,day,dow,month,year,utcOffset))
 		return RspParams::Error(0);
 	return RspParams::Empty();
