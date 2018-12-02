@@ -167,7 +167,7 @@ void conn_loop()
 						//get next response-data chunk
 						CMDRSP_BUFF_TYPE rspChunkSz=CMD_MAX_PLSZ;
 						auto availBuffSz=rspSize-rspBuffPos;
-						if(availBuffSz>rspChunkSz)
+						if(rspChunkSz>availBuffSz)
 							rspChunkSz=static_cast<CMDRSP_BUFF_TYPE>(availBuffSz);
 						//send chunk to client
 						result=commHelper.SendAnswer(AnsType::Data,ansLCG.GenerateValue(),responseBuffer+rspBuffPos,rspChunkSz);
