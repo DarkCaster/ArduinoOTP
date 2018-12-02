@@ -59,6 +59,7 @@
     <Compile Include="Commands\SetTimeCommand.cs" />
     <Compile Include="Commands\EmptyResponse.cs" />
     <Compile Include="Helpers\ResponseHelper.cs" />
+    <Compile Include="Commands\ResponseType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Abstracts\" />
