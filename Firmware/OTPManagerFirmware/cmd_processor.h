@@ -8,7 +8,7 @@
 
 #define RSP_EMPTY 0_u8
 #define RSP_INVALID 1_u8
-#define RSP_ERROR 1_u8
+#define RSP_ERROR 2_u8
 #define CMD_SETTIME 1_u8
 
 struct RspParams
