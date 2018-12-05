@@ -61,7 +61,11 @@ void ClockHelperDS3231::WriteDateString(char * const target, const uint8_t maxLe
   *(target+pos++)=0;
 }
 
-ClockHelperDS3231::ClockHelperDS3231(uint8_t _rtcPowerPin) : rtcPowerPin(_rtcPowerPin), lastTime(DateTime()) { }
+ClockHelperDS3231::ClockHelperDS3231(uint8_t _rtcPowerPin, SettingsManager* const _settingsManager) :
+  rtcPowerPin(_rtcPowerPin),
+  settingsManager(_settingsManager),
+  lastTime(DateTime())
+{ }
 
 void ClockHelperDS3231::InitPre()
 {
@@ -110,8 +114,11 @@ bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const ui
 		return false;
 	uint8_t yearCorr=static_cast<uint8_t>(year-YEAR_START);
 	target.Year=yearCorr;
-	//TODO: save utcOffset to eeprom;
 	if(!clock.write(target))
 		return false;
+	//save utcOffset to eeprom;
+	settingsManager->settings.utcOffset=utcOffset;
+	settingsManager->Commit();
+	Update();
 	return true;
 }

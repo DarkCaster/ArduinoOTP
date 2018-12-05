@@ -4,15 +4,17 @@
 #include <Arduino.h>
 #include <DS3231_Simple.h>
 #include "clock_helper.h"
+#include "settings_manager.h"
 
 class ClockHelperDS3231 final : public ClockHelperBase
 {
   private:
     const uint8_t rtcPowerPin;
-    DS3231_Simple clock;
+		SettingsManager * const settingsManager;
+		DS3231_Simple clock;
     DateTime lastTime;
   public:
-    ClockHelperDS3231(uint8_t rtcPowerPin);
+		ClockHelperDS3231(uint8_t rtcPowerPin, SettingsManager * const settingsManager);
     //TODO: getting time ticks for various OTP algorithms
     void InitPre() final;
     void InitPost() final;

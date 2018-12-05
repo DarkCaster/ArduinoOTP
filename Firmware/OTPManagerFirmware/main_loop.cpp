@@ -9,6 +9,7 @@
 #include "gui_ssd1306_i2c.h"
 #include "clock_helper_DS3231.h"
 #include "watchdog_AVR.h"
+#include "settings_manager.h"
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
@@ -31,7 +32,8 @@
 static CommHelper commHelper(&SERIAL_PORT);
 static LCGen reqLCG(0);
 static LCGen ansLCG(0);
-static ClockHelperDS3231 clockHelper(RTC_POWER_PIN);
+//TODO: create settings manager
+static ClockHelperDS3231 clockHelper(RTC_POWER_PIN,nullptr);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,dynamic_cast<ClockHelperBase*>(&clockHelper));
 static CmdProcessor cmdProcessor(dynamic_cast<ClockHelperBase*>(&clockHelper));
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
