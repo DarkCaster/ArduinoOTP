@@ -33,7 +33,11 @@ void AES128::EncryptBlock(const uint8_t * const inputBlock, uint8_t * const outp
   uint8_t tmpBlock[BLKSZ];
   for(uint8_t i=0; i<BLKSZ; ++i)
     *(tmpBlock+i)=*(inputBlock+i);
-  for (uint8_t i = 0; i < BLKSZ; ++i)
+#if BLKSZ != IVSZ
+#error BLKSZ != IVSZ
+#endif
+	//NOTE: check for BLKSZ and IVSZ sizes when porting to use of another algo
+	for (uint8_t i = 0; i < IVSZ; ++i)
      *(tmpBlock+i) ^= *(iv+i);
   aes_128_encrypt(&context, tmpBlock);
   for (uint8_t i = 0; i < BLKSZ; ++i)
@@ -46,7 +50,11 @@ void AES128::DecryptBlock(const uint8_t * const inputBlock, uint8_t * const outp
   for(uint8_t i=0; i<BLKSZ; ++i)
     *(tmpBlock+i)=*(inputBlock+i);
   aes_128_decrypt(&context, tmpBlock);
-  for (uint8_t i = 0; i < BLKSZ; ++i)
+#if BLKSZ != IVSZ
+#error BLKSZ != IVSZ
+#endif
+	//NOTE: check for BLKSZ and IVSZ sizes when porting to use of another algo
+	for (uint8_t i = 0; i < IVSZ; ++i)
      *(tmpBlock+i) ^= *(iv+i);
   for (uint8_t i = 0; i < BLKSZ; ++i)
      *(outputBlock+i) = *(tmpBlock+i);
