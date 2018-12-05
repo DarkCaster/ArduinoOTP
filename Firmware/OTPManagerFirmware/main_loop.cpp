@@ -42,7 +42,7 @@ static AES128 cipher;
 static EEPROMSettingsManager settingsManager(encKey, encTweak, cipher);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN, settingsManager);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN, DISPLAY_ADDR, clockHelper);
-static CmdProcessor cmdProcessor(dynamic_cast<ClockHelperBase*>(&clockHelper));
+static CmdProcessor cmdProcessor(clockHelper);
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
 //stuff needed for requests, commands and responses parsing

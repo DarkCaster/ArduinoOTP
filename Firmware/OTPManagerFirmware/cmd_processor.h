@@ -23,10 +23,11 @@ struct RspParams
 class CmdProcessor
 {
 	private:
-		ClockHelperBase * const clockHelper;
+		ClockHelperBase &clockHelper;
 		RspParams SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen);
 	public:
-		CmdProcessor(ClockHelperBase * const clockHelper);
+		CmdProcessor(ClockHelperBase &clockHelper);
+		CmdProcessor(ClockHelperBase &&) = delete;
 		RspParams ProcessCommand(const uint8_t cmdType, const uint8_t * const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
 };
 
