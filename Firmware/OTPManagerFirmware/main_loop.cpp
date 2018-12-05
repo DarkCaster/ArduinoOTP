@@ -10,6 +10,9 @@
 #include "clock_helper_DS3231.h"
 #include "watchdog_AVR.h"
 #include "settings_manager.h"
+#include "eeprom_settings_manager.h"
+#include "cipher.h"
+#include "aes128.h"
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
@@ -29,15 +32,20 @@
 #define SYNC_LED_PREP() ({})
 #endif
 
+//create main "logic blocks" and perform poor man dependency injection
 static CommHelper commHelper(&SERIAL_PORT);
 static LCGen reqLCG(0);
 static LCGen ansLCG(0);
-//TODO: create settings manager
-static ClockHelperDS3231 clockHelper(RTC_POWER_PIN,nullptr);
+static uint8_t encKey[ENCRYPTION_KEY_LEN] = ENCRYPTION_KEY;
+static uint8_t encTweak[ENCRYPTION_TWEAK_LEN] = ENCRYPTION_TWEAK;
+static AES128 cipher;
+static EEPROMSettingsManager settingsManager(encKey, encTweak, cipher);
+static ClockHelperDS3231 clockHelper(RTC_POWER_PIN,&settingsManager);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN,DISPLAY_ADDR,dynamic_cast<ClockHelperBase*>(&clockHelper));
 static CmdProcessor cmdProcessor(dynamic_cast<ClockHelperBase*>(&clockHelper));
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
+//stuff needed for requests, commands and responses parsing
 static uint8_t commandBuffer[COMMAND_BUFFER_SIZE];
 static uint8_t responseBuffer[RESPONSE_BUFFER_SIZE];
 static CMDRSP_BUFF_TYPE cmdBuffPos=0;
