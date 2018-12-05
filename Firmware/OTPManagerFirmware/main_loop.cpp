@@ -32,8 +32,8 @@
 #define SYNC_LED_PREP() ({})
 #endif
 
-//create main "logic blocks" and perform poor man dependency injection
-static CommHelper commHelper(&SERIAL_PORT);
+//create main logic blocks and perform "poor man's" dependency injection
+static CommHelper commHelper(SERIAL_PORT);
 static LCGen reqLCG(0);
 static LCGen ansLCG(0);
 static uint8_t encKey[ENCRYPTION_KEY_LEN] = ENCRYPTION_KEY;
@@ -246,7 +246,8 @@ void setup()
 	watchdog.Disable();
 	SYNC_LED_PREP();
 	SYNC_ERR();
-	commHelper.Init(SERIAL_PORT_SPEED);
+	SERIAL_PORT.begin(SERIAL_PORT_SPEED);
+	SERIAL_PORT.setTimeout(CMD_TIMEOUT);
 	RX_PIN_PREP(); // enable pullup on serial RX-pin
 	commHelper.FlushInput(); //flush incoming input
 	//pre-init external low-powered devices

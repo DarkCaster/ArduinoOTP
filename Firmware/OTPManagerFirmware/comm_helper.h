@@ -75,11 +75,10 @@ struct Request
 class CommHelper
 {
 	private:
-		HardwareSerial * const serial;
+		Stream &serial;
 	public:
-		CommHelper(HardwareSerial * const port);
-		void Init(const unsigned long speed);
-		void Deinit();
+		CommHelper(Stream &port);
+		CommHelper(Stream &&) = delete;
 		uint8_t DataAvailable();
 		void FlushInput();
 		Request ReceiveRequest();
