@@ -61,7 +61,7 @@ void ClockHelperDS3231::WriteDateString(char * const target, const uint8_t maxLe
   *(target+pos++)=0;
 }
 
-ClockHelperDS3231::ClockHelperDS3231(uint8_t _rtcPowerPin, SettingsManager* const _settingsManager) :
+ClockHelperDS3231::ClockHelperDS3231(uint8_t _rtcPowerPin, SettingsManager &_settingsManager) :
   rtcPowerPin(_rtcPowerPin),
   settingsManager(_settingsManager),
   lastTime(DateTime())
@@ -117,8 +117,8 @@ bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const ui
 	if(!clock.write(target))
 		return false;
 	//save utcOffset to eeprom;
-	settingsManager->settings.utcOffset=utcOffset;
-	settingsManager->Commit();
+	settingsManager.settings.utcOffset=utcOffset;
+	settingsManager.Commit();
 	Update();
 	return true;
 }

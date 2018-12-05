@@ -10,10 +10,10 @@ class GuiSSD1306_I2C final : GuiBase
   private:
     const uint8_t displayPowerPin;
     const uint8_t displayAddr;
-    ClockHelperBase * const clockHelper;
+		ClockHelperBase &clockHelper;
   public:
-    GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase * const clockHelper);
-
+		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper);
+		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &&) = delete;
     void InitPre() final;
     void InitPost() final;
     void DescendPre() final;

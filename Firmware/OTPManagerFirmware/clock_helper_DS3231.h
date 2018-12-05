@@ -10,11 +10,12 @@ class ClockHelperDS3231 final : public ClockHelperBase
 {
   private:
     const uint8_t rtcPowerPin;
-		SettingsManager * const settingsManager;
+		SettingsManager &settingsManager;
 		DS3231_Simple clock;
     DateTime lastTime;
   public:
-		ClockHelperDS3231(uint8_t rtcPowerPin, SettingsManager * const settingsManager);
+		ClockHelperDS3231(uint8_t rtcPowerPin, SettingsManager &settingsManager);
+		ClockHelperDS3231(uint8_t rtcPowerPin, SettingsManager &&) = delete;
     //TODO: getting time ticks for various OTP algorithms
     void InitPre() final;
     void InitPost() final;
