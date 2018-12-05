@@ -3,6 +3,10 @@
 
 #ifdef DEBUG
 
+#if __AVR__
+#include <util/delay.h>
+#endif
+
 // https://playground.arduino.cc/Code/AvailableMemory
 
 extern unsigned int __heap_start;
@@ -83,5 +87,27 @@ void LOG(const uint32_t intNumber, const bool nl)
   if(nl)
     DEBUG_SERIAL_PORT.print(F("\n"));
 }
+
+#if __AVR__
+void FAIL(uint16_t blinkTime, uint16_t pauseTime)
+{
+	pinMode(LED_SYNC, OUTPUT);
+	blinkTime/=10;
+	pauseTime/=10;
+	// << will halt there forever, blinking with led >>
+	while(true)
+	{
+		digitalWrite(LED_SYNC,1);
+		uint16_t cnt=0;
+		for(cnt=0; cnt<blinkTime; ++cnt)
+			_delay_ms(10);
+		digitalWrite(LED_SYNC,0);
+		for(cnt=0; cnt<pauseTime; ++cnt)
+			_delay_ms(10);
+	}
+}
+#else
+#error TODO
+#endif
 
 #endif

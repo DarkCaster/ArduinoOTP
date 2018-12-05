@@ -11,9 +11,11 @@ void LOG(const __FlashStringHelper* message, const bool nl=true);
 void LOG(const int32_t intNumber, const bool nl=true);
 void LOG(const uint32_t intNumber, const bool nl=true);
 void STATUS(const bool nl=false);
+void FAIL(uint16_t blinkTime, uint16_t pauseTime);
 #else
 #define LOG(...) ({})
 #define STATUS(...) ({})
+#define FAIL(...) ({})
 #endif
 
 #endif
