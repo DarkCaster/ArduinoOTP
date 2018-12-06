@@ -22,11 +22,12 @@ set_avr_compiler_flags()
 
 add_arduino_library(SPI ${ARDUINO_LIBS_PATH})
 add_arduino_library(Wire ${ARDUINO_LIBS_PATH})
+add_arduino_library(EEPROM ${ARDUINO_LIBS_PATH})
 add_arduino_library(U8g2_Arduino ${CMAKE_SOURCE_DIR}/Libraries SPI Wire)
 add_arduino_library(Micro-AES-Arduino ${CMAKE_SOURCE_DIR}/Libraries)
 add_arduino_library(DS3231_Simple ${CMAKE_SOURCE_DIR}/Libraries Wire)
 add_arduino_library(Low-Power ${CMAKE_SOURCE_DIR}/Libraries)
 
-add_arduino_sketch(OTPManagerFirmware ${CMAKE_SOURCE_DIR} U8g2_Arduino Micro-AES-Arduino DS3231_Simple Low-Power)
+add_arduino_sketch(OTPManagerFirmware ${CMAKE_SOURCE_DIR} EEPROM U8g2_Arduino Micro-AES-Arduino DS3231_Simple Low-Power)
 add_arduino_post_target(OTPManagerFirmware)
 add_arduino_upload_target(OTPManagerFirmware)
