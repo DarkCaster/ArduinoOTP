@@ -29,6 +29,7 @@ class EEPROMSettingsManager final : public SettingsManager
 		}
 		template<size_t KSZ, size_t TSZ> EEPROMSettingsManager(const uint8_t (&&)[KSZ], uint8_t const (&&)[TSZ], CipherBase &&) = delete;
 		void Commit() final;
+		void Init() final;
 };
 
 #endif
