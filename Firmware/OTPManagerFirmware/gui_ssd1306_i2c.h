@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "gui.h"
 #include "clock_helper.h"
+#include "lcg_random.h"
 
 class GuiSSD1306_I2C final : GuiBase
 {
@@ -11,6 +12,7 @@ class GuiSSD1306_I2C final : GuiBase
     const uint8_t displayPowerPin;
     const uint8_t displayAddr;
 		ClockHelperBase &clockHelper;
+		LCGRandom rnd;
   public:
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper);
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &&) = delete;
