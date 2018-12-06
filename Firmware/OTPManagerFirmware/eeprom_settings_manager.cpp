@@ -44,7 +44,7 @@ void EEPROMSettingsManager::Commit()
 	for(blk=0; blk<fullBlocks; ++blk)
 		if(!writer.WriteNextBlock(sPtr+blk*bsz))
 			FAIL(100,2000);
-	if(writer.WriteNextBlock(lastBlock))
+	if(!writer.WriteNextBlock(lastBlock))
 		FAIL(100,2000);
 }
 
