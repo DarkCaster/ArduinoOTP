@@ -13,6 +13,8 @@ EEPROMWriter::EEPROMWriter(const int baseAddr, const int maxLen, CipherBase& cip
 		FAIL(100,500);
 	if(limit>static_cast<int>(EEPROM.length()))
 		FAIL(100,1000);
+	if(cipher.GetTweakSize()>cipher.GetBlockSize()) // for cbc to work tweak(iv) size must be lower than block size
+		FAIL(100,5000);
 }
 
 bool EEPROMWriter::WriteNextBlock(const uint8_t* const data)
@@ -25,8 +27,8 @@ bool EEPROMWriter::WriteNextBlock(const uint8_t* const data)
 	//check, that we will not write outsize bounds
 	if(limit-curAddr<bsz)
 		return false;
-	//modify tweak array
-	cipher.MixTweak(encData,tweak);
+	//CBC - use current encrypted data as IV in the next encrypt operation
+	memcpy(tweak,encData,cipher.GetTweakSize());
 	//write data to eeprom
 	for(uint8_t bp=0; bp<bsz; ++bp)
 		EEPROM.update(curAddr++,*(encData+bp));

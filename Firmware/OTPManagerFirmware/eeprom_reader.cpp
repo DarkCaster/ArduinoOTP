@@ -13,6 +13,8 @@ EEPROMReader::EEPROMReader(const int baseAddr, const int maxLen, CipherBase& cip
 		FAIL(100,500);
 	if(limit>static_cast<int>(EEPROM.length()))
 		FAIL(100,1000);
+	if(cipher.GetTweakSize()>cipher.GetBlockSize()) // for cbc to work tweak(iv) size must be lower than block size
+		FAIL(100,5000);
 }
 
 bool EEPROMReader::ReadNextBlock(uint8_t* const data)
@@ -28,7 +30,7 @@ bool EEPROMReader::ReadNextBlock(uint8_t* const data)
 		*(encData+bp)=EEPROM.read(curAddr++);
 	//decrypt, and write to target buffer
 	cipher.DecryptBlock(encData,data,encKey,tweak);
-	//modify tweak array for the next decrypt operation
-	cipher.MixTweak(encData,tweak);
+	//CBC - use current encrypted data as IV in the next encrypt operation
+	memcpy(tweak,encData,cipher.GetTweakSize());
 	return true;
 }
