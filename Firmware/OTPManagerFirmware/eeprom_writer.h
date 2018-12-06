@@ -15,7 +15,6 @@ class EEPROMWriter
 	public:
 		EEPROMWriter(const int baseAddr, const int maxLen, CipherBase &cipher, const uint8_t * const encKey, uint8_t * const tweak);
 		bool WriteNextBlock(const uint8_t * const data);
-		bool SkipNextBlock(const uint8_t * const data);
 };
 
 #endif
