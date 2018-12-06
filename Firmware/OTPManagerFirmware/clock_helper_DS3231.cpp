@@ -122,3 +122,18 @@ bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const ui
 	Update();
 	return true;
 }
+
+uint32_t ClockHelperDS3231::GetSeed()
+{
+	auto time=clock.read();
+	uint32_t result=0;
+	result|=static_cast<uint32_t>(time.Second)<<24;
+	result|=static_cast<uint32_t>(time.Minute)<<16;
+	result|=static_cast<uint32_t>(time.Hour)<<8;
+	result|=static_cast<uint32_t>(time.Month);
+	result^=((static_cast<uint32_t>(time.Day)^static_cast<uint32_t>(time.Year))<<24|
+	         (static_cast<uint32_t>(time.Day)^static_cast<uint32_t>(time.Year))<<16|
+	         (static_cast<uint32_t>(time.Day)^static_cast<uint32_t>(time.Year))<<8|
+	         (static_cast<uint32_t>(time.Day)^static_cast<uint32_t>(time.Year)));
+	return result;
+}
