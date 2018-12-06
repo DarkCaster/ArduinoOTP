@@ -39,7 +39,7 @@ static LCGen ansLCG(0);
 static uint8_t encKey[ENCRYPTION_KEY_LEN] = ENCRYPTION_KEY;
 static uint8_t encTweak[ENCRYPTION_TWEAK_LEN] = ENCRYPTION_TWEAK;
 static AES128 cipher;
-static EEPROMSettingsManager settingsManager(encKey, encTweak, cipher);
+static EEPROMSettingsManager settingsManager(EEPROM_SETTINGS_ADDR, EEPROM_SETTINGS_LEN, cipher, encKey, encTweak);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN, settingsManager);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN, DISPLAY_ADDR, clockHelper);
 static CmdProcessor cmdProcessor(clockHelper);
@@ -241,7 +241,8 @@ void select_button_handler()
 
 void setup()
 {
-	//TODO: read settings
+	//read settings
+	settingsManager.Init();
 	//deactivate watchdog
 	watchdog.Disable();
 	SYNC_LED_PREP();
