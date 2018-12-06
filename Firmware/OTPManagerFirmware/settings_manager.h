@@ -2,13 +2,7 @@
 #define SETTINGS_MANAGER_H
 
 #include <Arduino.h>
-
-#pragma pack(push, settings, 1)
-struct Settings
-{
-	uint32_t utcOffset;
-};
-#pragma pack(pop, settings)
+#include "settings.h"
 
 class SettingsManager
 {
