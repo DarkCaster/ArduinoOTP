@@ -258,6 +258,7 @@ void setup()
 	//post-init external low-powered devices
 	gui.InitPost();
 	clockHelper.InitPost();
+	gui.Reseed();
 	update_menu();
 	//install button interrupts
 	attachInterrupt(digitalPinToInterrupt(BUTTON_NEXT_PIN),next_button_handler, CHANGE);

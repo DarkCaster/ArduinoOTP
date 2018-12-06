@@ -26,6 +26,7 @@ class GuiSSD1306_I2C final : GuiBase
     void ShowCDScr() final;
     void ShowCEScr() final;
     void ShowCodeScr(const char * const code) final;
+		void Reseed();
 
     //menu navigation methods, show, navigate and select menu items
 

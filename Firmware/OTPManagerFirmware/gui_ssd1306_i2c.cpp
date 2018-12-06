@@ -8,7 +8,7 @@ GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t _displayPowerPin, uint8_t _displayAddr, C
   displayPowerPin(_displayPowerPin),
   displayAddr(_displayAddr),
   clockHelper(_clockHelper),
-  rnd(clockHelper.GetSeed())
+  rnd(0)
 { }
 
 void GuiSSD1306_I2C::InitPre()
@@ -70,7 +70,12 @@ void GuiSSD1306_I2C::ShowCodeScr(const char * const code)
   u8g2.setFont(MAIN_SCREEN_DATE_FONT);
   do {
     u8g2.drawStr(0,24,code);
-  } while ( u8g2.nextPage() );
+	} while ( u8g2.nextPage() );
+}
+
+void GuiSSD1306_I2C::Reseed()
+{
+	rnd=LCGRandom(clockHelper.GetSeed());
 }
 
 void GuiSSD1306_I2C::MenuNext()
