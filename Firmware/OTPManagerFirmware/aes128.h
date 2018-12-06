@@ -7,6 +7,8 @@
 
 class AES128 final : public CipherBase
 {
+	private:
+		static void MixIV(uint8_t * const inputBlock, const uint8_t * const iv);
   public:
     uint8_t GetKeySize() final;
     uint8_t GetTweakSize() final;
