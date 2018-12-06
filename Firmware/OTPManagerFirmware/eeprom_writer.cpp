@@ -9,7 +9,7 @@ EEPROMWriter::EEPROMWriter(const int baseAddr, const int maxLen, CipherBase& cip
   encKey(encKey),
   tweak(tweak)
 {
-	if(baseAddr<limit)
+	if(curAddr>limit)
 		FAIL(100,500);
 	if(limit>static_cast<int>(EEPROM.length()))
 		FAIL(100,1000);
@@ -26,6 +26,7 @@ bool EEPROMWriter::WriteNextBlock(const uint8_t* const data)
 	//check, that we will not write outsize bounds
 	if(limit-curAddr<bsz)
 		return false;
+	//TODO: dedup following code between reader and writer
 	//modify tweak array
 	uint8_t pos=0;
 	for(uint8_t tp=0; tp<tsz; ++tp)
