@@ -15,6 +15,7 @@ class AES128 final : public CipherBase
     uint8_t GetBlockSize() final;
 		void EncryptBlock(const uint8_t * const inputBlock, uint8_t * const outputBlock, const uint8_t * const key, const uint8_t * const tweak) final;
 		void DecryptBlock(const uint8_t * const inputBlock, uint8_t * const outputBlock, const uint8_t * const key, const uint8_t * const tweak) final;
+		void MixTweak(const uint8_t * const encData, uint8_t * const curTweak) final;
 };
 
 #endif
