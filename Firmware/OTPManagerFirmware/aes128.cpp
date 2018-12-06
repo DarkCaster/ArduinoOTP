@@ -41,12 +41,3 @@ void AES128::DecryptBlock(const uint8_t* const inputBlock, uint8_t* const output
 	MixIV(tmpBlock,tweak);
 	memcpy(outputBlock,tmpBlock,BLKSZ);
 }
-
-void AES128::MixTweak(const uint8_t* const encData, uint8_t* const curTweak)
-{
-#if BLKSZ != IVSZ
-#error BLKSZ != IVSZ
-#endif
-	for(uint8_t tp=0; tp<IVSZ; ++tp)
-		*(curTweak+tp)^=*(encData+tp);
-}
