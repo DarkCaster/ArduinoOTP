@@ -40,7 +40,6 @@ void EEPROMSettingsManager::Commit()
 	EEPROMWriter writer(baseAddr,maxLen,cipher,key,tmpTweak);
 	//write settings block-by-block
 	auto blk=fullBlocks;
-#if DEBUG
 	for(blk=0; blk<fullBlocks; ++blk)
 	{
 		if(!writer.WriteNextBlock(sPtr+blk*bsz))
@@ -48,11 +47,6 @@ void EEPROMSettingsManager::Commit()
 	}
 	if(writer.WriteNextBlock(lastBlock))
 		FAIL(100,2000);
-#else
-	for(blk=0; blk<fullBlocks; ++blk)
-		writer.WriteNextBlock(sPtr+blk*bsz);
-	writer.WriteNextBlock(lastBlock);
-#endif
 }
 
 void EEPROMSettingsManager::Init()
