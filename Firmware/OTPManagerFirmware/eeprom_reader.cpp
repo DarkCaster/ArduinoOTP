@@ -18,7 +18,6 @@ EEPROMReader::EEPROMReader(const int baseAddr, const int maxLen, CipherBase& cip
 bool EEPROMReader::ReadNextBlock(uint8_t* const data)
 {
 	const uint8_t bsz=cipher.GetBlockSize();
-	const uint8_t tsz=cipher.GetTweakSize();
 	//check, that we will not read outsize bounds
 	if(limit-curAddr<bsz)
 		return false;
@@ -29,14 +28,7 @@ bool EEPROMReader::ReadNextBlock(uint8_t* const data)
 		*(encData+bp)=EEPROM.read(curAddr++);
 	//decrypt, and write to target buffer
 	cipher.DecryptBlock(encData,data,encKey,tweak);
-	//TODO: dedup following code between reader and writer
 	//modify tweak array for the next decrypt operation
-	uint8_t pos=0;
-	for(uint8_t tp=0; tp<tsz; ++tp)
-	{
-		*(tweak+tp)^=*(encData+pos++);
-		if(pos==bsz)
-			pos=0;
-	}
+	cipher.MixTweak(encData,tweak);
 	return true;
 }

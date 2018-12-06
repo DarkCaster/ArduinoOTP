@@ -18,7 +18,6 @@ EEPROMWriter::EEPROMWriter(const int baseAddr, const int maxLen, CipherBase& cip
 bool EEPROMWriter::WriteNextBlock(const uint8_t* const data)
 {
 	const uint8_t bsz=cipher.GetBlockSize();
-	const uint8_t tsz=cipher.GetTweakSize();
 	//create buffer for output data
 	uint8_t encData[bsz];
 	//encrypt block
@@ -26,15 +25,8 @@ bool EEPROMWriter::WriteNextBlock(const uint8_t* const data)
 	//check, that we will not write outsize bounds
 	if(limit-curAddr<bsz)
 		return false;
-	//TODO: dedup following code between reader and writer
 	//modify tweak array
-	uint8_t pos=0;
-	for(uint8_t tp=0; tp<tsz; ++tp)
-	{
-		*(tweak+tp)^=*(encData+pos++);
-		if(pos==bsz)
-			pos=0;
-	}
+	cipher.MixTweak(encData,tweak);
 	//write data to eeprom
 	for(uint8_t bp=0; bp<bsz; ++bp)
 		EEPROM.update(curAddr++,*(encData+bp));
