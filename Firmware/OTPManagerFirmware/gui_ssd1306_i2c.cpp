@@ -44,24 +44,36 @@ void GuiSSD1306_I2C::WakeupPost()
   u8g2.begin();
 }
 
-//TODO:
+/*static void DrawCaption(const __FlashStringHelper* fCaption)
+{
+	char caption[strlen_P(reinterpret_cast<const char*>(fCaption))];
+	strcpy_P(caption,reinterpret_cast<const char*>(fCaption));
+	u8g2.firstPage();
+	u8g2.setFont(MAIN_SCREEN_DATE_FONT);
+	do {
+		u8g2.drawStr(0,24,caption);
+	} while ( u8g2.nextPage() );
+}*/
+
+static void DrawCaption(const char * caption)
+{
+	u8g2.firstPage();
+	u8g2.setFont(MAIN_SCREEN_DATE_FONT);
+	do {
+		u8g2.drawStr(0,24,caption);
+	} while ( u8g2.nextPage() );
+}
+
+//TODO: change to progmem (F("< Resync >"))
 
 void GuiSSD1306_I2C::ShowCDScr()
 {
-  u8g2.firstPage();
-  u8g2.setFont(MAIN_SCREEN_DATE_FONT);
-  do {
-    u8g2.drawStr(0,24,"< Resync >");
-  } while ( u8g2.nextPage() );
+	DrawCaption("< Resync >");
 }
 
 void GuiSSD1306_I2C::ShowCEScr()
 {
-  u8g2.firstPage();
-  u8g2.setFont(MAIN_SCREEN_DATE_FONT);
-  do {
-    u8g2.drawStr(0,24,"< Connected >");
-  } while ( u8g2.nextPage() );
+	DrawCaption("< Connected >");
 }
 
 void GuiSSD1306_I2C::ShowCodeScr(const char * const code)
