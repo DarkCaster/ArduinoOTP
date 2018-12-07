@@ -43,7 +43,7 @@ int8_t EEPROMReader::ReadData(uint8_t * const dPtr, const size_t dLen)
 	if(!dLen)
 		return 1;
 	//calculate how much blocks (crc included) we need to read
-	auto bsz=cipher.GetBlockSize();
+	const uint8_t bsz=cipher.GetBlockSize();
 	auto fullBlocks = (dLen+CRC_SZ) / bsz;
 	if((dLen+CRC_SZ) % bsz > 0)
 		fullBlocks++;
