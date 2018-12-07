@@ -35,7 +35,7 @@ void EEPROMSettingsManager::Init()
 		FAIL(100,2000);
 	if(ec==0)
 		return;
-	  //FAIL(100,5000); for debug purposes
+	  //FAIL(100,5000); //for debug purposes
 	//if checksum is OK - save data to the settings struct
 	uint8_t *sPtr=reinterpret_cast<uint8_t*>(&settings);
 	memcpy(sPtr,tmpBuff,sLen);
