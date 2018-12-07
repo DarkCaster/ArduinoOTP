@@ -1,6 +1,9 @@
 #include "eeprom_writer.h"
 #include "debug.h"
 #include "EEPROM.h"
+#include "crc8.h"
+
+#define CRC_SZ 1
 
 EEPROMWriter::EEPROMWriter(const int baseAddr, const int maxLen, CipherBase& cipher, const uint8_t* const encKey, uint8_t* const tweak) :
   curAddr(baseAddr),
@@ -32,5 +35,41 @@ bool EEPROMWriter::WriteNextBlock(const uint8_t* const data)
 	//write data to eeprom
 	for(uint8_t bp=0; bp<bsz; ++bp)
 		EEPROM.update(curAddr++,*(encData+bp));
+	return true;
+}
+
+bool EEPROMWriter::WriteData(const uint8_t* const sPtr, const size_t sLen)
+{
+	if(!sLen)
+		  return true;
+	//calculate how much blocks we need to write
+	auto bsz=cipher.GetBlockSize();
+	auto fullBlocks = (sLen+CRC_SZ) / bsz;
+	auto remainingBytes = (sLen+CRC_SZ) % bsz;
+	//fillup last block and write checksum
+	uint8_t lastBlock[bsz];
+	if(!remainingBytes)
+	{
+		fullBlocks--;
+		memcpy(lastBlock, sPtr+fullBlocks*bsz, bsz-CRC_SZ);
+	}
+	else
+	{
+		memset(lastBlock, 0, bsz);
+		memcpy(lastBlock, sPtr+fullBlocks*bsz, remainingBytes);
+	}
+#if CRC_SZ == 1
+	//write crc
+	*(lastBlock+bsz-1)=CRC8(sPtr,static_cast<uint8_t>(sLen));
+#else
+#error TODO
+#endif
+	//write settings block-by-block
+	auto blk=fullBlocks;
+	for(blk=0; blk<fullBlocks; ++blk)
+		if(!WriteNextBlock(sPtr+blk*bsz))
+			return false;
+	if(!WriteNextBlock(lastBlock))
+		return false;
 	return true;
 }
