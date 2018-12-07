@@ -38,14 +38,14 @@ bool EEPROMReader::ReadNextBlock(uint8_t* const data)
 	return true;
 }
 
-int8_t EEPROMReader::ReadData(uint8_t * const sPtr, const size_t sLen)
+int8_t EEPROMReader::ReadData(uint8_t * const dPtr, const size_t dLen)
 {
-	if(!sLen)
+	if(!dLen)
 		return 1;
 	//calculate how much blocks (crc included) we need to read
 	auto bsz=cipher.GetBlockSize();
-	auto fullBlocks = (sLen+CRC_SZ) / bsz;
-	if((sLen+CRC_SZ) % bsz > 0)
+	auto fullBlocks = (dLen+CRC_SZ) / bsz;
+	if((dLen+CRC_SZ) % bsz > 0)
 		fullBlocks++;
 	//allocate space needed for temporary settings struct
 	uint8_t tmpBuff[bsz];
@@ -55,13 +55,13 @@ int8_t EEPROMReader::ReadData(uint8_t * const sPtr, const size_t sLen)
 	{
 		if(!ReadNextBlock(tmpBuff))
 			return -1;
-		auto remain=sLen-dPos;
+		auto remain=dLen-dPos;
 		auto pending=bsz>remain?remain:bsz;
-		memcpy(sPtr+dPos,tmpBuff,pending);
+		memcpy(dPtr+dPos,tmpBuff,pending);
 		dPos+=pending;
 	}
 	//verify crc
-	if(CRC8(sPtr,sLen)!=tmpBuff[bsz-CRC_SZ])
+	if(CRC8(dPtr,dLen)!=tmpBuff[bsz-CRC_SZ])
 		return 0;
 	return 1;
 }
