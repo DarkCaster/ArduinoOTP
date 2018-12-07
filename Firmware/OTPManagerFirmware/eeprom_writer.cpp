@@ -60,7 +60,7 @@ bool EEPROMWriter::WriteData(const uint8_t* const data, const size_t dLen)
 	}
 #if CRC_SZ == 1
 	//write crc
-	*(lastBlock+bsz-1)=CRC8(data,static_cast<uint8_t>(dLen));
+	*(lastBlock+bsz-1)=CRC8(data,dLen);
 #else
 #error TODO
 #endif
