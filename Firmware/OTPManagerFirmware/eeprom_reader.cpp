@@ -47,7 +47,7 @@ int8_t EEPROMReader::ReadData(uint8_t * const dPtr, const size_t dLen)
 	auto fullBlocks = (dLen+CRC_SZ) / bsz;
 	if((dLen+CRC_SZ) % bsz > 0)
 		fullBlocks++;
-	//allocate space needed for temporary settings struct
+	//allocate space needed for decrypted block
 	uint8_t tmpBuff[bsz];
 	size_t dPos=0;
 	auto blk=fullBlocks;
