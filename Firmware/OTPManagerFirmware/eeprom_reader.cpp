@@ -1,6 +1,9 @@
 #include "eeprom_reader.h"
 #include "EEPROM.h"
 #include "debug.h"
+#include "crc8.h"
+
+#define CRC_SZ 1
 
 EEPROMReader::EEPROMReader(const int baseAddr, const int maxLen, CipherBase& cipher, const uint8_t* const encKey, uint8_t* const tweak) :
   curAddr(baseAddr),
@@ -33,4 +36,32 @@ bool EEPROMReader::ReadNextBlock(uint8_t* const data)
 	//CBC - use current encrypted data as IV in the next encrypt operation
 	memcpy(tweak,encData,cipher.GetTweakSize());
 	return true;
+}
+
+int8_t EEPROMReader::ReadData(uint8_t * const sPtr, const size_t sLen)
+{
+	if(!sLen)
+		return 1;
+	//calculate how much blocks (crc included) we need to read
+	auto bsz=cipher.GetBlockSize();
+	auto fullBlocks = (sLen+CRC_SZ) / bsz;
+	if((sLen+CRC_SZ) % bsz > 0)
+		fullBlocks++;
+	//allocate space needed for temporary settings struct
+	uint8_t tmpBuff[bsz];
+	size_t dPos=0;
+	auto blk=fullBlocks;
+	for(blk=0; blk<fullBlocks; ++blk)
+	{
+		if(!ReadNextBlock(tmpBuff))
+			return -1;
+		auto remain=sLen-dPos;
+		auto pending=bsz>remain?remain:bsz;
+		memcpy(sPtr+dPos,tmpBuff,pending);
+		dPos+=pending;
+	}
+	//verify crc
+	if(CRC8(sPtr,sLen)!=tmpBuff[bsz-CRC_SZ])
+		return 0;
+	return 1;
 }
