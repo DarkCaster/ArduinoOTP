@@ -35,7 +35,7 @@ static const PROGMEM uint8_t Crc8Table[256] = {
   0x3B, 0x0A, 0x59, 0x68, 0xFF, 0xCE, 0x9D, 0xAC
 };
 
-uint8_t CRC8(const uint8_t *source, uint8_t len)
+uint8_t CRC8(const uint8_t *source, size_t len)
 {
   uint8_t crc = 0xFF;
   while (len--)
