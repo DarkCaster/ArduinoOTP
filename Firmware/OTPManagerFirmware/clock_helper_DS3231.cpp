@@ -8,7 +8,7 @@ static void WritePositiveNumber(char * const target, uint8_t &pos, const uint16_
 {
    for(uint8_t i=0;i<zeros;++i)
      *(target+pos++)='0';
-   itoa(number,(target+pos),10);
+	 itoa(static_cast<int>(number),(target+pos),10);
    pos+=signs-zeros;
 }
 
@@ -101,7 +101,7 @@ void ClockHelperDS3231::Update()
 	lastTime=clock.read();
 }
 
-bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const uint8_t &hour, const uint8_t &day, const uint8_t &dow, const uint8_t &month, const uint16_t &year, const uint32_t &utcOffset)
+bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const uint8_t &hour, const uint8_t &day, const uint8_t &dow, const uint8_t &month, const uint16_t &year, const int32_t& utcOffset)
 {
 	DateTime target;
 	target.Second=sec;

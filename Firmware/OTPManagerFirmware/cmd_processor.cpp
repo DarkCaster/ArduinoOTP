@@ -54,9 +54,13 @@ RspParams CmdProcessor::SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_
 	uint8_t month=cmdData[pos++];
 	uint16_t year=cmdData[pos++];
 	year|=(static_cast<uint16_t>(cmdData[pos++])<<8);
-	uint32_t utcOffset=cmdData[pos++];
-	utcOffset|=static_cast<uint32_t>(cmdData[pos++])<<8;
-	utcOffset|=static_cast<uint32_t>(cmdData[pos++])<<16;
+
+	int32_t utcOffset=cmdData[pos++];
+	utcOffset|=static_cast<int32_t>(cmdData[pos++])<<8;
+	uint8_t sign=cmdData[pos]>>7;
+	utcOffset|=static_cast<int32_t>(cmdData[pos++]&0x7F)<<16;
+	if(sign>0)
+		utcOffset=-utcOffset;
 	if(!clockHelper.SetTime(sec,min,hour,day,dow,month,year,utcOffset))
 		return RspParams::Error(0);
 	return RspParams::Empty();
