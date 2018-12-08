@@ -37,6 +37,8 @@ namespace OTPManagerApi.Commands
 		{
 			this.localTime = localTime;
 			this.UTCOffset = UTCOffset;
+			if (UTCOffset > 86401 || UTCOffset < -86401)
+				throw new Exception("UTC offset is more than 24 hours!");
 		}
 
 		public byte CommandType => 1;
@@ -54,9 +56,11 @@ namespace OTPManagerApi.Commands
 				buff[pos++] = (byte)localTime.Month;
 				buff[pos++] = (byte)(localTime.Year & 0xFF);
 				buff[pos++] = (byte)((localTime.Year >> 8) & 0xFF);
-				buff[pos++] = (byte)(UTCOffset & 0xFF);
-				buff[pos++] = (byte)((UTCOffset >> 8) & 0xFF);
-				buff[pos++] = (byte)((UTCOffset >> 16) & 0xFF);
+				var sign = UTCOffset >= 0 ? 0 : 1;
+				var offset = UTCOffset >= 0 ? UTCOffset : -UTCOffset;
+				buff[pos++] = (byte)(offset & 0xFF);
+				buff[pos++] = (byte)((offset >> 8) & 0xFF);
+				buff[pos++] = (byte)(((offset >> 16) & 0xFF) | sign << 7);
 				return buff;
 			}
 		}
