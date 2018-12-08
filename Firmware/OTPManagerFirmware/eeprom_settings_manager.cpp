@@ -6,11 +6,26 @@
 
 #define CRC_SZ 1
 
+EEPROMSettingsManager::EEPROMSettingsManager(const int baseAddr, const int maxLen, CipherBase& cipher, const uint8_t* const enc_key, const uint8_t* const enc_tweak, const size_t KSZ, const size_t TSZ) :
+  key(enc_key),
+  tweak(enc_tweak),
+  keySz(cipher.GetKeySize()),
+  tweakSz(cipher.GetTweakSize()),
+  baseAddr(baseAddr),
+  maxLen(maxLen),
+  cipher(cipher)
+{
+	if(keySz>KSZ)
+		FAIL(100,100);
+	if(tweakSz>TSZ)
+		FAIL(100,500);
+}
+
 void EEPROMSettingsManager::Commit()
 {
 	//get pointer (and length) to the settings structure
 	const auto sLen=sizeof(Settings);
-	uint8_t *sPtr=reinterpret_cast<uint8_t*>(&settings);
+	const uint8_t * const sPtr=reinterpret_cast<uint8_t*>(&settings);
 	//create EEPROMWriter
 	uint8_t tmpTweak[tweakSz];
 	memcpy(tmpTweak,tweak,tweakSz);

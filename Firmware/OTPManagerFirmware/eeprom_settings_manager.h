@@ -4,7 +4,6 @@
 #include <Arduino.h>
 #include "settings_manager.h"
 #include "cipher.h"
-#include "debug.h"
 
 class EEPROMSettingsManager final : public SettingsManager
 {
@@ -16,21 +15,10 @@ class EEPROMSettingsManager final : public SettingsManager
 		const int baseAddr;
 		const int maxLen;
 		CipherBase &cipher;
+		EEPROMSettingsManager(const int baseAddr, const int maxLen, CipherBase &cipher, const uint8_t * const enc_key, const uint8_t * const enc_tweak, const size_t KSZ, const size_t TSZ);
 	public:
 		template<size_t KSZ, size_t TSZ> EEPROMSettingsManager(const int baseAddr, const int maxLen, CipherBase &cipher, const uint8_t (&enc_key)[KSZ], uint8_t const (&enc_tweak)[TSZ]) :
-		  key(enc_key),
-		  tweak(enc_tweak),
-		  keySz(cipher.GetKeySize()),
-		  tweakSz(cipher.GetTweakSize()),
-		  baseAddr(baseAddr),
-		  maxLen(maxLen),
-		  cipher(cipher)
-		{
-			if(keySz>KSZ)
-				FAIL(100,100);
-			if(tweakSz>TSZ)
-				FAIL(100,500);
-		}
+		  EEPROMSettingsManager(baseAddr, maxLen, cipher, enc_key, enc_tweak, KSZ, TSZ) { }
 		template<size_t KSZ, size_t TSZ> EEPROMSettingsManager(const int baseAddr, const int maxLen, CipherBase &&, const uint8_t (&&)[KSZ], uint8_t const (&&)[TSZ]) = delete;
 		void Commit() final;
 		void Init() final;
