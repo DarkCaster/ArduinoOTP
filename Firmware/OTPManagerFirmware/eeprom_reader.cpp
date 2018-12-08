@@ -5,6 +5,15 @@
 
 #define CRC_SZ 1
 
+uint16_t EEPROMReader::CalculateTotalBlocksCount(const uint16_t sourceDataLen, const uint8_t cipherBsz)
+{
+	uint16_t totalLen = sourceDataLen+CRC_SZ;
+	uint16_t fullBlocks = totalLen/cipherBsz;
+	if(totalLen%cipherBsz>0)
+		fullBlocks++;
+	return fullBlocks;
+}
+
 EEPROMReader::EEPROMReader(const int baseAddr, const int maxLen, CipherBase& cipher, const uint8_t* const encKey, uint8_t* const tweak) :
   curAddr(baseAddr),
   limit(baseAddr+maxLen),
@@ -44,9 +53,7 @@ int8_t EEPROMReader::ReadData(uint8_t * const dPtr, const size_t dLen)
 		return 1;
 	//calculate how much blocks (crc included) we need to read
 	const uint8_t bsz=cipher.GetBlockSize();
-	auto fullBlocks = (dLen+CRC_SZ) / bsz;
-	if((dLen+CRC_SZ) % bsz > 0)
-		fullBlocks++;
+	auto fullBlocks = CalculateTotalBlocksCount(dLen,bsz);
 	//allocate space needed for decrypted block
 	uint8_t tmpBuff[bsz];
 	size_t dPos=0;
