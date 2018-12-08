@@ -16,6 +16,8 @@ struct Profile
 {
 	ProfileType type;
 	char name[PROFILE_NAME_LEN];
+	static Profile Invalid();
+	static Profile Empty();
 };
 #pragma pack(pop, profile)
 
