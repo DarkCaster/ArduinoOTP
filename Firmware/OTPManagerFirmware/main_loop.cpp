@@ -1,18 +1,24 @@
 #include <Arduino.h>
 #include <LowPower.h>
-#include "configuration.h"
 #include "debug.h"
+#include "configuration.h"
 #include "main_loop.h"
 #include "comm_helper.h"
 #include "cmd_processor.h"
 #include "lcgen.h"
-#include "gui_ssd1306_i2c.h"
-#include "clock_helper_DS3231.h"
+#include "watchdog.h"
 #include "watchdog_AVR.h"
-#include "settings_manager.h"
-#include "eeprom_settings_manager.h"
 #include "cipher.h"
 #include "aes128.h"
+#include "settings_manager.h"
+#include "eeprom_settings_manager.h"
+#include "profile_manager.h"
+#include "eeprom_profile_manager.h"
+#include "clock_helper.h"
+#include "clock_helper_DS3231.h"
+#include "gui.h"
+#include "gui_ssd1306_i2c.h"
+
 
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
@@ -40,6 +46,7 @@ static uint8_t encKey[ENCRYPTION_KEY_LEN] = ENCRYPTION_KEY;
 static uint8_t encTweak[ENCRYPTION_TWEAK_LEN] = ENCRYPTION_TWEAK;
 static AES128 cipher;
 static EEPROMSettingsManager settingsManager(EEPROM_SETTINGS_ADDR, EEPROM_SETTINGS_LEN, cipher, encKey, encTweak);
+static EEPROMProfileManager profileManager(EEPROM_PROFILE_STORAGE_ADDR, EEPROM_PROFILE_STORAGE_LEN, cipher, encKey, encTweak);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN, settingsManager);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN, DISPLAY_ADDR, clockHelper);
 static CmdProcessor cmdProcessor(clockHelper);
