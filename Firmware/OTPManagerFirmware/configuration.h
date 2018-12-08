@@ -10,7 +10,9 @@
 #define EEPROM_SETTINGS_ADDR 0x0000
 #define EEPROM_SETTINGS_LEN 0x0040
 
-#define PROFILE_NAME_LEN 14
+#define PROFILE_NAME_LEN 14 //+ 1 byte profile-type header, +1 byte CRC8 = 16 bytes
+#define PROFILE_PAYLOAD_LEN 15 // +1 byte CRC8 = 16 bytes
+
 #define EEPROM_PROFILE_STORAGE_ADDR 0x0040
 #define EEPROM_PROFILE_STORAGE_LEN 0x03C0
 
