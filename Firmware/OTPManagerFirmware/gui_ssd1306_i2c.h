@@ -5,6 +5,7 @@
 #include "gui.h"
 #include "clock_helper.h"
 #include "lcg_random.h"
+#include "profile_manager.h"
 
 class GuiSSD1306_I2C final : GuiBase
 {
@@ -12,10 +13,11 @@ class GuiSSD1306_I2C final : GuiBase
     const uint8_t displayPowerPin;
     const uint8_t displayAddr;
 		ClockHelperBase &clockHelper;
+		ProfileManager &profileManager;
 		LCGRandom rnd;
   public:
-		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper);
-		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &&) = delete;
+		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper, ProfileManager &profileManager);
+		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &&, ProfileManager &&) = delete;
     void InitPre() final;
     void InitPost() final;
     void DescendPre() final;

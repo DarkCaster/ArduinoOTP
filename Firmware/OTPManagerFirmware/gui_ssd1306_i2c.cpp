@@ -4,10 +4,11 @@
 
 static U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
-GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t _displayPowerPin, uint8_t _displayAddr, ClockHelperBase &_clockHelper) :
-  displayPowerPin(_displayPowerPin),
-  displayAddr(_displayAddr),
-  clockHelper(_clockHelper),
+GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper, ProfileManager &profileManager) :
+  displayPowerPin(displayPowerPin),
+  displayAddr(displayAddr),
+  clockHelper(clockHelper),
+  profileManager(profileManager),
   rnd(0)
 { }
 
