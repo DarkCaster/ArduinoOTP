@@ -92,21 +92,17 @@ void GuiSSD1306_I2C::MenuNext()
 
 }
 
-void GuiSSD1306_I2C::MenuUp()
-{
-
-}
-
 MenuItem GuiSSD1306_I2C::MenuSelect()
 {
   //TODO:
-  return MenuItem(MenuItemType::MainMenu,0);
+	return MenuItem(MenuItemType::MainScreen,0);
 }
 
 MenuItem GuiSSD1306_I2C::ResetToMainScr()
 {
   char timeString[6];
   char dateString[48];
+	clockHelper.Update();
 	clockHelper.WriteTimeString(timeString,6);
 	clockHelper.WriteDateString(dateString,48);
 	uint8_t timeXPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_TIME_MIN_POS_X, MAIN_SCREEN_TIME_MAX_POS_X));
@@ -120,7 +116,7 @@ MenuItem GuiSSD1306_I2C::ResetToMainScr()
     u8g2.setFont(MAIN_SCREEN_TIME_FONT);
     u8g2.drawStr(timeXPos,timeYPos,timeString);
   } while ( u8g2.nextPage() );
-  return MenuItem(MenuItemType::MainMenu,0);
+	return MenuItem(MenuItemType::MainScreen,0);
 }
 
 

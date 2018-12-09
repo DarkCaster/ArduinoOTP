@@ -7,7 +7,7 @@
 enum class MenuItemType : uint8_t
 {
     MainScreen,
-    MainMenu,
+	  //MainMenu,
     ProfileMenu,
     ProfileItem,
 	  //SettingsMenu,
@@ -34,11 +34,9 @@ class GuiBase : LowPowerDevice
 
     //menu navigation methods, show, navigate and select menu items
 
-    //show menu, move to the next menu item
+		//called when "Next" button pressed
     virtual void MenuNext() = 0;
-    //go to the parent submenu
-    virtual void MenuUp() = 0;
-    //advance submenu, select menu item. Return item description that was selected
+		//advance submenu, select menu item. Return item description that was selected. Called when "Select" button pressed
     virtual MenuItem MenuSelect() = 0;
 };
 

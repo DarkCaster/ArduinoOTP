@@ -15,6 +15,7 @@ class GuiSSD1306_I2C final : GuiBase
 		ClockHelperBase &clockHelper;
 		ProfileManager &profileManager;
 		LCGRandom rnd;
+
   public:
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper, ProfileManager &profileManager);
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &&, ProfileManager &&) = delete;
@@ -31,12 +32,7 @@ class GuiSSD1306_I2C final : GuiBase
 		void Reseed();
 
     //menu navigation methods, show, navigate and select menu items
-
-    //show menu, move to the next menu item
     void MenuNext() final;
-    //go to the parent submenu
-    void MenuUp() final;
-    //advance submenu, select menu item. Return item description that was selected
     MenuItem MenuSelect() final;
 };
 
