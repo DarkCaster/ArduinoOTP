@@ -63,7 +63,7 @@ static uint8_t rspType=0;
 
 static volatile bool buttonPressed=false;
 static unsigned long lastTime=0;
-static MenuItem curMenuItem(MenuItemType::MainMenu,0);
+static MenuItem curMenuItem(MenuItemType::MainScreen,0);
 
 void resync()
 {
@@ -231,11 +231,6 @@ void descend()
 	LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF);
 }
 
-void update_menu()
-{
-	//TODO: reload menu items
-}
-
 void next_button_handler()
 {
 	buttonPressed=true;
@@ -266,7 +261,6 @@ void setup()
 	gui.InitPost();
 	clockHelper.InitPost();
 	gui.Reseed();
-	update_menu();
 	//install button interrupts
 	attachInterrupt(digitalPinToInterrupt(BUTTON_NEXT_PIN),next_button_handler, CHANGE);
 	attachInterrupt(digitalPinToInterrupt(BUTTON_SELECT_PIN),select_button_handler, CHANGE);
@@ -275,10 +269,8 @@ void setup()
 		conn_loop();
 		watchdog.Disable();
 		buttonPressed=false;
-		update_menu();
 	}
 	//update current-time
-	clockHelper.Update();
 	curMenuItem=gui.ResetToMainScr();
 	//reset last-time
 	lastTime=millis();
@@ -294,7 +286,6 @@ void loop()
 		conn_loop();
 		watchdog.Disable();
 		buttonPressed=false;
-		update_menu();
 		curMenuItem=gui.ResetToMainScr();
 	}
 
@@ -328,7 +319,7 @@ void loop()
 	{
 		STATUS();
 		LOG(F("Next button pressed"));
-		//TODO: perform action
+		gui.MenuNext();
 		//reset last-time
 		lastTime=millis();
 		return;
@@ -338,22 +329,30 @@ void loop()
 	{
 		STATUS();
 		LOG(F("Select button pressed"));
-		//TODO: perform action
+		curMenuItem=gui.MenuSelect();
 		//reset last-time
 		lastTime=millis();
 		return;
 	}
 
-	if((timeDiff>DEFAULT_IDLE_TIMEOUT && curMenuItem.itemType==MenuItemType::MainMenu) ||
+	if((timeDiff>DEFAULT_IDLE_TIMEOUT && curMenuItem.itemType==MenuItemType::MainScreen) ||
 	   (timeDiff>DEFAULT_CODE_TIMEOUT && curMenuItem.itemType==MenuItemType::ProfileItem))
 	{
 		//activate powersave mode
 		descend();
 		//<< execution will be paused here >>
 		wakeup();
-		clockHelper.Update();
 		curMenuItem=gui.ResetToMainScr();
 		//reset last-time
 		lastTime=millis();
+		return;
+	}
+
+	if(timeDiff>DEFAULT_MENU_TIMEOUT && curMenuItem.itemType==MenuItemType::ProfileMenu)
+	{
+		curMenuItem=gui.ResetToMainScr();
+		//reset last-time
+		lastTime=millis();
+		return;
 	}
 }
