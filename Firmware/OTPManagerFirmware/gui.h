@@ -10,8 +10,8 @@ enum class MenuItemType : uint8_t
     MainMenu,
     ProfileMenu,
     ProfileItem,
-    SettingsMenu,
-    SettingsItem,
+	  //SettingsMenu,
+	  //SettingsItem,
 };
 
 struct MenuItem
