@@ -63,7 +63,6 @@ static uint8_t rspType=0;
 
 static volatile bool buttonPressed=false;
 static unsigned long lastTime=0;
-static MenuItem curMenuItem(MenuItemType::MainScreen,0);
 
 void resync()
 {
@@ -165,7 +164,7 @@ void conn_loop()
 				case ReqType::CommandData:
 					//copy command data
 					for(uint8_t cnt=0;cnt<request.plLen;++cnt)
-						commandBuffer[cmdBuffPos++]=request.payload[cnt];
+						*(commandBuffer+cmdBuffPos++)=*(request.payload+cnt);
 					//send ok
 					result=commHelper.SendAnswer(AnsType::Ok,ansLCG.GenerateValue(),nullptr,0);
 					break;
@@ -271,7 +270,7 @@ void setup()
 		buttonPressed=false;
 	}
 	//update current-time
-	curMenuItem=gui.ResetToMainScr();
+	gui.ResetToMainScr();
 	//reset last-time
 	lastTime=millis();
 	STATUS();
@@ -286,7 +285,7 @@ void loop()
 		conn_loop();
 		watchdog.Disable();
 		buttonPressed=false;
-		curMenuItem=gui.ResetToMainScr();
+		gui.ResetToMainScr();
 	}
 
 	//read current time
@@ -329,28 +328,28 @@ void loop()
 	{
 		STATUS();
 		LOG(F("Select button pressed"));
-		curMenuItem=gui.MenuSelect();
+		gui.MenuSelect();
 		//reset last-time
 		lastTime=millis();
 		return;
 	}
 
-	if((timeDiff>DEFAULT_IDLE_TIMEOUT && curMenuItem.itemType==MenuItemType::MainScreen) ||
-	   (timeDiff>DEFAULT_CODE_TIMEOUT && curMenuItem.itemType==MenuItemType::ProfileItem))
+	if((timeDiff>DEFAULT_IDLE_TIMEOUT && gui.GetCurItem().itemType==MenuItemType::MainScreen) ||
+	   (timeDiff>DEFAULT_CODE_TIMEOUT && gui.GetCurItem().itemType==MenuItemType::ProfileItem))
 	{
 		//activate powersave mode
 		descend();
 		//<< execution will be paused here >>
 		wakeup();
-		curMenuItem=gui.ResetToMainScr();
+		gui.ResetToMainScr();
 		//reset last-time
 		lastTime=millis();
 		return;
 	}
 
-	if(timeDiff>DEFAULT_MENU_TIMEOUT && curMenuItem.itemType==MenuItemType::ProfileMenu)
+	if(timeDiff>DEFAULT_MENU_TIMEOUT && gui.GetCurItem().itemType==MenuItemType::ProfileMenu)
 	{
-		curMenuItem=gui.ResetToMainScr();
+		gui.ResetToMainScr();
 		//reset last-time
 		lastTime=millis();
 		return;
