@@ -9,7 +9,8 @@ GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, Clo
   displayAddr(displayAddr),
   clockHelper(clockHelper),
   profileManager(profileManager),
-  rnd(0)
+  rnd(0),
+  curItem(MenuItemType::MainScreen,0)
 { }
 
 void GuiSSD1306_I2C::InitPre()
@@ -17,6 +18,7 @@ void GuiSSD1306_I2C::InitPre()
   //power-on
   pinMode(displayPowerPin, OUTPUT);
   digitalWrite(displayPowerPin, HIGH);
+	curItem=MenuItem(MenuItemType::MainScreen,0);
 }
 
 void GuiSSD1306_I2C::InitPost()
@@ -42,7 +44,12 @@ void GuiSSD1306_I2C::WakeupPre()
 
 void GuiSSD1306_I2C::WakeupPost()
 {
-  u8g2.begin();
+	u8g2.begin();
+}
+
+MenuItem GuiSSD1306_I2C::GetCurItem()
+{
+	return curItem;
 }
 
 static void DrawCaption(const char * caption)
@@ -98,7 +105,7 @@ MenuItem GuiSSD1306_I2C::MenuSelect()
 	return MenuItem(MenuItemType::MainScreen,0);
 }
 
-MenuItem GuiSSD1306_I2C::ResetToMainScr()
+void GuiSSD1306_I2C::ResetToMainScr()
 {
   char timeString[6];
   char dateString[48];
@@ -116,7 +123,7 @@ MenuItem GuiSSD1306_I2C::ResetToMainScr()
     u8g2.setFont(MAIN_SCREEN_TIME_FONT);
     u8g2.drawStr(timeXPos,timeYPos,timeString);
   } while ( u8g2.nextPage() );
-	return MenuItem(MenuItemType::MainScreen,0);
+	curItem=MenuItem(MenuItemType::MainScreen,0);
 }
 
 

@@ -15,7 +15,7 @@ class GuiSSD1306_I2C final : GuiBase
 		ClockHelperBase &clockHelper;
 		ProfileManager &profileManager;
 		LCGRandom rnd;
-
+		MenuItem curItem;
 	public:
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper, ProfileManager &profileManager);
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &&, ProfileManager &&) = delete;
@@ -25,7 +25,9 @@ class GuiSSD1306_I2C final : GuiBase
 		void WakeupPre() final;
 		void DescendPost() final;
 		void WakeupPost() final;
-		MenuItem ResetToMainScr() final;
+
+		MenuItem GetCurItem() final;
+		void ResetToMainScr() final;
 		void ShowCDScr() final;
 		void ShowCEScr() final;
 		void ShowCodeScr(const char * const code) final;
