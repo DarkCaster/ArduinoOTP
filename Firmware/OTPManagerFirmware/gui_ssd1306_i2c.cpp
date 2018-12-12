@@ -99,10 +99,9 @@ void GuiSSD1306_I2C::MenuNext()
 
 }
 
-MenuItem GuiSSD1306_I2C::MenuSelect()
+void GuiSSD1306_I2C::MenuSelect()
 {
   //TODO:
-	return MenuItem(MenuItemType::MainScreen,0);
 }
 
 void GuiSSD1306_I2C::ResetToMainScr()

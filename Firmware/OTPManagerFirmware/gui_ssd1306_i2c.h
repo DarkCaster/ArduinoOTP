@@ -35,7 +35,7 @@ class GuiSSD1306_I2C final : GuiBase
 
 		//menu navigation methods, show, navigate and select menu items
 		void MenuNext() final;
-		MenuItem MenuSelect() final;
+		void MenuSelect() final;
 };
 
 #endif

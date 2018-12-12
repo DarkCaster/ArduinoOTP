@@ -37,8 +37,8 @@ class GuiBase : LowPowerDevice
 
 		//called when "Next" button pressed
 		virtual void MenuNext() = 0;
-		//advance submenu, select menu item. Return item description that was selected. Called when "Select" button pressed
-		virtual MenuItem MenuSelect() = 0;
+		//advance submenu, select menu item and perform action. Called when "Select" button pressed
+		virtual void MenuSelect() = 0;
 };
 
 
