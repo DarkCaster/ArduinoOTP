@@ -96,12 +96,39 @@ void GuiSSD1306_I2C::Reseed()
 
 void GuiSSD1306_I2C::MenuNext()
 {
+	if(curItem.itemType==MenuItemType::MainScreen)
+	{
+		//TODO: initialize profiles list
+		//TODO: set cutItem
+		//if we cannot parse profiles-list, goto main menu
+		ResetToMainScr();
+		return;
+	}
 
+	if(curItem.itemType==MenuItemType::ProfileMenu)
+	{
+		//select next item, update list
+		return;
+	}
+
+	if(curItem.itemType==MenuItemType::ProfileItem)
+	{
+		//go back to ProfileMenu
+		return;
+	}
 }
 
 void GuiSSD1306_I2C::MenuSelect()
 {
-  //TODO:
+	if(curItem.itemType==MenuItemType::MainScreen)
+		return;	//do nothing
+
+	if(curItem.itemType==MenuItemType::ProfileMenu || curItem.itemType==MenuItemType::ProfileItem)
+	{
+		//select current item, generate and display code
+		return;
+	}
+
 }
 
 void GuiSSD1306_I2C::ResetToMainScr()
