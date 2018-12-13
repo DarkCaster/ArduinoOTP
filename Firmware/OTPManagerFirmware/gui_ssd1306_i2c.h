@@ -6,6 +6,8 @@
 #include "clock_helper.h"
 #include "lcg_random.h"
 #include "profile_manager.h"
+#include "profiles_ring_buffer.h"
+#include "configuration.h"
 
 class GuiSSD1306_I2C final : GuiBase
 {
@@ -16,6 +18,7 @@ class GuiSSD1306_I2C final : GuiBase
 		ProfileManager &profileManager;
 		LCGRandom rnd;
 		MenuItem curItem;
+		ProfilesRingBuffer<PROFILES_MENU_ITEMS_COUNT> prBuffer;
 	public:
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper, ProfileManager &profileManager);
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &&, ProfileManager &&) = delete;
