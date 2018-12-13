@@ -22,7 +22,7 @@ struct MenuItem
 			this->itemIndex=itemIndex;
 		}
 		MenuItemType itemType;
-		int16_t itemIndex;
+		uint16_t itemIndex;
 };
 
 class GuiBase : LowPowerDevice
