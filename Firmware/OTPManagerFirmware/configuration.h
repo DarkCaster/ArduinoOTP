@@ -55,6 +55,8 @@
 #define MAIN_SCREEN_DOW {"nil","sun","mon","tue","wed","thu","fri","sat"}
 #define MAIN_SCREEN_DAY_LEN 4
 
+#define PROFILES_MENU_ITEMS_COUNT 4
+
 #define YEAR_START 2000
 
 #define DEBUG_SERIAL_PORT SERIAL_PORT
