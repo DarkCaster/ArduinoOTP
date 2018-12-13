@@ -61,23 +61,21 @@ static void DrawCaption(const char * caption)
 	} while ( u8g2.nextPage() );
 }
 
-//TODO: change to progmem (F("< Resync >"))
-
-/*static void DrawCaption(const __FlashStringHelper* fCaption)
+static void DrawCaption(const __FlashStringHelper* fCaption)
 {
 	char caption[strlen_P(reinterpret_cast<const char*>(fCaption))];
 	strcpy_P(caption,reinterpret_cast<const char*>(fCaption));
 	DrawCaption(caption);
-}*/
+}
 
 void GuiSSD1306_I2C::ShowCDScr()
 {
-	DrawCaption("< Resync >");
+	DrawCaption(F("< Resync >"));
 }
 
 void GuiSSD1306_I2C::ShowCEScr()
 {
-	DrawCaption("< Connected >");
+	DrawCaption(F("< Connected >"));
 }
 
 void GuiSSD1306_I2C::ShowCodeScr(const char * const code)
