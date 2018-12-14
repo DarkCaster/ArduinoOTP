@@ -2,28 +2,7 @@
 #define PROFILES_RING_BUFFER_H
 
 #include <Arduino.h>
-#include "profile.h"
-
-struct ProfileItem
-{
-	private:
-		ProfileItem * nextItem;
-	public:
-		Profile profile;
-		uint16_t index;
-		ProfileItem * Next() { return nextItem; }
-		ProfileItem() = default;
-		ProfileItem(Profile &profile, uint16_t index, ProfileItem * nextItem) :
-		  nextItem(nextItem),
-		  profile(profile),
-		  index(index)
-		{}
-		void Set(Profile &profile, uint16_t index)
-		{
-			this->profile=profile;
-			this->index=index;
-		}
-};
+#include "profile_item.h"
 
 template<size_t PSZ>
 class ProfilesRingBuffer
