@@ -16,31 +16,31 @@ GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, Clo
 
 void GuiSSD1306_I2C::InitPre()
 {
-  //power-on
-  pinMode(displayPowerPin, OUTPUT);
-  digitalWrite(displayPowerPin, HIGH);
+	//power-on
+	pinMode(displayPowerPin, OUTPUT);
+	digitalWrite(displayPowerPin, HIGH);
 	curItem=MenuItem(MenuItemType::MainScreen,0);
 }
 
 void GuiSSD1306_I2C::InitPost()
 {
-  u8g2.setI2CAddress(displayAddr);
-  u8g2.begin();
+	u8g2.setI2CAddress(displayAddr);
+	u8g2.begin();
 }
 
 void GuiSSD1306_I2C::DescendPre()
 {
-  u8g2.clearDisplay();
+	u8g2.clearDisplay();
 }
 
 void GuiSSD1306_I2C::DescendPost()
 {
-  digitalWrite(displayPowerPin,LOW);
+	digitalWrite(displayPowerPin,LOW);
 }
 
 void GuiSSD1306_I2C::WakeupPre()
 {
-  digitalWrite(displayPowerPin,HIGH);
+	digitalWrite(displayPowerPin,HIGH);
 }
 
 void GuiSSD1306_I2C::WakeupPost()
@@ -194,7 +194,7 @@ void GuiSSD1306_I2C::MenuNext()
 				//and select new buffer's item
 				bItem=prBuffer.GetHead();
 				for(uint8_t testPos=0; testPos<menuPos; ++testPos)
-					  bItem=bItem->Next();
+					bItem=bItem->Next();
 			}
 		}
 		//set curItem
@@ -227,22 +227,22 @@ void GuiSSD1306_I2C::MenuSelect()
 
 void GuiSSD1306_I2C::ResetToMainScr()
 {
-  char timeString[6];
-  char dateString[48];
+	char timeString[6];
+	char dateString[48];
 	clockHelper.Update();
 	clockHelper.WriteTimeString(timeString,6);
 	clockHelper.WriteDateString(dateString,48);
-    auto timeXPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_TIME_MIN_POS_X, MAIN_SCREEN_TIME_MAX_POS_X));
-    auto timeYPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_TIME_MIN_POS_Y, MAIN_SCREEN_TIME_MAX_POS_Y));
-    auto dateXPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_DATE_MIN_POS_X, MAIN_SCREEN_DATE_MAX_POS_X));
-    auto dateYPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_DATE_MIN_POS_Y, MAIN_SCREEN_DATE_MAX_POS_Y));
-  u8g2.firstPage();
-  do {
-    u8g2.setFont(MAIN_SCREEN_DATE_FONT);
-    u8g2.drawStr(dateXPos,dateYPos,dateString);
-    u8g2.setFont(MAIN_SCREEN_TIME_FONT);
-    u8g2.drawStr(timeXPos,timeYPos,timeString);
-  } while ( u8g2.nextPage() );
+	auto timeXPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_TIME_MIN_POS_X, MAIN_SCREEN_TIME_MAX_POS_X));
+	auto timeYPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_TIME_MIN_POS_Y, MAIN_SCREEN_TIME_MAX_POS_Y));
+	auto dateXPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_DATE_MIN_POS_X, MAIN_SCREEN_DATE_MAX_POS_X));
+	auto dateYPos=static_cast<uint8_t>(rnd.Next(MAIN_SCREEN_DATE_MIN_POS_Y, MAIN_SCREEN_DATE_MAX_POS_Y));
+	u8g2.firstPage();
+	do {
+		u8g2.setFont(MAIN_SCREEN_DATE_FONT);
+		u8g2.drawStr(dateXPos,dateYPos,dateString);
+		u8g2.setFont(MAIN_SCREEN_TIME_FONT);
+		u8g2.drawStr(timeXPos,timeYPos,timeString);
+	} while ( u8g2.nextPage() );
 	curItem=MenuItem(MenuItemType::MainScreen,0);
 }
 
