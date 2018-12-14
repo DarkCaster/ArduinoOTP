@@ -40,6 +40,14 @@ class ProfilesRingBuffer
 				tail->index=0;
 			}
 		}
+		void Clear()
+		{
+			for(size_t i=0; i<PSZ; ++i)
+			{
+				(items+i)->profile=Profile::Empty();
+				(items+i)->index=0;
+			}
+		}
 		ProfilesRingBuffer()
 		{
 			for(size_t i=0; i<PSZ; ++i)
