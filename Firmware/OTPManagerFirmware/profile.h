@@ -10,6 +10,7 @@ enum class ProfileType : uint8_t
 {
 	Invalid = 0_u8,
 	Empty = 1_u8,
+	TOTP = 2_u8,
 };
 
 struct Profile
