@@ -219,7 +219,7 @@ void GuiSSD1306_I2C::MenuSelect()
 
 	if(curItem.itemType==MenuItemType::ProfileMenu || curItem.itemType==MenuItemType::ProfileItem)
 	{
-		//select current item, generate and display code
+		//TODO: select current item, generate and display code
 		return;
 	}
 
