@@ -142,15 +142,47 @@ void GuiSSD1306_I2C::MenuNext()
 			MenuReset();
 			return;
 		}
-		//TODO: check, whether we at the empty item now, set menu-pos to zero if so
-		//TODO: if we switched to the last position, try to read more profiles
+		//check, whether we at the empty item now, set menu-pos to zero if so
+		auto bItem=prBuffer.GetHead();
+		for(uint8_t testPos=0; testPos<menuPos; ++testPos)
+			bItem=bItem->Next();
+		if(bItem->profile.type==ProfileType::Empty)
+		{
+			menuPos=0;
+			bItem=prBuffer.GetHead();
+		}
+		//if we switched to the last position, try to read more profiles
 		if(menuPos==PROFILES_MENU_ITEMS_COUNT-1)
 		{
-			//TODO: try to read one extra profile from eeprom
-			//TODO: if succeed - shift profiles' ring buffer and add it to the new tail of buffer, decrease menuPos
-			--menuPos;
+			//try to read one extra profile from eeprom
+			auto prLimit=profileManager.GetProfilesCount();
+			auto prIdx=prLimit;
+			auto profile=Profile::Empty();
+			for(prIdx=bItem->index+1; prIdx<prLimit; ++prIdx)
+			{
+				profile=profileManager.ReadProfileHeader(prIdx);
+				if(profile.type!=ProfileType::Empty && profile.type!=ProfileType::Invalid)
+					break;
+			}
+			//if succeed
+			if(prIdx<prLimit)
+			{
+				//shift profiles' ring buffer
+				prBuffer.Shift();
+				//and add new profile to the new tail of the buffer
+				auto tail=prBuffer.GetTail();
+				tail->index=prIdx;
+				tail->profile=profile;
+				//decrease menuPos
+				--menuPos;
+				//and select new buffer's item
+				bItem=prBuffer.GetHead();
+				for(uint8_t testPos=0; testPos<menuPos; ++testPos)
+					  bItem=bItem->Next();
+			}
 		}
-		//TODO: set curItem
+		//set curItem
+		curItem=MenuItem(MenuItemType::ProfileMenu,bItem->index);
 		//TODO: visualize menu
 		return;
 	}
