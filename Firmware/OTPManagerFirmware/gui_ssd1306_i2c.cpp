@@ -102,8 +102,7 @@ void GuiSSD1306_I2C::MenuReset()
 		//add it to prBuffer, switch head
 		if(profile.type!=ProfileType::Empty && profile.type!=ProfileType::Invalid)
 		{
-			head->profile=profile;
-			head->index=prIdx;
+			head->Set(profile,prIdx);
 			head=head->Next();
 		}
 		if(head==prBuffer.GetTail())
@@ -171,8 +170,7 @@ void GuiSSD1306_I2C::MenuNext()
 				prBuffer.Shift();
 				//and add new profile to the new tail of the buffer
 				auto tail=prBuffer.GetTail();
-				tail->index=prIdx;
-				tail->profile=profile;
+				tail->Set(profile,prIdx);
 				//decrease menuPos
 				--menuPos;
 				//and select new buffer's item
