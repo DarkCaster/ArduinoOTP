@@ -13,11 +13,16 @@ struct ProfileItem
 		uint16_t index;
 		ProfileItem * Next() { return nextItem; }
 		ProfileItem() = default;
-		ProfileItem(Profile profile, uint16_t index, ProfileItem * nextItem) :
+		ProfileItem(Profile &profile, uint16_t index, ProfileItem * nextItem) :
 		  nextItem(nextItem),
 		  profile(profile),
 		  index(index)
 		{}
+		void Set(Profile &profile, uint16_t index)
+		{
+			this->profile=profile;
+			this->index=index;
+		}
 };
 
 template<size_t PSZ>
@@ -36,25 +41,24 @@ class ProfilesRingBuffer
 			{
 				tail=head;
 				head=head->Next();
-				tail->profile=Profile::Empty();
-				tail->index=0;
+				auto emptyProfile=Profile::Empty();
+				tail->Set(emptyProfile,0);
 			}
 		}
 		void Clear()
 		{
+			auto emptyProfile=Profile::Empty();
 			for(size_t i=0; i<PSZ; ++i)
-			{
-				(items+i)->profile=Profile::Empty();
-				(items+i)->index=0;
-			}
+				(items+i)->Set(emptyProfile,0);
 		}
 		ProfilesRingBuffer()
 		{
+			auto emptyProfile=Profile::Empty();
 			for(size_t i=0; i<PSZ; ++i)
 				if(i==PSZ-1)
-					*(items+i)=ProfileItem(Profile::Empty(),0,items+0);
+					*(items+i)=ProfileItem(emptyProfile,0,items+0);
 				else
-					*(items+i)=ProfileItem(Profile::Empty(),0,items+i+1);
+					*(items+i)=ProfileItem(emptyProfile,0,items+i+1);
 			head=items+0;
 			tail=items+PSZ-1;
 		}
