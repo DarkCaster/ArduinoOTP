@@ -53,38 +53,56 @@ MenuItem GuiSSD1306_I2C::GetCurItem()
 	return curItem;
 }
 
-static void DrawCaption(const char * caption)
+static void DrawCaption(const char * caption, LCGRandom &rnd)
 {
+	auto xPos=static_cast<uint8_t>(rnd.Next(CAPTION_MIN_POS_X, CAPTION_MAX_POS_X));
+	auto yPos=static_cast<uint8_t>(rnd.Next(CAPTION_MIN_POS_Y, CAPTION_MAX_POS_Y));
 	u8g2.firstPage();
-	u8g2.setFont(MAIN_SCREEN_DATE_FONT);
+	u8g2.setFont(MENU_MAIN_FONT);
 	do {
-		u8g2.drawStr(0,24,caption);
+		u8g2.drawStr(xPos,yPos,caption);
 	} while ( u8g2.nextPage() );
 }
 
-static void DrawCaption(const __FlashStringHelper* fCaption)
+static void DrawCaption(const __FlashStringHelper* fCaption, LCGRandom &rnd)
 {
 	char caption[strlen_P(reinterpret_cast<const char*>(fCaption))];
 	strcpy_P(caption,reinterpret_cast<const char*>(fCaption));
-	DrawCaption(caption);
+	DrawCaption(caption,rnd);
 }
 
 void GuiSSD1306_I2C::ShowCDScr()
 {
-	DrawCaption(F("< Resync >"));
+	DrawCaption(F("< Resync >"), rnd);
 }
 
 void GuiSSD1306_I2C::ShowCEScr()
 {
-	DrawCaption(F("< Connected >"));
+	DrawCaption(F("< Connected >"), rnd);
 }
 
 void GuiSSD1306_I2C::ShowCodeScr(const char * const code)
 {
+	DrawCaption(code, rnd);
+}
+
+void GuiSSD1306_I2C::DrawProfileMenu()
+{
 	u8g2.firstPage();
-  u8g2.setFont(MAIN_SCREEN_DATE_FONT);
-  do {
-    u8g2.drawStr(0,24,code);
+	u8g2.setFont(MENU_MAIN_FONT);
+	do
+	{
+		auto item=prBuffer.GetHead();
+		for(uint8_t curPos=0; curPos<PROFILES_MENU_ITEMS_COUNT; ++curPos)
+		{
+			if(item->profile.type==ProfileType::Empty)
+				break;
+			if(curPos==menuPos)
+				u8g2.drawStr(0,MENU_CAPTION_HEIGHT*curPos,">");
+			u8g2.drawStr(16,MENU_CAPTION_HEIGHT*curPos,item->profile.name);
+			++curPos;
+			item=item->Next();
+		}
 	} while ( u8g2.nextPage() );
 }
 
@@ -128,7 +146,7 @@ void GuiSSD1306_I2C::MenuNext()
 			ResetToMainScr();
 			return;
 		}
-		//TODO: visualize menu
+		DrawProfileMenu();
 		return;
 	}
 
@@ -181,7 +199,7 @@ void GuiSSD1306_I2C::MenuNext()
 		}
 		//set curItem
 		curItem=MenuItem(MenuItemType::ProfileMenu,bItem->index);
-		//TODO: visualize menu
+		DrawProfileMenu();
 		return;
 	}
 
@@ -189,7 +207,7 @@ void GuiSSD1306_I2C::MenuNext()
 	{
 		//go back to ProfileMenu
 		curItem=MenuItem(MenuItemType::ProfileMenu,curItem.itemIndex);
-		//TODO: visualize menu
+		DrawProfileMenu();
 		return;
 	}
 }
