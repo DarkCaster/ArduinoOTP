@@ -10,7 +10,8 @@ GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, Clo
   clockHelper(clockHelper),
   profileManager(profileManager),
   rnd(0),
-  curItem(MenuItemType::MainScreen,0)
+  curItem(MenuItemType::MainScreen,0),
+  menuPos(0)
 { }
 
 void GuiSSD1306_I2C::InitPre()
@@ -87,6 +88,31 @@ void GuiSSD1306_I2C::ShowCodeScr(const char * const code)
 	} while ( u8g2.nextPage() );
 }
 
+void GuiSSD1306_I2C::MenuReset()
+{
+	prBuffer.Clear();
+	menuPos=0;
+	auto prLimit=profileManager.GetProfilesCount();
+	auto prIdx=prLimit;
+	auto head=prBuffer.GetHead();
+	for(prIdx=0; prIdx<prLimit; ++prIdx)
+	{
+		//try to read profile header
+		auto profile=profileManager.ReadProfileHeader(prIdx);
+		//add it to prBuffer, switch head
+		if(profile.type!=ProfileType::Empty && profile.type!=ProfileType::Invalid)
+		{
+			head->profile=profile;
+			head->index=prIdx;
+			head=head->Next();
+		}
+		if(head==prBuffer.GetTail())
+			break;
+	}
+	//set cutItem for external queries
+	curItem=MenuItem(MenuItemType::ProfileMenu,prBuffer.GetHead()->index);
+}
+
 void GuiSSD1306_I2C::Reseed()
 {
 	rnd=LCGRandom(clockHelper.GetSeed());
@@ -96,22 +122,44 @@ void GuiSSD1306_I2C::MenuNext()
 {
 	if(curItem.itemType==MenuItemType::MainScreen)
 	{
-		//TODO: initialize profiles list
-		//TODO: set cutItem
-		//if we cannot parse profiles-list, goto main menu
-		ResetToMainScr();
+		MenuReset();
+		//if prBuffer is empty, goto main menu
+		if(prBuffer.GetHead()->profile.type==ProfileType::Empty)
+		{
+			ResetToMainScr();
+			return;
+		}
+		//TODO: visualize menu
 		return;
 	}
 
 	if(curItem.itemType==MenuItemType::ProfileMenu)
 	{
-		//select next item, update list
+		//increase menuPos
+		++menuPos;
+		if(menuPos==PROFILES_MENU_ITEMS_COUNT)
+		{
+			MenuReset();
+			return;
+		}
+		//TODO: check, whether we at the empty item now, set menu-pos to zero if so
+		//TODO: if we switched to the last position, try to read more profiles
+		if(menuPos==PROFILES_MENU_ITEMS_COUNT-1)
+		{
+			//TODO: try to read one extra profile from eeprom
+			//TODO: if succeed - shift profiles' ring buffer and add it to the new tail of buffer, decrease menuPos
+			--menuPos;
+		}
+		//TODO: set curItem
+		//TODO: visualize menu
 		return;
 	}
 
 	if(curItem.itemType==MenuItemType::ProfileItem)
 	{
 		//go back to ProfileMenu
+		curItem=MenuItem(MenuItemType::ProfileMenu,curItem.itemIndex);
+		//TODO: visualize menu
 		return;
 	}
 }

@@ -18,7 +18,9 @@ class GuiSSD1306_I2C final : GuiBase
 		ProfileManager &profileManager;
 		LCGRandom rnd;
 		MenuItem curItem;
+		uint8_t menuPos;
 		ProfilesRingBuffer<PROFILES_MENU_ITEMS_COUNT> prBuffer;
+		void MenuReset();
 	public:
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &clockHelper, ProfileManager &profileManager);
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelperBase &&, ProfileManager &&) = delete;
