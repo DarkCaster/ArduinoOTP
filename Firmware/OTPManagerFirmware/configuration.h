@@ -38,6 +38,8 @@
 #define DISPLAY_ADDR 0x78
 #define DISPLAY_POWER_PIN 7
 
+#define MENU_MAIN_FONT u8g2_font_logisoso16_tr
+#define MENU_CAPTION_HEIGHT 16
 #define MAIN_SCREEN_DATE_FONT u8g2_font_logisoso16_tr
 #define MAIN_SCREEN_TIME_FONT u8g2_font_logisoso38_tn
 
