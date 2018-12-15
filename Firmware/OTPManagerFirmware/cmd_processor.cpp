@@ -66,12 +66,19 @@ RspParams CmdProcessor::GetProfile(const uint8_t* const cmdData, const CMDRSP_BU
 		return RspParams::Invalid();
 	uint16_t index=static_cast<uint16_t>(*cmdData)|static_cast<uint16_t>(*(cmdData+1))<<8;
 	auto profile=profileManager.ReadProfileHeader(index);
-	*(rspData)  =static_cast<uint8_t>(profile.type);
-	*(rspData+1)=static_cast<uint8_t>(PROFILE_NAME_LEN & 0xFF);
-	*(rspData+2)=static_cast<uint8_t>((PROFILE_NAME_LEN>>8) & 0xFF);
-	memcpy(rspData+3,profile.name,PROFILE_NAME_LEN);
+	uint16_t nameLen=0;
+	//poor-man's strnlen, to save some tiny bit of progmem
+	//this is not an equalent to strnlen, will set nameLen to 0 if null character not found
+	for(uint16_t pos=0; pos<PROFILE_NAME_LEN; ++pos)
+		if(*(profile.name+pos)=='\0')
+		{
+			nameLen=pos;
+			break;
+		}
+	*(rspData)=static_cast<uint8_t>(profile.type);
+	memcpy(rspData+1,profile.name,nameLen);
 	auto result=RspParams();
-	result.rspLen=3+PROFILE_NAME_LEN;
+	result.rspLen=1+nameLen;
 	result.rspType=RSP_PROFILE;
 	return result;
 }
