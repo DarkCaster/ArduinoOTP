@@ -49,7 +49,7 @@ static EEPROMSettingsManager settingsManager(EEPROM_SETTINGS_ADDR, EEPROM_SETTIN
 static EEPROMProfileManager profileManager(EEPROM_PROFILE_STORAGE_ADDR, EEPROM_PROFILE_STORAGE_LEN, cipher, encKey, encTweak);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN, settingsManager);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN, DISPLAY_ADDR, clockHelper, profileManager);
-static CmdProcessor cmdProcessor(clockHelper);
+static CmdProcessor cmdProcessor(clockHelper, profileManager);
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
 //stuff needed for requests, commands and responses parsing

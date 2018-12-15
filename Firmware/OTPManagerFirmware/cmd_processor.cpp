@@ -24,7 +24,10 @@ RspParams RspParams::Error(const CMDRSP_BUFF_TYPE rspLen)
 	return result;
 }
 
-CmdProcessor::CmdProcessor(ClockHelperBase &clockHelper) : clockHelper(clockHelper) { }
+CmdProcessor::CmdProcessor(ClockHelperBase &clockHelper, ProfileManager &profileManager) :
+  clockHelper(clockHelper),
+  profileManager(profileManager)
+{ }
 
 RspParams CmdProcessor::ProcessCommand(const uint8_t cmdType, const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t* const rspData)
 {
@@ -35,9 +38,25 @@ RspParams CmdProcessor::ProcessCommand(const uint8_t cmdType, const uint8_t* con
 		case CMD_SETTIME:
 			result=SetTime(cmdData,cmdLen);
 			break;
+		case CMD_GETPRCOUNT:
+			result=GetProfilesCount(cmdLen,rspData);
+			break;
 		default:
 			return RspParams::Invalid();
 	}
+	return result;
+}
+
+RspParams CmdProcessor::GetProfilesCount(const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData)
+{
+	if(cmdLen!=0)
+		return RspParams::Invalid();
+	uint16_t prCount=profileManager.GetProfilesCount();
+	*(rspData)=static_cast<uint8_t>(prCount & 0xFF);
+	*(rspData+1)=static_cast<uint8_t>((prCount>>8) & 0xFF);
+	auto result=RspParams();
+	result.rspLen=2;
+	result.rspType=RSP_PRCOUNT;
 	return result;
 }
 
