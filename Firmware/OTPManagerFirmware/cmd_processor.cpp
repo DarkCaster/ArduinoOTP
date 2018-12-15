@@ -39,6 +39,9 @@ RspParams CmdProcessor::ProcessCommand(const uint8_t cmdType, const uint8_t* con
 		case CMD_GETPRCOUNT:
 			return GetProfilesCount(cmdLen,rspData);
 			break;
+		case CMD_GETPROFILE:
+			return GetProfile(cmdData,cmdLen,rspData);
+			break;
 		default:
 			return RspParams::Invalid();
 	}
@@ -54,6 +57,22 @@ RspParams CmdProcessor::GetProfilesCount(const CMDRSP_BUFF_TYPE cmdLen, uint8_t 
 	auto result=RspParams();
 	result.rspLen=2;
 	result.rspType=RSP_PRCOUNT;
+	return result;
+}
+
+RspParams CmdProcessor::GetProfile(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData)
+{
+	if(cmdLen!=2)
+		return RspParams::Invalid();
+	uint16_t index=static_cast<uint16_t>(*cmdData)|static_cast<uint16_t>(*(cmdData+1))<<8;
+	auto profile=profileManager.ReadProfileHeader(index);
+	*(rspData)  =static_cast<uint8_t>(profile.type);
+	*(rspData+1)=static_cast<uint8_t>(PROFILE_NAME_LEN & 0xFF);
+	*(rspData+2)=static_cast<uint8_t>((PROFILE_NAME_LEN>>8) & 0xFF);
+	memcpy(rspData+3,profile.name,PROFILE_NAME_LEN);
+	auto result=RspParams();
+	result.rspLen=3+PROFILE_NAME_LEN;
+	result.rspType=RSP_PROFILE;
 	return result;
 }
 

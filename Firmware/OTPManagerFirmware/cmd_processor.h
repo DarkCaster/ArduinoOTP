@@ -11,6 +11,8 @@
 #define RSP_INVALID 1_u8
 #define RSP_ERROR 2_u8
 #define RSP_PRCOUNT 3_u8
+#define RSP_PROFILE 4_u8
+
 #define CMD_SETTIME 1_u8
 #define CMD_GETPRCOUNT 2_u8
 #define CMD_GETPROFILE 3_u8
@@ -31,6 +33,7 @@ class CmdProcessor
 		ProfileManager &profileManager;
 		RspParams SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen);
 		RspParams GetProfilesCount(const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
+		RspParams GetProfile(const uint8_t * const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
 	public:
 		CmdProcessor(ClockHelperBase &clockHelper, ProfileManager &profileManager);
 		CmdProcessor(ClockHelperBase &&) = delete;
