@@ -31,20 +31,17 @@ CmdProcessor::CmdProcessor(ClockHelperBase &clockHelper, ProfileManager &profile
 
 RspParams CmdProcessor::ProcessCommand(const uint8_t cmdType, const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t* const rspData)
 {
-	//check cmdType
-	RspParams result;
 	switch (cmdType)
 	{
 		case CMD_SETTIME:
-			result=SetTime(cmdData,cmdLen);
+			return SetTime(cmdData,cmdLen);
 			break;
 		case CMD_GETPRCOUNT:
-			result=GetProfilesCount(cmdLen,rspData);
+			return GetProfilesCount(cmdLen,rspData);
 			break;
 		default:
 			return RspParams::Invalid();
 	}
-	return result;
 }
 
 RspParams CmdProcessor::GetProfilesCount(const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData)
