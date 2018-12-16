@@ -24,7 +24,7 @@ EEPROMSettingsManager::EEPROMSettingsManager(const int baseAddr, const int maxLe
 void EEPROMSettingsManager::Commit()
 {
 	//get pointer (and length) to the settings structure
-	const auto sLen=sizeof(Settings);
+	const uint16_t sLen=sizeof(Settings);
 	const uint8_t * const sPtr=reinterpret_cast<uint8_t*>(&settings);
 	//create EEPROMWriter
 	uint8_t tmpTweak[tweakSz];
@@ -38,7 +38,7 @@ void EEPROMSettingsManager::Commit()
 void EEPROMSettingsManager::Init()
 {
 	//get length of the settings structure, create temporary buffer
-	const auto sLen=sizeof(Settings);
+	const uint16_t sLen=sizeof(Settings);
 	uint8_t tmpBuff[sLen];
 	//create EEPROMReader
 	uint8_t tmpTweak[tweakSz];
@@ -52,7 +52,7 @@ void EEPROMSettingsManager::Init()
 		return;
 	  //FAIL(100,5000); //for debug purposes
 	//if checksum is OK - save data to the settings struct
-	uint8_t * const sPtr=reinterpret_cast<uint8_t*>(&settings);
+	auto * const sPtr=reinterpret_cast<uint8_t*>(&settings);
 	memcpy(sPtr,tmpBuff,sLen);
 }
 
