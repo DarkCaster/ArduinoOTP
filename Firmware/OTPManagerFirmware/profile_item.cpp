@@ -3,9 +3,9 @@
 ProfileItem * ProfileItem::Next() { return nextItem; }
 
 ProfileItem::ProfileItem(Profile &profile, uint16_t index, ProfileItem *nextItem) :
-  nextItem(nextItem),
   index(index),
-  profile(profile)
+  profile(profile),
+  nextItem(nextItem)
 {}
 
 void ProfileItem::Set(Profile &profile, uint16_t index)
