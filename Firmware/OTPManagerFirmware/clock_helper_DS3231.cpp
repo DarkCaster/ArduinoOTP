@@ -112,9 +112,9 @@ bool ClockHelperDS3231::SetTime(const uint8_t &sec, const uint8_t &min, const ui
 	target.Month=month;
 	if(year<YEAR_START || year>YEAR_START+199)
 		return false;
-	uint8_t yearCorr=static_cast<uint8_t>(year-YEAR_START);
+	auto yearCorr=static_cast<uint8_t>(year-YEAR_START);
 	target.Year=yearCorr;
-	if(!clock.write(target))
+	if(clock.write(target) == 0u)
 		return false;
 	//save utcOffset to eeprom;
 	settingsManager.settings.utcOffset=utcOffset;

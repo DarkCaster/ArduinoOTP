@@ -6,6 +6,7 @@
 
 class ClockHelper : LowPowerDevice
 {
+	//NOTE: no (virtual) destructor to save progmem (anyway it is not used)
 	public:
 		//TODO: getting time ticks for various OTP algorithms
 		virtual void WriteTimeString(char * const target, const uint8_t maxLen) = 0;
