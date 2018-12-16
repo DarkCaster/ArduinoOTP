@@ -5,11 +5,11 @@
 
 class WatchdogBase
 {
-  public:
-    virtual void SetDelay(uint16_t maxDelayMS) = 0;
-    virtual void Enable() = 0;
-    virtual void Disable() = 0;
-    virtual void Ping() = 0;
+	public:
+		virtual void SetDelay(uint16_t maxDelayMS) = 0;
+		virtual void Enable() = 0;
+		virtual void Disable() = 0;
+		virtual void Ping() = 0;
 };
 
 #endif
