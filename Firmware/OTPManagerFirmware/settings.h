@@ -7,8 +7,8 @@
 #pragma pack(push, settings, 1)
 struct Settings
 {
-	int32_t utcOffset;
-	uint8_t  encTweak[ENCRYPTION_TWEAK_LEN];
+		int32_t utcOffset;
+		uint8_t  encTweak[ENCRYPTION_TWEAK_LEN];
 };
 #pragma pack(pop, settings)
 
