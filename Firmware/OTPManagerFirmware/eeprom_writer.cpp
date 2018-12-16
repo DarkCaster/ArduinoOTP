@@ -38,24 +38,25 @@ bool EEPROMWriter::WriteNextBlock(const uint8_t* const data)
 	return true;
 }
 
-bool EEPROMWriter::WriteData(const uint8_t* const data, const size_t dLen)
+bool EEPROMWriter::WriteData(const uint8_t* const data, const uint16_t dLen)
 {
-	if(!dLen)
+	if(dLen==0)
 		  return true;
 	//calculate how much blocks we need to write
-	auto bsz=cipher.GetBlockSize();
-	auto fullBlocks = (dLen+CRC_SZ) / bsz;
-	auto remainingBytes = (dLen+CRC_SZ) % bsz;
+	const uint8_t bsz=cipher.GetBlockSize();
+	uint16_t fullBlocks = (dLen+CRC_SZ) / bsz;
+	const uint16_t remainingBytes = (dLen+CRC_SZ) % bsz;
 	//fillup last block and write checksum
 	uint8_t lastBlock[bsz];
-	if(!remainingBytes)
+	if(remainingBytes == 0)
 	{
 		fullBlocks--;
 		memcpy(lastBlock, data+fullBlocks*bsz, bsz-CRC_SZ);
 	}
 	else
 	{
-		memset(lastBlock, 0, bsz);
+		for(uint8_t b=0; b<bsz; ++b)
+			*(lastBlock+b)=0;
 		memcpy(lastBlock, data+fullBlocks*bsz, remainingBytes);
 	}
 #if CRC_SZ == 1
@@ -65,11 +66,8 @@ bool EEPROMWriter::WriteData(const uint8_t* const data, const size_t dLen)
 #error TODO
 #endif
 	//write settings block-by-block
-	auto blk=fullBlocks;
-	for(blk=0; blk<fullBlocks; ++blk)
+	for(uint16_t blk=0; blk<fullBlocks; ++blk)
 		if(!WriteNextBlock(data+blk*bsz))
 			return false;
-	if(!WriteNextBlock(lastBlock))
-		return false;
-	return true;
+	return WriteNextBlock(lastBlock);
 }
