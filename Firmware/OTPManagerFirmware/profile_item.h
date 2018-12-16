@@ -9,8 +9,8 @@ struct ProfileItem
 	private:
 		ProfileItem * nextItem;
 	public:
-		Profile profile;
 		uint16_t index;
+		Profile profile;
 		ProfileItem * Next();
 		void Set(Profile &profile, uint16_t index);
 		ProfileItem() = default;
