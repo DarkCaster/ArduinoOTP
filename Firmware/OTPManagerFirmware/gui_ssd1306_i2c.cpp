@@ -61,7 +61,7 @@ static void DrawCaption(const char * caption, LCGRandom &rnd)
 	u8g2.setFont(MENU_MAIN_FONT);
 	do {
 		u8g2.drawStr(xPos,yPos,caption);
-	} while ( u8g2.nextPage() );
+	} while ( u8g2.nextPage()!=0 );
 }
 
 static void DrawCaption(const __FlashStringHelper* fCaption, LCGRandom &rnd)
@@ -111,7 +111,7 @@ void GuiSSD1306_I2C::DrawProfileMenu()
 			u8g2.drawStr(16,MENU_CAPTION_HEIGHT*curPos,item->profile.name);
 			item=item->Next();
 		}
-	} while ( u8g2.nextPage() );
+	} while ( u8g2.nextPage()!=0 );
 }
 
 void GuiSSD1306_I2C::MenuReset()
@@ -251,7 +251,7 @@ void GuiSSD1306_I2C::ResetToMainScr()
 		u8g2.drawStr(dateXPos,dateYPos,dateString);
 		u8g2.setFont(MAIN_SCREEN_TIME_FONT);
 		u8g2.drawStr(timeXPos,timeYPos,timeString);
-	} while ( u8g2.nextPage() );
+	} while ( u8g2.nextPage()!=0 );
 	curItem=MenuItemType::MainScreen;
 }
 
