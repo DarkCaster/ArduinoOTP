@@ -17,7 +17,7 @@ class GuiSSD1306_I2C final : GuiBase
 		ClockHelperBase &clockHelper;
 		ProfileManager &profileManager;
 		LCGRandom rnd;
-		MenuItem curItem;
+		MenuItemType curItem;
 		uint8_t menuPos;
 		ProfilesRingBuffer<PROFILES_MENU_ITEMS_COUNT> prBuffer;
 		void MenuReset();
@@ -32,7 +32,7 @@ class GuiSSD1306_I2C final : GuiBase
 		void DescendPost() final;
 		void WakeupPost() final;
 
-		MenuItem GetCurItem() final;
+		MenuItemType GetCurItem() final;
 		void ResetToMainScr() final;
 		void ShowCDScr() final;
 		void ShowCEScr() final;

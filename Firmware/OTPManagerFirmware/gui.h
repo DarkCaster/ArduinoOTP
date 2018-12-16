@@ -7,27 +7,13 @@
 enum class MenuItemType : uint8_t
 {
 	MainScreen,
-	//MainMenu,
 	ProfileMenu,
 	ProfileItem,
-	//SettingsMenu,
-	//SettingsItem,
-};
-
-struct MenuItem
-{
-		MenuItem(const MenuItemType itemType, const int16_t itemIndex)
-		{
-			this->itemType=itemType;
-			this->itemIndex=itemIndex;
-		}
-		MenuItemType itemType;
-		uint16_t itemIndex;
 };
 
 class GuiBase : LowPowerDevice
 {
-		virtual MenuItem GetCurItem() = 0;
+		virtual MenuItemType GetCurItem() = 0;
 		virtual void ResetToMainScr() = 0;
 		virtual void ShowCDScr() = 0;
 		virtual void ShowCEScr() = 0;

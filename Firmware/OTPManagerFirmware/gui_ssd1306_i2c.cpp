@@ -10,7 +10,7 @@ GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, Clo
   clockHelper(clockHelper),
   profileManager(profileManager),
   rnd(0),
-  curItem(MenuItemType::MainScreen,0),
+  curItem(MenuItemType::MainScreen),
   menuPos(0)
 { }
 
@@ -19,7 +19,7 @@ void GuiSSD1306_I2C::InitPre()
 	//power-on
 	pinMode(displayPowerPin, OUTPUT);
 	digitalWrite(displayPowerPin, HIGH);
-	curItem=MenuItem(MenuItemType::MainScreen,0);
+	curItem=MenuItemType::MainScreen;
 }
 
 void GuiSSD1306_I2C::InitPost()
@@ -48,7 +48,7 @@ void GuiSSD1306_I2C::WakeupPost()
 	u8g2.begin();
 }
 
-MenuItem GuiSSD1306_I2C::GetCurItem()
+MenuItemType GuiSSD1306_I2C::GetCurItem()
 {
 	return curItem;
 }
@@ -135,7 +135,7 @@ void GuiSSD1306_I2C::MenuReset()
 			break;
 	}
 	//set cutItem for external queries
-	curItem=MenuItem(MenuItemType::ProfileMenu,prBuffer.GetHead()->index);
+	curItem=MenuItemType::ProfileMenu;
 }
 
 void GuiSSD1306_I2C::Reseed()
@@ -145,7 +145,7 @@ void GuiSSD1306_I2C::Reseed()
 
 void GuiSSD1306_I2C::MenuNext()
 {
-	if(curItem.itemType==MenuItemType::MainScreen)
+	if(curItem==MenuItemType::MainScreen)
 	{
 		MenuReset();
 		//if prBuffer is empty, goto main menu
@@ -158,7 +158,7 @@ void GuiSSD1306_I2C::MenuNext()
 		return;
 	}
 
-	if(curItem.itemType==MenuItemType::ProfileMenu)
+	if(curItem==MenuItemType::ProfileMenu)
 	{
 		//increase menuPos
 		++menuPos;
@@ -206,15 +206,15 @@ void GuiSSD1306_I2C::MenuNext()
 			}
 		}
 		//set curItem
-		curItem=MenuItem(MenuItemType::ProfileMenu,bItem->index);
+		curItem=MenuItemType::ProfileMenu;
 		DrawProfileMenu();
 		return;
 	}
 
-	if(curItem.itemType==MenuItemType::ProfileItem)
+	if(curItem==MenuItemType::ProfileItem)
 	{
 		//go back to ProfileMenu
-		curItem=MenuItem(MenuItemType::ProfileMenu,curItem.itemIndex);
+		curItem=MenuItemType::ProfileMenu;
 		DrawProfileMenu();
 		return;
 	}
@@ -222,12 +222,13 @@ void GuiSSD1306_I2C::MenuNext()
 
 void GuiSSD1306_I2C::MenuSelect()
 {
-	if(curItem.itemType==MenuItemType::MainScreen)
+	if(curItem==MenuItemType::MainScreen)
 		return;	//do nothing
 
-	if(curItem.itemType==MenuItemType::ProfileMenu || curItem.itemType==MenuItemType::ProfileItem)
+	if(curItem==MenuItemType::ProfileMenu || curItem==MenuItemType::ProfileItem)
 	{
-		//TODO: select current item, generate and display code
+		//TODO: get profile index from prBuffer, using menuPos
+		//TODO: generate and display code
 		return;
 	}
 
@@ -251,7 +252,7 @@ void GuiSSD1306_I2C::ResetToMainScr()
 		u8g2.setFont(MAIN_SCREEN_TIME_FONT);
 		u8g2.drawStr(timeXPos,timeYPos,timeString);
 	} while ( u8g2.nextPage() );
-	curItem=MenuItem(MenuItemType::MainScreen,0);
+	curItem=MenuItemType::MainScreen;
 }
 
 

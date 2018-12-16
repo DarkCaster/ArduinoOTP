@@ -334,8 +334,8 @@ void loop()
 		return;
 	}
 
-	if((timeDiff>DEFAULT_IDLE_TIMEOUT && gui.GetCurItem().itemType==MenuItemType::MainScreen) ||
-	   (timeDiff>DEFAULT_CODE_TIMEOUT && gui.GetCurItem().itemType==MenuItemType::ProfileItem))
+	if((timeDiff>DEFAULT_IDLE_TIMEOUT && gui.GetCurItem()==MenuItemType::MainScreen) ||
+	   (timeDiff>DEFAULT_CODE_TIMEOUT && gui.GetCurItem()==MenuItemType::ProfileItem))
 	{
 		//activate powersave mode
 		descend();
@@ -347,7 +347,7 @@ void loop()
 		return;
 	}
 
-	if(timeDiff>DEFAULT_MENU_TIMEOUT && gui.GetCurItem().itemType==MenuItemType::ProfileMenu)
+	if(timeDiff>DEFAULT_MENU_TIMEOUT && gui.GetCurItem()==MenuItemType::ProfileMenu)
 	{
 		gui.ResetToMainScr();
 		//reset last-time
