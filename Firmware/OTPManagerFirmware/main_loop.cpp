@@ -23,19 +23,19 @@
 //If SERIAL_RX_PIN defined, define macro to enable pullup on serial rx-pin
 //We need this in order to prevent false incoming connection events when device enabled and not connected to PC
 #ifdef SERIAL_RX_PIN
-#define RX_PIN_PREP() ({pinMode(SERIAL_RX_PIN,INPUT_PULLUP);})
+#define RX_PIN_PREP() (__extension__({pinMode(SERIAL_RX_PIN,INPUT_PULLUP);}))
 #else
-#define RX_PIN_PREP() ({})
+#define RX_PIN_PREP() (__extension__({}))
 #endif
 
 #ifdef LED_SYNC
-#define SYNC_OK() ({digitalWrite(LED_SYNC, HIGH);})
-#define SYNC_ERR() ({digitalWrite(LED_SYNC, LOW);})
-#define SYNC_LED_PREP() ({pinMode(LED_SYNC, OUTPUT);})
+#define SYNC_OK() (__extension__({digitalWrite(LED_SYNC, HIGH);}))
+#define SYNC_ERR() (__extension__({digitalWrite(LED_SYNC, LOW);}))
+#define SYNC_LED_PREP() (__extension__({pinMode(LED_SYNC, OUTPUT);}))
 #else
-#define SYNC_OK() ({})
-#define SYNC_ERR() ({})
-#define SYNC_LED_PREP() ({})
+#define SYNC_OK() (__extension__({}))
+#define SYNC_ERR() (__extension__({}))
+#define SYNC_LED_PREP() (__extension__({}))
 #endif
 
 //create main logic blocks and perform "poor man's" dependency injection
@@ -118,7 +118,7 @@ void resync()
 	}
 }
 
-void conn_loop()
+[[noreturn]] void conn_loop()
 {
 	LOG(F("Entering connection handling loop"));
 	//activate watchdog for handling connection-loss and stalled resync
