@@ -18,9 +18,9 @@ static Request RequestInvalid()
 {
 	Request result; //{}; //full struct init is omited to save some progmem
 	result.reqType=ReqType::Invalid;
+	result.seq=0;
 	return result;
 }
-//#define RequestInvalid RequestCreate(ReqType::Invalid,0,nullptr,0)
 
 CommHelper::CommHelper(Stream &port) : serial(port) { }
 
@@ -39,7 +39,7 @@ Request CommHelper::ReceiveRequest()
 	//message buffer
 	uint8_t recvBuff[CMD_BUFF_SIZE];
 	//read header
-	while(serial.available()<=0){}
+	while(!DataAvailable()){}
 	serial.readBytes(recvBuff,1);
 	//verify header
 	auto remSz = static_cast<uint8_t>(*recvBuff & CMD_SIZE_MASK);
