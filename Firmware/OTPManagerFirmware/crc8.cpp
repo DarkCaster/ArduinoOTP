@@ -37,9 +37,9 @@ static const PROGMEM uint8_t Crc8Table[256] = {
 
 uint8_t CRC8(const uint8_t *source, size_t len)
 {
-  uint8_t crc = 0xFF;
-  while (len--)
-    crc = pgm_read_byte(Crc8Table + (crc ^ *source++));
-  return crc;
+	uint8_t crc = 0xFF;
+	while (len--)
+		crc = pgm_read_byte(Crc8Table + (crc ^ *source++));
+	return crc;
 }
 
