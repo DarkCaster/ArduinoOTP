@@ -109,7 +109,6 @@ void GuiSSD1306_I2C::DrawProfileMenu()
 			if(curPos==menuPos)
 				u8g2.drawStr(0,MENU_CAPTION_HEIGHT*curPos,">");
 			u8g2.drawStr(16,MENU_CAPTION_HEIGHT*curPos,item->profile.name);
-			++curPos;
 			item=item->Next();
 		}
 	} while ( u8g2.nextPage() );
