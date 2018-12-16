@@ -1,6 +1,6 @@
+#include <EEPROM.h>
 #include "eeprom_writer.h"
 #include "debug.h"
-#include "EEPROM.h"
 #include "crc8.h"
 
 #define CRC_SZ 1

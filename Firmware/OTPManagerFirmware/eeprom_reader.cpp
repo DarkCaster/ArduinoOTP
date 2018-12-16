@@ -1,5 +1,5 @@
+#include <EEPROM.h>
 #include "eeprom_reader.h"
-#include "EEPROM.h"
 #include "debug.h"
 #include "crc8.h"
 
