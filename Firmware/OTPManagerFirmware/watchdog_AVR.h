@@ -6,14 +6,14 @@
 
 class WatchdogAVR final : WatchdogBase
 {
-  private:
-    uint8_t delay=0;
-  public:
-    WatchdogAVR(uint16_t defaultDelayMS=2000);
-    void SetDelay(uint16_t maxDelayMS);
-    void Enable() final;
-    void Disable() final;
-    void Ping() final;
+	private:
+		uint8_t delay=0;
+	public:
+		WatchdogAVR(uint16_t defaultDelayMS=2000);
+		void SetDelay(uint16_t maxDelayMS);
+		void Enable() final;
+		void Disable() final;
+		void Ping() final;
 };
 
 #endif
