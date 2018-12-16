@@ -96,6 +96,9 @@ bool EEPROMProfileManager::WriteProfile(uint16_t index, const Profile& profile, 
 	PrepareTmpTweak(index,UINT16_MAX,tmpTweak,tweak,tweakSz);
 	EEPROMWriter dataWriter(static_cast<int>(profileDataAddr),static_cast<int>(profileFullSz-profileHdrSz),cipher,key,tmpTweak);
 	if(!dataWriter.WriteData(data,PROFILE_PAYLOAD_LEN))
+	{
 		FAIL(1000,5000);
+		return false;
+	}
 	return true;
 }
