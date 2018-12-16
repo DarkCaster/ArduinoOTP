@@ -128,14 +128,14 @@ void resync()
 	{
 		//read request
 		auto request=commHelper.ReceiveRequest();
-		uint8_t result=1;
+		bool result=true;
 		//ping watchdog
 		watchdog.Ping();
 		//disable watchdog while performing requested action
 		watchdog.Disable();
 		//check sequence number
 		if(request.seq!=reqLCG.GenerateValue())
-			result=0;
+			result=false;
 		else
 			switch (request.reqType)
 			{
@@ -191,7 +191,7 @@ void resync()
 					}
 					break;
 				default:
-					result=0; // we will run resync
+					result=false; // we will run resync
 					break;
 			}
 		//reenable watchdog

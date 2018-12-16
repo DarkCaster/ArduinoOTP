@@ -79,10 +79,10 @@ class CommHelper
 	public:
 		CommHelper(Stream &port);
 		CommHelper(Stream &&) = delete;
-		uint8_t DataAvailable();
+		bool DataAvailable();
 		void FlushInput();
 		Request ReceiveRequest();
-		uint8_t SendAnswer(const AnsType answer, const uint32_t seq, const uint8_t* const payload, uint8_t plLen);
+		bool SendAnswer(const AnsType answer, const uint32_t seq, const uint8_t* const payload, uint8_t plLen);
 };
 
 #endif

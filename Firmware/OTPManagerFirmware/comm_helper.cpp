@@ -34,9 +34,9 @@ Request Request::Invalid(const uint8_t plLen)
 
 CommHelper::CommHelper(Stream &port) : serial(port) { }
 
-uint8_t CommHelper::DataAvailable()
+bool CommHelper::DataAvailable()
 {
-	return serial.available()?1:0;
+	return serial.available()>0;
 }
 
 void CommHelper::FlushInput()
@@ -115,10 +115,10 @@ Request CommHelper::ReceiveRequest()
 }
 
 
-uint8_t CommHelper::SendAnswer(const AnsType answer, const uint32_t seq, const uint8_t* const payload, uint8_t plLen)
+bool CommHelper::SendAnswer(const AnsType answer, const uint32_t seq, const uint8_t* const payload, uint8_t plLen)
 {
 	if(plLen>CMD_MAX_PLSZ)
-		return 0;
+		return false;
 	//message buffer
 	uint8_t cmdBuff[CMD_BUFF_SIZE];
 	uint8_t* plPtr=cmdBuff+CMD_HDR_SIZE;
@@ -154,5 +154,5 @@ uint8_t CommHelper::SendAnswer(const AnsType answer, const uint32_t seq, const u
 	auto finalLen=static_cast<uint8_t>(testLen+CMD_CRC_SIZE);
 	for(uint8_t i=0; i<finalLen; ++i)
 		while(serial.write(*(cmdBuff+i))<1);
-	return 1;
+	return true;
 }
