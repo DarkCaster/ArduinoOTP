@@ -15,10 +15,10 @@ enum class ProfileType : uint8_t
 
 struct Profile
 {
-	ProfileType type;
-	char name[PROFILE_NAME_LEN];
-	static Profile Invalid();
-	static Profile Empty();
+		ProfileType type;
+		char name[PROFILE_NAME_LEN];
+		static Profile Invalid();
+		static Profile Empty();
 };
 #pragma pack(pop, profile)
 
