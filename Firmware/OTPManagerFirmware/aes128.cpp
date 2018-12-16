@@ -17,7 +17,7 @@ void AES128::MixIV(uint8_t* const inputBlock, const uint8_t* const iv)
 #endif
 	//NOTE: check for BLKSZ and IVSZ sizes when porting to use of another algo
 	for (uint8_t i = 0; i < IVSZ; ++i)
-		 *(inputBlock+i) ^= *(iv+i);
+		*(inputBlock+i) ^= *(iv+i);
 }
 
 void AES128::EncryptBlock(const uint8_t* const inputBlock, uint8_t* const outputBlock, const uint8_t* const key, const uint8_t* const tweak)
