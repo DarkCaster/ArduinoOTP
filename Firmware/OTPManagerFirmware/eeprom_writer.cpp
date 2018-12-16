@@ -5,7 +5,7 @@
 
 #define CRC_SZ 1
 
-EEPROMWriter::EEPROMWriter(const int baseAddr, const int maxLen, CipherBase& cipher, const uint8_t* const encKey, uint8_t* const tweak) :
+EEPROMWriter::EEPROMWriter(const int baseAddr, const int maxLen, Cipher& cipher, const uint8_t* const encKey, uint8_t* const tweak) :
   curAddr(baseAddr),
   limit(baseAddr+maxLen),
   cipher(cipher),

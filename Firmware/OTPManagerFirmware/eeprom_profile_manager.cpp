@@ -5,7 +5,7 @@
 #include "configuration.h"
 #include "debug.h"
 
-EEPROMProfileManager::EEPROMProfileManager(const int baseAddr, const int maxLen, CipherBase &cipher, const uint8_t * const key, const uint8_t * const tweak, const size_t KSZ, const size_t TSZ) :
+EEPROMProfileManager::EEPROMProfileManager(const int baseAddr, const int maxLen, Cipher &cipher, const uint8_t * const key, const uint8_t * const tweak, const size_t KSZ, const size_t TSZ) :
   key(key),
   tweak(tweak),
   keySz(cipher.GetKeySize()),

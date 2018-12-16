@@ -4,7 +4,7 @@
 #define CIPHER_H
 
 //NOTE: derived class should be immutable and threadsafe to support sharing it's instance between other objects
-class CipherBase
+class Cipher
 {
 	public:
 		virtual uint8_t GetKeySize() = 0;

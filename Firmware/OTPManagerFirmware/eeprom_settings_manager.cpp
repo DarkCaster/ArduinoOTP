@@ -6,7 +6,7 @@
 
 #define CRC_SZ 1
 
-EEPROMSettingsManager::EEPROMSettingsManager(const int baseAddr, const int maxLen, CipherBase& cipher, const uint8_t* const enc_key, const uint8_t* const enc_tweak, const size_t KSZ, const size_t TSZ) :
+EEPROMSettingsManager::EEPROMSettingsManager(const int baseAddr, const int maxLen, Cipher& cipher, const uint8_t* const enc_key, const uint8_t* const enc_tweak, const size_t KSZ, const size_t TSZ) :
   key(enc_key),
   tweak(enc_tweak),
   keySz(cipher.GetKeySize()),

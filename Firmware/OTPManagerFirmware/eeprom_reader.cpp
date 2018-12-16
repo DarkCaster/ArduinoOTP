@@ -14,7 +14,7 @@ uint16_t EEPROMReader::CalculateTotalBlocksCount(const uint16_t sourceDataLen, c
 	return fullBlocks;
 }
 
-EEPROMReader::EEPROMReader(const int baseAddr, const int maxLen, CipherBase& cipher, const uint8_t* const encKey, uint8_t* const tweak) :
+EEPROMReader::EEPROMReader(const int baseAddr, const int maxLen, Cipher& cipher, const uint8_t* const encKey, uint8_t* const tweak) :
   curAddr(baseAddr),
   limit(baseAddr+maxLen),
   cipher(cipher),

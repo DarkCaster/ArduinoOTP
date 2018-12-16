@@ -5,7 +5,7 @@
 #include <aes.h>
 #include "cipher.h"
 
-class AES128 final : public CipherBase
+class AES128 final : public Cipher
 {
 	private:
 		static void MixIV(uint8_t * const inputBlock, const uint8_t * const iv);
