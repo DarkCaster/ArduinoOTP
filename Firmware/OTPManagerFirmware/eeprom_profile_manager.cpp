@@ -91,7 +91,10 @@ bool EEPROMProfileManager::WriteProfile(uint16_t index, const Profile& profile, 
 	PrepareTmpTweak(index,0,tmpTweak,tweak,tweakSz);
 	EEPROMWriter writer(static_cast<int>(profileAddr),static_cast<int>(profileHdrSz),cipher,key,tmpTweak);
 	if(!writer.WriteData(reinterpret_cast<const uint8_t*>(&profile),sizeof(Profile)))
+	{
 		FAIL(1000,5000);
+		return false;
+	}
 	//create EEPROMWriter
 	PrepareTmpTweak(index,UINT16_MAX,tmpTweak,tweak,tweakSz);
 	EEPROMWriter dataWriter(static_cast<int>(profileDataAddr),static_cast<int>(profileFullSz-profileHdrSz),cipher,key,tmpTweak);
