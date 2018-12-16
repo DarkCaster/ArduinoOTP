@@ -9,7 +9,7 @@
 #include "profiles_ring_buffer.h"
 #include "configuration.h"
 
-class GuiSSD1306_I2C final : GuiBase
+class GuiSSD1306_I2C final : Gui
 {
 	private:
 		const uint8_t displayPowerPin;

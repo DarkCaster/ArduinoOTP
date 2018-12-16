@@ -11,7 +11,7 @@ enum class MenuItemType : uint8_t
 	ProfileItem,
 };
 
-class GuiBase : LowPowerDevice
+class Gui : LowPowerDevice
 {
 		virtual MenuItemType GetCurItem() = 0;
 		virtual void ResetToMainScr() = 0;
