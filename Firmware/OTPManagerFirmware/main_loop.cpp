@@ -260,15 +260,20 @@ void setup()
 	gui.InitPost();
 	clockHelper.InitPost();
 	gui.Reseed();
-	//install button interrupts
-	attachInterrupt(digitalPinToInterrupt(BUTTON_NEXT_PIN),next_button_handler, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(BUTTON_SELECT_PIN),select_button_handler, CHANGE);
 	if(commHelper.DataAvailable())
 	{
 		conn_loop();
-		watchdog.Disable();
-		buttonPressed=false;
+		//TODO: enable if conn_loop is not [[noreturn]]
+		//watchdog.Disable();
+		//buttonPressed=false;
 	}
+	//install button interrupts
+	auto interrupt=digitalPinToInterrupt(BUTTON_NEXT_PIN);
+	if(interrupt!=NOT_AN_INTERRUPT)
+		attachInterrupt(static_cast<uint8_t>(interrupt),next_button_handler, CHANGE);
+	interrupt=digitalPinToInterrupt(BUTTON_SELECT_PIN);
+	if(interrupt!=NOT_AN_INTERRUPT)
+		attachInterrupt(static_cast<uint8_t>(interrupt),select_button_handler, CHANGE);
 	//update current-time
 	gui.ResetToMainScr();
 	//reset last-time
@@ -283,9 +288,10 @@ void loop()
 	if(commHelper.DataAvailable())
 	{
 		conn_loop();
-		watchdog.Disable();
-		buttonPressed=false;
-		gui.ResetToMainScr();
+		//TODO: enable if conn_loop is not [[noreturn]]
+		//watchdog.Disable();
+		//buttonPressed=false;
+		//gui.ResetToMainScr();
 	}
 
 	//read current time
@@ -302,15 +308,15 @@ void loop()
 	uint8_t button=0;
 	if(buttonPressed)
 	{
-		if(digitalRead(BUTTON_NEXT_PIN))
+		if(digitalRead(BUTTON_NEXT_PIN) == HIGH)
 			button=2;
-		else if(digitalRead(BUTTON_SELECT_PIN))
+		else if(digitalRead(BUTTON_SELECT_PIN) == HIGH)
 			button=1;
 		else
 			lastTime=millis();
 		buttonPressed=false;
 	}
-	else if(digitalRead(BUTTON_NEXT_PIN) || digitalRead(BUTTON_SELECT_PIN))
+	else if(digitalRead(BUTTON_NEXT_PIN) == HIGH || digitalRead(BUTTON_SELECT_PIN) == HIGH)
 		lastTime=millis();
 
 	//detect button event, perform action
