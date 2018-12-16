@@ -66,8 +66,17 @@ static void DrawCaption(const char * caption, LCGRandom &rnd)
 
 static void DrawCaption(const __FlashStringHelper* fCaption, LCGRandom &rnd)
 {
-	char caption[strlen_P(reinterpret_cast<const char*>(fCaption))];
-	strcpy_P(caption,reinterpret_cast<const char*>(fCaption));
+	//instead of using fat strlen_P+strcpy_P or strncpy_P use this simplified code
+	//saves 72 bytes of progmem if not using strlen_P and strcpy_P methods anywhere else
+	char caption[CAPTION_MAX_LEN+1];
+	caption[CAPTION_MAX_LEN]='\0';
+	for(uint16_t pos=0; pos<CAPTION_MAX_LEN; ++pos)
+	{
+		char testChar=pgm_read_byte(reinterpret_cast<const char*>(fCaption)+pos);
+		*(caption+pos)=testChar;
+		if(testChar=='\0')
+			break;
+	}
 	DrawCaption(caption,rnd);
 }
 
