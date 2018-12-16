@@ -55,13 +55,11 @@ Profile EEPROMProfileManager::ReadProfileHeader(uint16_t index)
 	PrepareTmpTweak(index,0,tmpTweak,tweak,tweakSz);
 	EEPROMReader reader(static_cast<int>(profileAddr),static_cast<int>(profileHdrSz),cipher,key,tmpTweak);
 	//profile struct
-	Profile result;
+	Profile result; //should not be initialized, will be filled-up with following ReadData method-call
 	auto ec = reader.ReadData(reinterpret_cast<uint8_t*>(&result),sizeof(Profile));
 	if(ec<0)
 		FAIL(500,5000);
-	if(ec==0)
-		return Profile::Invalid();
-	return result;
+	return ec > 0 ? result : Profile::Invalid();
 }
 
 bool EEPROMProfileManager::ReadProfileData(uint16_t index, uint8_t* const data)
@@ -78,9 +76,7 @@ bool EEPROMProfileManager::ReadProfileData(uint16_t index, uint8_t* const data)
 	auto ec = reader.ReadData(data,PROFILE_PAYLOAD_LEN);
 	if(ec<0)
 		FAIL(500,5000);
-	if(ec==0)
-		return false;
-	return true;
+	return ec > 0;
 }
 
 bool EEPROMProfileManager::WriteProfile(uint16_t index, const Profile& profile, const uint8_t* const data)
