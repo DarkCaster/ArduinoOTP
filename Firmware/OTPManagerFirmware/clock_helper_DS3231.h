@@ -6,7 +6,7 @@
 #include "clock_helper.h"
 #include "settings_manager.h"
 
-class ClockHelperDS3231 final : public ClockHelperBase
+class ClockHelperDS3231 final : public ClockHelper
 {
 	private:
 		const uint8_t rtcPowerPin;

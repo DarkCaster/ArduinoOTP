@@ -29,14 +29,14 @@ struct RspParams
 class CmdProcessor
 {
 	private:
-		ClockHelperBase &clockHelper;
+		ClockHelper &clockHelper;
 		ProfileManager &profileManager;
 		RspParams SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen);
 		RspParams GetProfilesCount(const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
 		RspParams GetProfile(const uint8_t * const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
 	public:
-		CmdProcessor(ClockHelperBase &clockHelper, ProfileManager &profileManager);
-		CmdProcessor(ClockHelperBase &&) = delete;
+		CmdProcessor(ClockHelper &clockHelper, ProfileManager &profileManager);
+		CmdProcessor(ClockHelper &&) = delete;
 		RspParams ProcessCommand(const uint8_t cmdType, const uint8_t * const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
 };
 

@@ -24,7 +24,7 @@ RspParams RspParams::Error(const CMDRSP_BUFF_TYPE rspLen)
 	return result;
 }
 
-CmdProcessor::CmdProcessor(ClockHelperBase &clockHelper, ProfileManager &profileManager) :
+CmdProcessor::CmdProcessor(ClockHelper &clockHelper, ProfileManager &profileManager) :
   clockHelper(clockHelper),
   profileManager(profileManager)
 { }

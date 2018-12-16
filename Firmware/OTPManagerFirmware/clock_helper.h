@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "low_power_device.h"
 
-class ClockHelperBase : LowPowerDevice
+class ClockHelper : LowPowerDevice
 {
 	public:
 		//TODO: getting time ticks for various OTP algorithms
