@@ -3,34 +3,24 @@
 
 #define LOG(...) ({})
 
-Request::Request()
+static Request RequestCreate(const ReqType req, const uint32_t seq, const uint8_t* const payload, const uint8_t plLen)
 {
-	plLen=0;
-}
-
-Request::Request(const uint8_t req, const uint32_t seq, const uint8_t* const payload, const uint8_t plLen)
-{
-	this->reqType=static_cast<ReqType>(req);
-	this->seq=seq;
-	this->plLen=plLen;
+	Request result; //{}; //full struct init is omited to save some progmem
+	result.reqType=req;
+	result.seq=seq;
+	result.plLen=plLen;
 	for(uint8_t i=0;i<plLen;++i)
-		*(this->payload+i)=*(payload+i);
+		*(result.payload+i)=*(payload+i);
+	return result;
 }
 
-Request Request::Invalid()
+static Request RequestInvalid()
 {
-	Request request;
-	request.reqType=ReqType::Invalid;
-	return request;
+	Request result; //{}; //full struct init is omited to save some progmem
+	result.reqType=ReqType::Invalid;
+	return result;
 }
-
-Request Request::Invalid(const uint8_t plLen)
-{
-	Request request;
-	request.reqType=ReqType::Invalid;
-	request.plLen=plLen;
-	return request;
-}
+//#define RequestInvalid RequestCreate(ReqType::Invalid,0,nullptr,0)
 
 CommHelper::CommHelper(Stream &port) : serial(port) { }
 
@@ -49,12 +39,12 @@ Request CommHelper::ReceiveRequest()
 	//message buffer
 	uint8_t recvBuff[CMD_BUFF_SIZE];
 	//read header
-	while(!serial.available()){}
+	while(serial.available()<=0){}
 	serial.readBytes(recvBuff,1);
 	//verify header
 	auto remSz = static_cast<uint8_t>(*recvBuff & CMD_SIZE_MASK);
 	if(remSz<CMD_MIN_REMSZ||remSz>CMD_MAX_REMSZ)
-		return Request::Invalid();
+		return RequestInvalid();
 	//calculate plSize
 	auto plSize=static_cast<uint8_t>(remSz-CMD_CRC_SIZE);
 	//check header against supported commands list to verify command validity
@@ -65,23 +55,23 @@ Request CommHelper::ReceiveRequest()
 		case REQ_PING:
 		case REQ_RESYNC_COMPLETE:
 			if(plSize != CMD_SEQ_SIZE)
-				return Request::Invalid();
+				return RequestInvalid();
 			break;
 		case REQ_COMMAND:
 		case REQ_DATA_REQUEST:
 			if(plSize != CMD_SEQ_SIZE+1)
-				return Request::Invalid();
+				return RequestInvalid();
 			break;
 		case REQ_RESYNC:
 			if(plSize != 0 && plSize != CMD_SEQ_SIZE+CMD_MAX_PLSZ)
-				return Request::Invalid();
+				return RequestInvalid();
 			break;
 		case REQ_COMMAND_DATA:
 			if(plSize < CMD_SEQ_SIZE)
-				return Request::Invalid();
+				return RequestInvalid();
 			break;
 		default:
-			return Request::Invalid();
+			return RequestInvalid();
 	}
 	//read message-body
 	auto startTime=millis();
@@ -90,12 +80,12 @@ Request CommHelper::ReceiveRequest()
 	{
 		rem-=static_cast<decltype(rem)>(serial.readBytes(recvBuff+CMD_HDR_SIZE+(remSz-rem),rem));
 		if(millis()-startTime>CMD_TIMEOUT)
-			return Request::Invalid();
+			return RequestInvalid();
 	}
 	//verify CRC
 	auto testSz=static_cast<uint8_t>(CMD_HDR_SIZE+remSz-1);
 	if(*(recvBuff+testSz)!=CRC8(recvBuff,testSz))
-		return Request::Invalid();
+		return RequestInvalid();
 	//decode sequence number
 	uint32_t seq=0;
 	uint8_t* pl=recvBuff+CMD_HDR_SIZE;
@@ -111,7 +101,7 @@ Request CommHelper::ReceiveRequest()
 	}
 	uint8_t* data=(dataSize>0)?pl+CMD_SEQ_SIZE:nullptr;
 	//create reqtest-object
-	return Request(req,seq,data,dataSize);
+	return RequestCreate(static_cast<ReqType>(req),seq,data,dataSize);
 }
 
 
