@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-class WatchdogBase
+class Watchdog
 {
 	public:
 		virtual void SetDelay(uint16_t maxDelayMS) = 0;

@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "watchdog.h"
 
-class WatchdogAVR final : WatchdogBase
+class WatchdogAVR final : Watchdog
 {
 	private:
 		uint8_t delay=0;
