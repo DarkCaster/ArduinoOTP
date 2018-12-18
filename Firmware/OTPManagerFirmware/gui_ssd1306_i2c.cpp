@@ -54,7 +54,7 @@ MenuItemType GuiSSD1306_I2C::GetCurItem()
 	return curItem;
 }
 
-static void DrawCaption(const char * caption, LCGRandom &rnd)
+void GuiSSD1306_I2C::DrawCaption(const char * caption)
 {
 	auto xPos=static_cast<uint8_t>(rnd.Next(CAPTION_MIN_POS_X, CAPTION_MAX_POS_X));
 	auto yPos=static_cast<uint8_t>(rnd.Next(CAPTION_MIN_POS_Y, CAPTION_MAX_POS_Y));
@@ -65,7 +65,7 @@ static void DrawCaption(const char * caption, LCGRandom &rnd)
 	} while ( u8g2.nextPage()!=0 );
 }
 
-static void DrawCaption(const __FlashStringHelper* fCaption, LCGRandom &rnd)
+void GuiSSD1306_I2C::DrawCaption(const __FlashStringHelper* fCaption)
 {
 	//instead of using fat strlen_P+strcpy_P or strncpy_P use this simplified code
 	//saves 72 bytes of progmem if not using strlen_P and strcpy_P methods anywhere else
@@ -78,22 +78,22 @@ static void DrawCaption(const __FlashStringHelper* fCaption, LCGRandom &rnd)
 		if(testChar=='\0')
 			break;
 	}
-	DrawCaption(caption,rnd);
+	DrawCaption(caption);
 }
 
 void GuiSSD1306_I2C::ShowCDScr()
 {
-	DrawCaption(F("<Resync>"), rnd);
+	DrawCaption(F("<Resync>"));
 }
 
 void GuiSSD1306_I2C::ShowCEScr()
 {
-	DrawCaption(F("<Connected>"), rnd);
+	DrawCaption(F("<Connected>"));
 }
 
 void GuiSSD1306_I2C::ShowCodeScr(const char * const code)
 {
-	DrawCaption(code, rnd);
+	DrawCaption(code);
 }
 
 void GuiSSD1306_I2C::DrawProfileMenu()
@@ -150,7 +150,7 @@ void GuiSSD1306_I2C::MenuNext()
 {
 	if(curItem==MenuItemType::MainScreen)
 	{
-		DrawCaption(F("<Loading>"),rnd);
+		DrawCaption(F("<Loading>"));
 		STATUS();
 		LOG(F("Menu init from MainScreen"));
 		MenuReset();

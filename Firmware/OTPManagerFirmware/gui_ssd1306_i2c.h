@@ -22,6 +22,8 @@ class GuiSSD1306_I2C final : Gui
 		ProfilesRingBuffer<PROFILES_MENU_ITEMS_COUNT> prBuffer;
 		void MenuReset();
 		void DrawProfileMenu();
+		void DrawCaption(const __FlashStringHelper* fCaption);
+		void DrawCaption(const char* caption);
 	public:
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelper &clockHelper, ProfileManager &profileManager);
 		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelper &&, ProfileManager &&) = delete;
