@@ -12,8 +12,8 @@ EEPROMProfileManager::EEPROMProfileManager(const int baseAddr, const int maxLen,
   tweakSz(cipher.GetTweakSize()),
   baseAddr(baseAddr),
   addrLimit(baseAddr+maxLen),
-  profileHdrSz(EEPROMReader::CalculateTotalBlocksCount(sizeof(Profile),cipher.GetBlockSize())),
-  profileFullSz(profileHdrSz+EEPROMReader::CalculateTotalBlocksCount(PROFILE_PAYLOAD_LEN,cipher.GetBlockSize())),
+  profileHdrSz(EEPROMReader::CalculateTotalBlocksCount(sizeof(Profile),cipher.GetBlockSize())*cipher.GetBlockSize()),
+  profileFullSz(profileHdrSz+EEPROMReader::CalculateTotalBlocksCount(PROFILE_PAYLOAD_LEN,cipher.GetBlockSize())*cipher.GetBlockSize()),
   cipher(cipher)
 {
 	if(keySz>KSZ)
