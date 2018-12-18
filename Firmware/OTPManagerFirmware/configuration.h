@@ -57,10 +57,10 @@
 #define MAIN_SCREEN_DOW {"nil","sun","mon","tue","wed","thu","fri","sat"}
 #define MAIN_SCREEN_DAY_LEN 4
 
-#define CAPTION_MIN_POS_X 16
-#define CAPTION_MAX_POS_X 32
-#define CAPTION_MIN_POS_Y 16
-#define CAPTION_MAX_POS_Y 32
+#define CAPTION_MIN_POS_X 8
+#define CAPTION_MAX_POS_X 16
+#define CAPTION_MIN_POS_Y 32
+#define CAPTION_MAX_POS_Y 48
 
 #define CAPTION_MAX_LEN 32
 
