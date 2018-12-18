@@ -1,6 +1,7 @@
 #include <U8g2lib.h>
 #include "configuration.h"
 #include "gui_ssd1306_i2c.h"
+#include "debug.h"
 
 static U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
@@ -136,6 +137,8 @@ void GuiSSD1306_I2C::MenuReset()
 	}
 	//set cutItem for external queries
 	curItem=MenuItemType::ProfileMenu;
+	STATUS();
+	LOG(F("MenuReset"));
 }
 
 void GuiSSD1306_I2C::Reseed()
@@ -147,6 +150,8 @@ void GuiSSD1306_I2C::MenuNext()
 {
 	if(curItem==MenuItemType::MainScreen)
 	{
+		STATUS();
+		LOG(F("Menu init from MainScreen"));
 		MenuReset();
 		//if prBuffer is empty, goto main menu
 		if(prBuffer.GetHead()->profile.type==ProfileType::Empty)
@@ -160,6 +165,8 @@ void GuiSSD1306_I2C::MenuNext()
 
 	if(curItem==MenuItemType::ProfileMenu)
 	{
+		STATUS();
+		LOG(F("Select next profile menu item"));
 		//increase menuPos
 		++menuPos;
 		if(menuPos==PROFILES_MENU_ITEMS_COUNT)
@@ -213,6 +220,8 @@ void GuiSSD1306_I2C::MenuNext()
 
 	if(curItem==MenuItemType::ProfileItem)
 	{
+		STATUS();
+		LOG(F("Go back to profile menu"));
 		//go back to ProfileMenu
 		curItem=MenuItemType::ProfileMenu;
 		DrawProfileMenu();
@@ -227,6 +236,8 @@ void GuiSSD1306_I2C::MenuSelect()
 
 	if(curItem==MenuItemType::ProfileMenu || curItem==MenuItemType::ProfileItem)
 	{
+		STATUS();
+		LOG(F("Selecting profile item"));
 		//TODO: get profile index from prBuffer, using menuPos
 		//TODO: generate and display code
 		return;
@@ -253,6 +264,8 @@ void GuiSSD1306_I2C::ResetToMainScr()
 		u8g2.drawStr(timeXPos,timeYPos,timeString);
 	} while ( u8g2.nextPage()!=0 );
 	curItem=MenuItemType::MainScreen;
+	STATUS();
+	LOG(F("ResetToMainScr"));
 }
 
 
