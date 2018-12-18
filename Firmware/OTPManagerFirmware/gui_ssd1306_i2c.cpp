@@ -83,12 +83,12 @@ static void DrawCaption(const __FlashStringHelper* fCaption, LCGRandom &rnd)
 
 void GuiSSD1306_I2C::ShowCDScr()
 {
-	DrawCaption(F("< Resync >"), rnd);
+	DrawCaption(F("<Resync>"), rnd);
 }
 
 void GuiSSD1306_I2C::ShowCEScr()
 {
-	DrawCaption(F("< Connected >"), rnd);
+	DrawCaption(F("<Connected>"), rnd);
 }
 
 void GuiSSD1306_I2C::ShowCodeScr(const char * const code)
@@ -150,6 +150,7 @@ void GuiSSD1306_I2C::MenuNext()
 {
 	if(curItem==MenuItemType::MainScreen)
 	{
+		DrawCaption(F("<Loading>"),rnd);
 		STATUS();
 		LOG(F("Menu init from MainScreen"));
 		MenuReset();
