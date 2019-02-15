@@ -4,6 +4,8 @@
 #include "configuration.h"
 #include "main_loop.h"
 #include "comm_helper.h"
+#include "codegen_manager.h"
+#include "totp_codegen_manager.h"
 #include "cmd_processor.h"
 #include "lcgen.h"
 #include "watchdog.h"
@@ -49,7 +51,9 @@ static EEPROMSettingsManager settingsManager(EEPROM_SETTINGS_ADDR, EEPROM_SETTIN
 static EEPROMProfileManager profileManager(EEPROM_PROFILE_STORAGE_ADDR, EEPROM_PROFILE_STORAGE_LEN, cipher, encKey, encTweak);
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN, settingsManager);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN, DISPLAY_ADDR, clockHelper, profileManager);
-static CmdProcessor cmdProcessor(clockHelper, profileManager);
+static TOTPCodeGenManager totpCodeGenManager(clockHelper);
+static CodeGenConfig codeGenConfig[1]={{ProfileType::TOTP,totpCodeGenManager}};
+static CmdProcessor cmdProcessor(clockHelper, profileManager, codeGenConfig);
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
 //stuff needed for requests, commands and responses parsing
