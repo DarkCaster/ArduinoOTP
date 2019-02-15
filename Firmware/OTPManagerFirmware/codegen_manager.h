@@ -2,6 +2,7 @@
 #define CODEGEN_MANAGER_H
 
 #include <Arduino.h>
+#include "profile.h"
 
 class CodeGenManager
 {
@@ -11,10 +12,9 @@ class CodeGenManager
 
 struct CodeGenConfig
 {
-	const uint8_t type;
+	const ProfileType type;
 	CodeGenManager& generator;
-	CodeGenConfig(uint8_t type, CodeGenManager& generator);
-	//CodeGenConfig( const CodeGenConfig& other ) = default;
+	CodeGenConfig( const CodeGenConfig& other ) = default;
 };
 
 #endif
