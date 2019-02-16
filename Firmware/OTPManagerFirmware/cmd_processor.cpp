@@ -24,9 +24,8 @@ RspParams RspParams::Error(const CMDRSP_BUFF_TYPE rspLen)
 	return result;
 }
 
-CmdProcessor::CmdProcessor(ClockHelper &clockHelper, ProfileManager &profileManager, const CodeGenConfig * const codeGenConfigs, const size_t CSZ) :
-  codeGenConfigs(codeGenConfigs),
-  codeGenConfigsSz(CSZ),
+CmdProcessor::CmdProcessor(ClockHelper &clockHelper, ProfileManager &profileManager, CodeGenAggregator &codeGenAggregator) :
+  codeGenAggregator(codeGenAggregator),
   clockHelper(clockHelper),
   profileManager(profileManager)
 { }
@@ -41,6 +40,8 @@ RspParams CmdProcessor::ProcessCommand(const uint8_t cmdType, const uint8_t* con
 			return GetProfilesCount(cmdLen,rspData);
 		case CMD_GETPROFILE:
 			return GetProfile(cmdData,cmdLen,rspData);
+		case CMD_STOREROFILE:
+			return StoreProfile(cmdData,cmdLen,rspData);
 		default:
 			return RspParams::Invalid();
 	}
@@ -57,6 +58,17 @@ RspParams CmdProcessor::GetProfilesCount(const CMDRSP_BUFF_TYPE cmdLen, uint8_t 
 	result.rspLen=2;
 	result.rspType=RSP_PRCOUNT;
 	return result;
+}
+
+RspParams CmdProcessor::StoreProfile(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData)
+{
+	if(cmdLen<(3+PROFILE_NAME_LEN))
+		return RspParams::Invalid();
+	//2 bytes - profile index
+	//1 byte - profile type
+	//PROFILE_NAME_LEN - profile name
+	//rest - data for codegen manager \ aggregator, to verify code-data validity
+	return RspParams::Invalid();
 }
 
 RspParams CmdProcessor::GetProfile(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData)
