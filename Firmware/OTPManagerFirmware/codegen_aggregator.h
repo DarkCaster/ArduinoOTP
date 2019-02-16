@@ -14,7 +14,7 @@ class CodeGenAggregator
 		template<size_t CSZ> CodeGenAggregator(const CodeGenConfig (&codeGenCofigs)[CSZ]) :
 		  CodeGenAggregator(codeGenCofigs, CSZ) { }
 		template<size_t CSZ> CodeGenAggregator(const CodeGenConfig (&&)[CSZ]) = delete;
-
+		CodeGenManager * GetManager(const ProfileType type);
 };
 
 #endif
