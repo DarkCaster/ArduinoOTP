@@ -52,8 +52,8 @@ static EEPROMProfileManager profileManager(EEPROM_PROFILE_STORAGE_ADDR, EEPROM_P
 static ClockHelperDS3231 clockHelper(RTC_POWER_PIN, settingsManager);
 static GuiSSD1306_I2C gui(DISPLAY_POWER_PIN, DISPLAY_ADDR, clockHelper, profileManager);
 static TOTPCodeGenManager totpCodeGenManager(clockHelper);
-static CodeGenConfig codeGenConfig[1]={{ProfileType::TOTP,totpCodeGenManager}};
-static CodeGenAggregator codeGenAggregator; //TODO
+static CodeGenConfig codeGenConfigs[1]={{ProfileType::TOTP,totpCodeGenManager}};
+static CodeGenAggregator codeGenAggregator(codeGenConfigs);
 static CmdProcessor cmdProcessor(clockHelper, profileManager, codeGenAggregator);
 static WatchdogAVR watchdog(SYNC_WATCHDOG_TIMEOUT);
 
