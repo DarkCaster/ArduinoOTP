@@ -239,8 +239,16 @@ void GuiSSD1306_I2C::MenuSelect()
 	{
 		STATUS();
 		LOG(F("Selecting profile item"));
-		//TODO: get profile index from prBuffer, using menuPos
-		//TODO: generate and display code
+		//get profile from prBuffer, using menuPos
+		auto bItem=prBuffer.GetHead();
+		for(uint8_t testPos=0; testPos<menuPos; ++testPos)
+			bItem=bItem->Next();
+		//load profile data
+		uint8_t profilePayload[PROFILE_PAYLOAD_LEN];
+		profileManager.ReadProfileData(bItem->index,profilePayload);
+		//get codegen manager from aggregator
+		//generate and display code using codegen manager and profilePayload
+		//update profilePayload data and save it
 		return;
 	}
 
