@@ -37,7 +37,7 @@ class CmdProcessor
 		RspParams SetTime(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen);
 		RspParams GetProfilesCount(const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
 		RspParams GetProfile(const uint8_t * const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
-		RspParams StoreProfile(const uint8_t * const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData);
+		RspParams StoreProfile(const uint8_t * const cmdData, const CMDRSP_BUFF_TYPE cmdLen);
 	public:
 		CmdProcessor(ClockHelper &clockHelper, ProfileManager &profileManager, CodeGenAggregator &codeGenAggregator);
 		CmdProcessor(ClockHelper &&, ProfileManager &&, CodeGenAggregator &&) = delete;

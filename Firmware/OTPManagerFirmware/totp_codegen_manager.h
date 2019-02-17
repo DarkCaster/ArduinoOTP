@@ -13,6 +13,7 @@ class TOTPCodeGenManager final : public CodeGenManager
 		TOTPCodeGenManager(ClockHelper &clockHelper);
 		TOTPCodeGenManager(ClockHelper &&) = delete;
 		uint8_t GenerateCode(uint8_t * codeBuff, const uint8_t * const dataBuff) final;
+		bool VerifySecretData( const uint8_t * const secret, const CMDRSP_BUFF_TYPE len) final;
 };
 
 #endif

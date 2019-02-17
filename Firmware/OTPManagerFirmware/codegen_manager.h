@@ -8,6 +8,7 @@ class CodeGenManager
 {
 	public:
 		virtual uint8_t GenerateCode(uint8_t * codeBuff, const uint8_t * const dataBuff) = 0;
+		virtual bool VerifySecretData( const uint8_t * const secret, const CMDRSP_BUFF_TYPE len) = 0;
 };
 
 struct CodeGenConfig

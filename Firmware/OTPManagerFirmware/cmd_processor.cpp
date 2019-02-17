@@ -41,7 +41,7 @@ RspParams CmdProcessor::ProcessCommand(const uint8_t cmdType, const uint8_t* con
 		case CMD_GETPROFILE:
 			return GetProfile(cmdData,cmdLen,rspData);
 		case CMD_STOREROFILE:
-			return StoreProfile(cmdData,cmdLen,rspData);
+			return StoreProfile(cmdData,cmdLen);
 		default:
 			return RspParams::Invalid();
 	}
@@ -60,15 +60,45 @@ RspParams CmdProcessor::GetProfilesCount(const CMDRSP_BUFF_TYPE cmdLen, uint8_t 
 	return result;
 }
 
-RspParams CmdProcessor::StoreProfile(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData)
+RspParams CmdProcessor::StoreProfile(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen)
 {
 	if(cmdLen<(3+PROFILE_NAME_LEN))
 		return RspParams::Invalid();
 	//2 bytes - profile index
+	auto index=static_cast<uint16_t>( static_cast<uint16_t>(*cmdData) | static_cast<uint16_t>(*(cmdData+1))<<8 );
 	//1 byte - profile type
+	auto profileType=static_cast<ProfileType>(*(cmdData+2));
 	//PROFILE_NAME_LEN - profile name
+	bool nullByteFound=false;
+	CMDRSP_BUFF_TYPE secretDataPos=PROFILE_NAME_LEN+3;
+	for(uint8_t pos=3; pos<secretDataPos; ++pos)
+		if(*(cmdData+pos)=='\0')
+		{
+			nullByteFound=true;
+			break;
+		}
+	if(!nullByteFound)
+		return RspParams::Invalid();
+	//get codegen manager
+	auto cgManager=codeGenAggregator.GetManager(profileType);
+	if(cgManager==nullptr)
+		return RspParams::Invalid();
 	//rest - data for codegen manager \ aggregator, to verify code-data validity
-	return RspParams::Invalid();
+	CMDRSP_BUFF_TYPE secretDataLen=cmdLen-secretDataPos;
+	if(secretDataLen>PROFILE_PAYLOAD_LEN)
+		return RspParams::Invalid();
+	if(!cgManager->VerifySecretData(cmdData+secretDataPos,secretDataLen))
+		return RspParams::Invalid();
+	//save profile
+	Profile profile{profileType,{0}};
+	memcpy(profile.name,cmdData+3,PROFILE_NAME_LEN);
+	//create profile-payload
+	uint8_t profilePayload[PROFILE_PAYLOAD_LEN];
+	memset(profilePayload,0,PROFILE_PAYLOAD_LEN);
+	memcpy(profilePayload,cmdData+secretDataPos,secretDataLen);
+	if(!profileManager.WriteProfile(index,profile,profilePayload))
+		return RspParams::Invalid();
+	return RspParams::Empty();
 }
 
 RspParams CmdProcessor::GetProfile(const uint8_t* const cmdData, const CMDRSP_BUFF_TYPE cmdLen, uint8_t * const rspData)
