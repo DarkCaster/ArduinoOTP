@@ -4,9 +4,12 @@ TOTPCodeGenManager::TOTPCodeGenManager(ClockHelper& clockHelper) :
   clockHelper(clockHelper)
 { }
 
-uint8_t TOTPCodeGenManager::GenerateCode(uint8_t* codeBuff, const uint8_t* const dataBuff)
+uint8_t TOTPCodeGenManager::GenerateCode(uint8_t * const codeBuff, uint8_t * const dataBuff, bool &dataChanged)
 {
 	//TODO:
+	codeBuff[0]=64;
+	codeBuff[1]=0;
+	dataChanged=false;
 	return  0;
 }
 

@@ -7,6 +7,7 @@
 #include "lcg_random.h"
 #include "profile_manager.h"
 #include "profiles_ring_buffer.h"
+#include "codegen_aggregator.h"
 #include "configuration.h"
 
 class GuiSSD1306_I2C final : Gui
@@ -16,6 +17,7 @@ class GuiSSD1306_I2C final : Gui
 		const uint8_t displayAddr;
 		ClockHelper &clockHelper;
 		ProfileManager &profileManager;
+		CodeGenAggregator &codeGenAggregator;
 		LCGRandom rnd;
 		MenuItemType curItem;
 		uint8_t menuPos;
@@ -25,8 +27,8 @@ class GuiSSD1306_I2C final : Gui
 		void DrawCaption(const __FlashStringHelper* fCaption);
 		void DrawCaption(const char* caption);
 	public:
-		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelper &clockHelper, ProfileManager &profileManager);
-		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelper &&, ProfileManager &&) = delete;
+		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelper &clockHelper, ProfileManager &profileManager, CodeGenAggregator &codeGenAggregator);
+		GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelper &&, ProfileManager &&, CodeGenAggregator &&) = delete;
 		void InitPre() final;
 		void InitPost() final;
 		void DescendPre() final;

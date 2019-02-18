@@ -5,11 +5,12 @@
 
 static U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
 
-GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelper &clockHelper, ProfileManager &profileManager) :
+GuiSSD1306_I2C::GuiSSD1306_I2C(uint8_t displayPowerPin, uint8_t displayAddr, ClockHelper &clockHelper, ProfileManager &profileManager, CodeGenAggregator& codeGenAggregator) :
   displayPowerPin(displayPowerPin),
   displayAddr(displayAddr),
   clockHelper(clockHelper),
   profileManager(profileManager),
+  codeGenAggregator(codeGenAggregator),
   rnd(0),
   curItem(MenuItemType::MainScreen),
   menuPos(0)
@@ -247,7 +248,13 @@ void GuiSSD1306_I2C::MenuSelect()
 		uint8_t profilePayload[PROFILE_PAYLOAD_LEN];
 		profileManager.ReadProfileData(bItem->index,profilePayload);
 		//get codegen manager from aggregator
+		auto codeGenManager=codeGenAggregator.GetManager(bItem->profile.type);
+		if(codeGenManager==nullptr)
+			DrawCaption(F("PROFILE\nUNSUPPORTED"));
 		//generate and display code using codegen manager and profilePayload
+		bool updateNeeded=false;
+		char caption[CAPTION_MAX_LEN+1];
+		caption[CAPTION_MAX_LEN]='\0';
 		//update profilePayload data and save it
 		return;
 	}
