@@ -4,13 +4,12 @@ TOTPCodeGenManager::TOTPCodeGenManager(ClockHelper& clockHelper) :
   clockHelper(clockHelper)
 { }
 
-uint8_t TOTPCodeGenManager::GenerateCode(uint8_t * const codeBuff, uint8_t * const dataBuff, bool &dataChanged)
+bool TOTPCodeGenManager::GenerateCode(char * const codeBuff, uint8_t * const dataBuff)
 {
 	//TODO:
 	codeBuff[0]=64;
 	codeBuff[1]=0;
-	dataChanged=false;
-	return  0;
+	return true;
 }
 
 bool TOTPCodeGenManager::VerifySecretData(const uint8_t* const secret, const uint8_t len)
