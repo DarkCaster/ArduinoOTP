@@ -250,12 +250,18 @@ void GuiSSD1306_I2C::MenuSelect()
 		//get codegen manager from aggregator
 		auto codeGenManager=codeGenAggregator.GetManager(bItem->profile.type);
 		if(codeGenManager==nullptr)
+		{
 			DrawCaption(F("PROFILE\nUNSUPPORTED"));
+			return;
+		}
 		//generate and display code using codegen manager and profilePayload
-		bool updateNeeded=false;
 		char caption[CAPTION_MAX_LEN+1];
 		caption[CAPTION_MAX_LEN]='\0';
+		bool updateNeeded=codeGenManager->GenerateCode(caption, profilePayload);
+		DrawCaption(caption);
 		//update profilePayload data and save it
+		if(updateNeeded)
+			profileManager.WriteProfileData(bItem->index,profilePayload);
 		return;
 	}
 
