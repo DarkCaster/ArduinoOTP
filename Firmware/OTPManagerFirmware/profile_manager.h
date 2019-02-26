@@ -12,6 +12,7 @@ class ProfileManager
 		virtual Profile ReadProfileHeader(uint16_t index) = 0;
 		virtual bool ReadProfileData(uint16_t index, uint8_t * const data) = 0;
 		virtual bool WriteProfile(uint16_t index, const Profile &profile, const uint8_t * const data) = 0;
+		virtual bool WriteProfileData(uint16_t index, const uint8_t * const data) = 0;
 };
 
 #endif

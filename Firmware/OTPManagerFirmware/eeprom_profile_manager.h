@@ -27,6 +27,7 @@ class EEPROMProfileManager final : public ProfileManager
 		Profile ReadProfileHeader(uint16_t index) final;
 		bool ReadProfileData(uint16_t index, uint8_t * const data) final;
 		bool WriteProfile(uint16_t index, const Profile &profile, const uint8_t * const data) final;
+		bool WriteProfileData(uint16_t index, const uint8_t * const data) final;
 };
 
 #endif

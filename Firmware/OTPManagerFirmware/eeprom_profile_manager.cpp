@@ -85,7 +85,6 @@ bool EEPROMProfileManager::WriteProfile(uint16_t index, const Profile& profile, 
 	const auto profileAddr=static_cast<uint16_t>(baseAddr)+profileFullSz*index;
 	if(static_cast<int>(profileAddr+profileFullSz)>addrLimit)
 		return false;
-	const auto profileDataAddr=profileAddr+profileHdrSz;
 	//create EEPROMWriter
 	uint8_t tmpTweak[tweakSz];
 	PrepareTmpTweak(index,0,tmpTweak,tweak,tweakSz);
@@ -95,7 +94,16 @@ bool EEPROMProfileManager::WriteProfile(uint16_t index, const Profile& profile, 
 		FAIL(1000,5000);
 		return false;
 	}
+	return WriteProfileData(index,data);
+}
+
+bool EEPROMProfileManager::WriteProfileData(uint16_t index, const uint8_t * const data)
+{
+	const auto profileDataAddr=static_cast<uint16_t>(baseAddr)+profileFullSz*index+profileHdrSz;
+	if(static_cast<int>(profileDataAddr-profileHdrSz+profileFullSz)>addrLimit)
+		return false;
 	//create EEPROMWriter
+	uint8_t tmpTweak[tweakSz];
 	PrepareTmpTweak(index,UINT16_MAX,tmpTweak,tweak,tweakSz);
 	EEPROMWriter dataWriter(static_cast<int>(profileDataAddr),static_cast<int>(profileFullSz-profileHdrSz),cipher,key,tmpTweak);
 	if(!dataWriter.WriteData(data,PROFILE_PAYLOAD_LEN))
