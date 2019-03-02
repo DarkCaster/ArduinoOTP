@@ -19,3 +19,6 @@
 [submodule "OTPManager/External/xwt"]
 	path = OTPManager/External/xwt
 	url = https://github.com/mono/xwt.git
+[submodule "Firmware/Libraries/SHA-Hash-Arduino"]
+	path = Firmware/Libraries/SHA-Hash-Arduino
+	url = https://github.com/DarkCaster/SHA-Hash-Arduino.git
