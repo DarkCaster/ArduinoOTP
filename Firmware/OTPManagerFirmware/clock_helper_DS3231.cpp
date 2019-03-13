@@ -137,3 +137,23 @@ uint32_t ClockHelperDS3231::GetSeed()
 	         (static_cast<uint32_t>(time.Day)^static_cast<uint32_t>(time.Year)));
 	return result;
 }
+
+#define IS_LEAP_YEAR(YEAR) ((YEAR)%4==0 && (YEAR)%1000 !=0)
+
+uint64_t ClockHelperDS3231::GetUnixSeconds()
+{
+	//seconds counter
+	uint64_t result=0;
+	uint16_t curYear=2000+lastTime.Year;
+	//seconds until current year
+	for(uint16_t y=1970; y<curYear; ++y)
+		result+=IS_LEAP_YEAR(y)?31622400UL:31536000UL;
+	//add time in seconds since unix epoch
+	result+=62135596800UL;
+	//TODO: seconds until current month
+	//TODO: seconds until current day
+	//TODO: seconds until current hour
+	//TODO: seconds until current minute
+	//TODO: add seconds
+	return result;
+}
