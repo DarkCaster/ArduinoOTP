@@ -150,8 +150,6 @@ uint64_t ClockHelperDS3231::GetUnixSeconds()
 	//seconds until current year
 	for(uint16_t y=1970; y<curYear; ++y)
 		result+=IS_LEAP_YEAR(y)?31622400:31536000;
-	//add time in seconds since unix epoch
-	result+=62135596800;
 	//seconds until current month
 	const uint64_t dayLen=86400;
 	bool isLeapYear=IS_LEAP_YEAR(curYear);
