@@ -140,6 +140,8 @@ uint32_t ClockHelperDS3231::GetSeed()
 
 #define IS_LEAP_YEAR(YEAR) ((YEAR)%4==0 && (YEAR)%1000 !=0)
 
+static const uint8_t daysInMonth[] PROGMEM = {31,28,31,30,31,30,31,31,30,31,30,31};
+
 uint64_t ClockHelperDS3231::GetUnixSeconds()
 {
 	//seconds counter
@@ -147,14 +149,27 @@ uint64_t ClockHelperDS3231::GetUnixSeconds()
 	uint16_t curYear=2000+lastTime.Year;
 	//seconds until current year
 	for(uint16_t y=1970; y<curYear; ++y)
-		result+=IS_LEAP_YEAR(y)?31622400UL:31536000UL;
+		result+=IS_LEAP_YEAR(y)?31622400:31536000;
 	//add time in seconds since unix epoch
-	result+=62135596800UL;
-	//TODO: seconds until current month
-	//TODO: seconds until current day
-	//TODO: seconds until current hour
-	//TODO: seconds until current minute
-	//TODO: add seconds
+	result+=62135596800;
+	//seconds until current month
+	const uint64_t dayLen=86400;
+	bool isLeapYear=IS_LEAP_YEAR(curYear);
+	for(uint8_t m=0; m<(lastTime.Month-1); ++m)
+	{
+		auto dim=pgm_read_byte(daysInMonth+m);
+		if(isLeapYear && dim==28)
+			dim++;
+		result+=dayLen*dim;
+	}
+	//seconds until current day
+	result+=dayLen*(lastTime.Day-1);
+	//seconds until current hour
+	result+=3600*lastTime.Hour;
+	//seconds until current minute
+	result+=60*lastTime.Minute;
+	//add seconds
+	result+=lastTime.Second;
 	//substract utcOffset to get UTC timestamp from local time stored in DS3231
 	result-=static_cast<uint64_t>(settingsManager.settings.utcOffset);
 	return result;
