@@ -155,5 +155,7 @@ uint64_t ClockHelperDS3231::GetUnixSeconds()
 	//TODO: seconds until current hour
 	//TODO: seconds until current minute
 	//TODO: add seconds
+	//substract utcOffset to get UTC timestamp from local time stored in DS3231
+	result-=static_cast<uint64_t>(settingsManager.settings.utcOffset);
 	return result;
 }
