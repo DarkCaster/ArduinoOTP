@@ -7,12 +7,15 @@ TOTPCodeGenManager::TOTPCodeGenManager(ClockHelper& clockHelper) :
 
 bool TOTPCodeGenManager::GenerateCode(char * const codeBuff, uint8_t * const dataBuff)
 {
-	//TODO: get current time in seconds (including leap years), relative to unix epoch-time
-	uint64_t secondsSinceUnixEpoch=100;
-	//calculate steps from unix epoch
-	uint64_t stepsSinceUnixEpoch=secondsSinceUnixEpoch/(*(dataBuff+0))/*step len in seconds*/;
-	//TODO: get stepsSinceUnixEpoch as bytes in correct endian-format
-	uint8_t message[8]={0};
+	//get current time in seconds (including leap years), relative to unix epoch-time and alculate steps from unix epoch
+	uint64_t stepsSinceUnixEpoch=clockHelper.GetUnixSeconds()/(*(dataBuff+0)); /*step len in seconds*/
+	//get stepsSinceUnixEpoch as bytes in correct endian-format
+	uint8_t message[8];
+	for (int8_t i = 7; i >= 0; --i)
+	{
+		*(message+i) = static_cast<uint8_t>(stepsSinceUnixEpoch & 0xFF);
+		stepsSinceUnixEpoch >>= 8;
+	}
 	//get hmac methods for selected hashmode
 	hmac_func_ptr hashmac_func=nullptr;
 	hmac_getopbuffsz_func_ptr hashmac_getopbuffsz_func=nullptr;
