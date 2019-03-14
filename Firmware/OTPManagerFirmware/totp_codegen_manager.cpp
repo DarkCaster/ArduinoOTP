@@ -35,11 +35,27 @@ bool TOTPCodeGenManager::GenerateCode(char * const codeBuff, uint8_t * const dat
 	uint8_t opBuff[hashmac_getopbuffsz_func(8)];
 	memcpy(opBuff,message,8);
 	auto hmacSz=hashmac_func(dataBuff+4/*key*/,*(dataBuff+3)/*keyLen*/,opBuff,8);
-	//TODO: truncate hash
-	//uint8_t totpSize=*(dataBuff+2);
-	//TODO: write code string
-	codeBuff[0]=static_cast<char>(opBuff[hmacSz-1]);
-	codeBuff[1]=0;
+	if(hmacSz<20)
+	{
+		codeBuff[0]=69; //E
+		codeBuff[1]=0;
+		return false;
+	}
+	//get OTP password
+	uint8_t tOffset=*(opBuff+hmacSz-1) & 0x0F;
+	int32_t iCode = (static_cast<int32_t>(*(opBuff+tOffset  ) & 0x7F) << 24) |
+	                (static_cast<int32_t>(*(opBuff+tOffset+1) & 0xFF) << 16) |
+	                (static_cast<int32_t>(*(opBuff+tOffset+2) & 0xFF) << 8)  |
+	                static_cast<int32_t>(*(opBuff+tOffset+3) & 0xFF);
+	//truncate result
+	uint8_t totpSize=*(dataBuff+2);
+	int32_t divisor=1;
+	for(uint8_t i=0;i<totpSize;++i)
+		divisor*=10;
+	iCode%=divisor;
+	//write code string
+	ltoa(iCode,codeBuff,10);
+	//no need to update secret
 	return false;
 }
 
@@ -51,11 +67,11 @@ bool TOTPCodeGenManager::VerifySecretData(const uint8_t* const secret, const uin
 	//check step (time window)
 	if(*(secret+0)>120)
 		return false;
-	//check hash mode, TODO: add more hash modes
+	//check hash mode, TODO: add more hash modes (sha256, sha512?)
 	if(*(secret+1)!=0)
 		return false;
-	//check totpSize, TODO: max digits also depends on hash mode ?
-	if(*(secret+2)<32)
+	//check totpSize, max 10 digits allowed by int32_t type that stores result
+	if(*(secret+2)>10||*(secret+2)==0)
 		return false;
 	//check key len
 	if(*(secret+3)!=len-4)
