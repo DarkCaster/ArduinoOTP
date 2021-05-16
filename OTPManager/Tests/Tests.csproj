@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="SerialDeviceManagerTests.cs" />
     <Compile Include="SerialPortSafetyTests.cs" />
+    <Compile Include="TOTPTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
